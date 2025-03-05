@@ -5,7 +5,7 @@ import tenderSlice from "../Slices/TenderSlice";
 const store = configureStore({
   reducer: {
     auth: authSlice,
-    sidebar: CommonSlice,
+    common: CommonSlice,
     tender: tenderSlice,
   },
 });

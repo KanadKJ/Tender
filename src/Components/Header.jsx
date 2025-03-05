@@ -20,13 +20,13 @@ const Header = () => {
   const navigate = useNavigate();
 
   // redux states
-  const { isSidebarOpen } = useSelector((state) => state.sidebar);
+  const { isSidebarOpen } = useSelector((state) => state.common);
 
   const handleSidebar = () => {
     dispatch(sibebarHandler(true));
   };
   return (
-    <header className="backdrop-blur-lg z-0 h-14 md:h-16 shadow-md sm:px-1 fixed w-full  top-0 left-0 transition-shadow duration-700 bg-white/70">
+    <header className="backdrop-blur-lg z-10 h-14 md:h-16 shadow-md sm:px-1 fixed w-full  top-0 left-0 transition-shadow duration-700 bg-white/70">
       <div className="flex flex-row h-full items-center px-4">
         <div className="text-lg font-bold text-gray-800">
           <div className="flex justify-between items-center gap-5">

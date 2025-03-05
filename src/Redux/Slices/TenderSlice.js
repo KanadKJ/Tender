@@ -20,10 +20,8 @@ export const GetTenderList = createAsyncThunk(
 export const GetTenderListWithFilters = createAsyncThunk(
   "tender/GetTenderListWithFilters",
   async (params, { rejectWithValue }) => {
-    console.log(queryBuilder(params));
-
     try {
-      const res = await ScrpApiTenders.get(`/tenders?${queryBuilder(params)}`);
+      const res = await ScrpApiTenders.get(`/tenders?${params}`);
 
       return res.data;
     } catch (error) {

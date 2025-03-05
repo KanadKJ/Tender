@@ -8,7 +8,7 @@ import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 const MainLayout = () => {
   const dispatch = useDispatch();
 
-  const { isSidebarOpen } = useSelector((state) => state.sidebar);
+  const { isSidebarOpen } = useSelector((state) => state.common);
   const location = useLocation();
   const noHeaderRoutes = ["/login", "/signup"];
   const showHeader = !noHeaderRoutes.includes(location.pathname);
