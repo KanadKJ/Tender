@@ -8,6 +8,22 @@ export const DummyStates = [
     statename: "West Bengal",
   },
 ];
+export const amountOptions = [
+  { label: "1K", value: "1000", valueLabel: "1K" },
+  { label: "5K", value: "5000", valueLabel: "5K" },
+  { label: "10K", value: "10000", valueLabel: "10K" },
+  { label: "20K", value: "20000", valueLabel: "20K" },
+  { label: "50K", value: "50000", valueLabel: "50K" },
+  { label: "1L", value: "100000", valueLabel: "1L" },
+  { label: "5L", value: "500000", valueLabel: "5L" },
+  { label: "10L", value: "1000000", valueLabel: "10L" },
+  { label: "50L", value: "5000000", valueLabel: "50L" },
+  { label: "1Cr", value: "10000000", valueLabel: "1Cr" },
+  { label: "5Cr", value: "50000000", valueLabel: "5Cr" },
+  { label: "10Cr", value: "100000000", valueLabel: "10Cr" },
+  { label: "50Cr", value: "500000000", valueLabel: "50Cr" },
+  { label: "100Cr", value: "1000000000", valueLabel: "100Cr" },
+];
 // export const queryBuilder = (params) => {
 //   const enc = window.encodeURIComponent;
 //   const qStr = Object.keys(params)

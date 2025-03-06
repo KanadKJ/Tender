@@ -8,24 +8,34 @@ const useQueryParams = (filters) => {
 
     // Iterate over all filters
     Object.entries(filters).forEach(([key, value]) => {
-      if (Array.isArray(value) && value.length !== 0) {
-        // If the value is an array, append each item as a repeated key
+      // Skip if the value is empty
+      if (
+        value === undefined ||
+        value === null ||
+        value === "" ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
+        return; // Skip this key-value pair
+      }
+
+      if (Array.isArray(value)) {
+        // If the value is a non-empty array, append each item as a repeated key
         value.forEach((item) => {
           if (typeof item === "object" && item !== null) {
             // If the item is an object, extract the `id` property
             params.append(key, item.id);
-          } else {
-            // If the item is a primitive value, add it directly
+          } else if (item !== undefined && item !== null && item !== "") {
+            // If the item is a non-empty primitive, add it directly
             params.append(key, item);
           }
         });
-      } else if (value !== undefined && value !== null && value !== "") {
+      } else {
         // If the value is a non-empty primitive, add it directly
         params.set(key, value);
       }
     });
-    console.log(params.toString());
 
+    console.log(params.toString());
     return params.toString();
   }, [filters]);
 

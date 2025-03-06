@@ -12,8 +12,10 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Divider,
   FormControl,
   IconButton,
+  InputAdornment,
   ListItemText,
   MenuItem,
   OutlinedInput,
@@ -26,8 +28,12 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { DummyStates, formatDateTime } from "../Utils/CommonUtils";
-import { GetDistrictsList } from "../Redux/Slices/CommonSlice";
+import { amountOptions, formatDateTime } from "../Utils/CommonUtils";
+import {
+  GetDistrictsList,
+  GetOrgList,
+  GetStatesList,
+} from "../Redux/Slices/CommonSlice";
 import useQueryParams from "../Hooks/useQueryParams";
 
 const ITEM_HEIGHT = 48;
@@ -47,7 +53,8 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export default function Tenders() {
   // redux
   const { tenderData, tenderIsLoading } = useSelector((s) => s.tender);
-  const { isDistrictCallLoading, districtsData } = useSelector((s) => s.common);
+  const { isDistrictCallLoading, districtsData, statesData, orgData } =
+    useSelector((s) => s.common);
   //state
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -55,7 +62,14 @@ export default function Tenders() {
 
   const [filters, setFilters] = useState({
     keywords: searchParams.get("keywords") || "",
-    states: searchParams.getAll("states") || [],
+    states:
+      searchParams
+        .getAll("states")
+        ?.map((id) => {
+          const state = statesData.find((d) => d.id === parseInt(id));
+          return state ? state : null;
+        })
+        .filter(Boolean) || [],
     districts:
       searchParams
         .getAll("districts")
@@ -64,6 +78,16 @@ export default function Tenders() {
           return district ? district : null;
         })
         .filter(Boolean) || [],
+    organisations:
+      searchParams
+        .getAll("organisations")
+        ?.map((id) => {
+          const organisation = orgData.find((d) => d.id === parseInt(id));
+          return organisation ? organisation : null;
+        })
+        .filter(Boolean) || [],
+    value_in_rs_min: searchParams.get("value_in_rs_min") || "", // Add minAmount
+    value_in_rs_max: searchParams.get("value_in_rs_max") || "", // Add maxAmount
   });
   const queryString = useQueryParams(filters);
   console.log(queryString);
@@ -72,14 +96,25 @@ export default function Tenders() {
   const [openPopoverId, setOpenPopoverId] = useState(null);
   // hooks
   const dispatch = useDispatch();
-  const states = searchParams.getAll("districts");
-  console.log(states);
-
+  useEffect(() => {
+    dispatch(GetStatesList());
+    dispatch(GetOrgList());
+  }, []);
   useEffect(() => {
     const keywords = searchParams.get("keywords") || "";
-    const states = searchParams.getAll("states") || [];
+    const stateIDS = searchParams.getAll("states") || [];
     const districtIds = searchParams.getAll("districts") || [];
-    console.log("PARAMS:", keywords, states, districtIds);
+    const organisationIds = searchParams.getAll("organisations") || [];
+    const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
+    const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
+    console.log(
+      "PARAMS:",
+      keywords,
+      stateIDS,
+      districtIds,
+      value_in_rs_min,
+      value_in_rs_max
+    );
 
     // Map district IDs to district objects
     const districts = districtIds
@@ -88,23 +123,45 @@ export default function Tenders() {
         return district ? district : null;
       })
       .filter(Boolean); // Remove null values
+    const states = stateIDS
+      .map((id) => {
+        const state = statesData.find((d) => d.id === parseInt(id)); // Convert id to number
+        return state ? state : null;
+      })
+      .filter(Boolean); // Remove null values
+    const organisations = organisationIds
+      .map((id) => {
+        const org = orgData.find((d) => d.id === parseInt(id)); // Convert id to number
+        return org ? org : null;
+      })
+      .filter(Boolean); // Remove null values
 
     // Update filters state
     setFilters({
       keywords,
       states,
       districts,
+      organisations,
+      value_in_rs_min,
+      value_in_rs_max,
     });
 
     // console.log("Mapped Districts:", districts);
 
     // Dispatch actions to filter data based on URL parameters
-    if (keywords || states.length || districts.length) {
+    if (
+      keywords ||
+      states.length ||
+      districts.length ||
+      organisations.length ||
+      value_in_rs_max ||
+      value_in_rs_min
+    ) {
       dispatch(GetTenderListWithFilters(queryString));
     } else {
       dispatch(GetTenderList());
     }
-  }, [searchParams, dispatch, districtsData]);
+  }, [searchParams, dispatch, districtsData, statesData]);
 
   useEffect(() => {
     // dispatch(GetTenderList());
@@ -172,7 +229,7 @@ export default function Tenders() {
           color: "#0554f29e",
           zIndex: theme.zIndex.drawer + 1,
         })}
-        open={tenderIsLoading}
+        open={tenderIsLoading || isDistrictCallLoading}
       >
         <CircularProgress color="#0554f2" />
       </Backdrop>
@@ -210,13 +267,14 @@ export default function Tenders() {
             />
           </div>
           <div className="flex flex-wrap gap-8 justify-center items-center">
+            {/* Keywords */}
             <div>
               <Button
                 aria-describedby="Keywords"
                 variant="contained"
                 onClick={(event) => handleClick(event, "Keywords")}
               >
-                Keywords
+                Keywords {filters.keywords ? "(1)" : null}
               </Button>
               <Popover
                 id="Keywords"
@@ -229,6 +287,7 @@ export default function Tenders() {
                   <label className="pl-2">Keywords</label>
                   <CloseBTN />
                 </div>
+                <Divider />
                 <div className="p-5 flex flex-col gap-4">
                   <input
                     type="text"
@@ -257,6 +316,90 @@ export default function Tenders() {
                 </div>
               </Popover>
             </div>
+            {/* Organization */}
+            <div>
+              <Button
+                aria-describedby="organisations"
+                variant="contained"
+                onClick={(event) => handleClick(event, "organisations")}
+              >
+                Organisations
+                {filters?.organisations?.length
+                  ? `(${filters?.organisations?.length})`
+                  : null}
+              </Button>
+              <Popover
+                id="organisations"
+                open={openPopoverId === "organisations"}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                PaperProps={{
+                  style: {
+                    width: "300px",
+                  },
+                }}
+              >
+                <div className="w-full flex justify-between items-center p-2">
+                  <label className="pl-2">Organisations</label>
+                  <CloseBTN />
+                </div>
+                <Divider />
+                <div className="w-full flex justify-between items-center p-2">
+                  <Autocomplete
+                    multiple
+                    id="districts-autocomplete"
+                    options={orgData} // Array of objects with `id` and `name`
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option.name} // No optional chaining needed
+                    value={filters.organisations} // Array of selected organisation objects
+                    onChange={(event, newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        organisations: newValue, // Update the correct state key
+                      }));
+                    }}
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 500 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select organisation"
+                        placeholder="Choose organisation"
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex justify-around pb-3">
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={() => handleReset("districts")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </Popover>
+            </div>
+            {/* States */}
             <div>
               <Button
                 aria-describedby="states"
@@ -264,6 +407,9 @@ export default function Tenders() {
                 onClick={(event) => handleClick(event, "states")}
               >
                 State
+                {filters?.states?.length
+                  ? `(${filters?.states?.length})`
+                  : null}
               </Button>
               <Popover
                 id="states"
@@ -281,21 +427,20 @@ export default function Tenders() {
                   <label className="pl-2">States</label>
                   <CloseBTN />
                 </div>
+                <Divider />
                 <div className="w-full flex justify-between items-center p-2">
                   <FormControl sx={{ m: 1, width: 400 }}>
                     <Autocomplete
                       multiple
                       id="states-autocomplete"
-                      options={DummyStates} // Pass states list
+                      options={statesData} // Pass states list
                       disableCloseOnSelect
-                      getOptionLabel={(option) => option.statename} // Show state names
-                      value={DummyStates.filter((state) =>
-                        filters?.states?.includes(state.id)
-                      )} // Set selected states
+                      getOptionLabel={(option) => option.name} // Show state names
+                      value={filters.states} // Set selected states
                       onChange={(event, newValue) => {
                         setFilters((prev) => ({
                           ...prev,
-                          states: newValue.map((state) => state.id), // Store only state IDs
+                          states: newValue, // Store only state IDs
                         }));
                       }}
                       renderOption={(props, option, { selected }) => {
@@ -308,7 +453,7 @@ export default function Tenders() {
                               style={{ marginRight: 8 }}
                               checked={selected}
                             />
-                            {option.statename}
+                            {option.name}
                           </li>
                         );
                       }}
@@ -341,76 +486,7 @@ export default function Tenders() {
                 </div>
               </Popover>
             </div>
-
-            {/* <div>
-            <Button
-              aria-describedby="districts"
-              variant="contained"
-              onClick={(event) => handleClick(event, "districts")}
-            >
-              Districts
-            </Button>
-            <Popover
-              id="districts"
-              open={openPopoverId === "districts"}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              PaperProps={{
-                style: {
-                  width: "250px",
-                },
-              }}
-            >
-              <div className="w-full flex justify-between items-center p-2">
-                <FormControl sx={{ m: 1, width: 300 }}>
-                  <Select
-                    labelId="demo-multiple-checkbox-label"
-                    id="demo-multiple-checkbox"
-                    multiple
-                    name="districts"
-                    value={filters?.districts} // Ensure this contains an array of `id`s
-                    onChange={handleFilterSelection}
-                    input={<OutlinedInput label="Tag" />}
-                    renderValue={
-                      (selected) =>
-                        selected
-                          .map(
-                            (id) =>
-                              districtsData.find((state) => state.id === id)
-                                ?.name
-                          )
-                          .join(", ") // Convert selected ids to names
-                    }
-                    MenuProps={MenuProps}
-                  >
-                    {districtsData?.map(({ name, id }) => (
-                      <MenuItem key={id} value={id} style={{ width: "100%" }}>
-                        <Checkbox checked={filters?.districts?.includes(id)} />
-                        <ListItemText primary={name} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-              <div className="flex justify-around pb-3">
-                <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={() => handleReset("states")}
-                >
-                  Reset
-                </button>
-                <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={handleFilterSaved}
-                >
-                  Apply
-                </button>
-              </div>
-            </Popover>
-          </div> */}
+            {/* Districts */}
             <div>
               <Button
                 aria-describedby="districts"
@@ -418,6 +494,9 @@ export default function Tenders() {
                 onClick={(event) => handleClick(event, "districts")}
               >
                 Districts
+                {filters?.districts?.length
+                  ? `(${filters?.districts?.length})`
+                  : null}
               </Button>
               <Popover
                 id="districts"
@@ -435,6 +514,7 @@ export default function Tenders() {
                   <label className="pl-2">Districts</label>
                   <CloseBTN />
                 </div>
+                <Divider />
                 <div className="w-full flex justify-between items-center p-2">
                   <Autocomplete
                     multiple
@@ -444,7 +524,6 @@ export default function Tenders() {
                     getOptionLabel={(option) => option.name}
                     value={filters.districts} // Pass the full array of selected district objects
                     onChange={(event, newValue) => {
-                      console.log("New Value:", newValue);
                       setFilters((prev) => ({
                         ...prev,
                         districts: newValue, // Store the full array of selected district objects
@@ -490,61 +569,131 @@ export default function Tenders() {
                 </div>
               </Popover>
             </div>
-
+            {/* Tender Amount */}
             <div>
               <Button
-                aria-describedby="popover3"
+                aria-describedby="tenderAmount"
                 variant="contained"
-                onClick={(event) => handleClick(event, "popover3")}
+                onClick={(event) => handleClick(event, "tenderAmount")}
               >
-                Organization Filter
+                Tender Amount{" "}
+                {filters?.value_in_rs_max || filters?.value_in_rs_min
+                  ? "(1)"
+                  : null}
               </Button>
               <Popover
-                id="popover3"
-                open={openPopoverId === "popover3"}
+                id="tenderAmount"
+                open={openPopoverId === "tenderAmount"}
                 anchorEl={anchorEl}
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                PaperProps={{
+                  style: {
+                    width: "400px",
+                  },
+                }}
               >
-                <Typography sx={{ p: 2 }}>
-                  {/* ✅ Different Filter Data */}
-                  <p>Select Organization</p>
-                  <select>
-                    <option value="gov">Government</option>
-                    <option value="private">Private</option>
-                  </select>
-                </Typography>
-              </Popover>
-            </div>
+                <div className="w-full flex justify-between items-center p-2">
+                  <label className="pl-2">value_in_rs_min</label>
+                  <CloseBTN />
+                </div>
+                <Divider />
+                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                  <Autocomplete
+                    sx={{ width: 300 }}
+                    options={amountOptions}
+                    getOptionLabel={(option) => option.label}
+                    value={
+                      amountOptions.find(
+                        (opt) => opt.value === filters.value_in_rs_min
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      const newMinAmount = newValue ? newValue.value : "";
 
-            <div>
-              <select className="w-auto">
-                <option defaultChecked>Organisation</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-              </select>
-            </div>
-            <div>
-              <select
-                className="w-auto"
-                onChange={handleFilterSelection}
-                name="states"
-              >
-                <option value="" defaultChecked>
-                  State
-                </option>
-                <option value="29">West Bengal</option>
-                <option value="30">and</option>
-                <option value="3">3</option>
-              </select>
+                      // Ensure maxAmount is greater than or equal to minAmount
+                      const newMaxAmount =
+                        filters?.value_in_rs_max &&
+                        newMinAmount > filters?.value_in_rs_max
+                          ? newMinAmount // Auto-adjust maxAmount
+                          : filters?.value_in_rs_max;
+
+                      setFilters((prev) => ({
+                        ...prev,
+                        value_in_rs_min: newMinAmount,
+                        value_in_rs_max: newMaxAmount,
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Minimum Amount"
+                        placeholder="Select min amount"
+                      />
+                    )}
+                  />
+
+                  {/* Max Amount Autocomplete */}
+                  <Autocomplete
+                    sx={{ width: 300 }}
+                    options={amountOptions}
+                    getOptionLabel={(option) => option.label}
+                    value={
+                      amountOptions.find(
+                        (opt) => opt.value === filters.value_in_rs_max
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      const newMaxAmount = newValue ? newValue.value : "";
+
+                      // Ensure minAmount is less than or equal to maxAmount
+                      const newMinAmount =
+                        filters?.value_in_rs_min &&
+                        newMaxAmount < filters?.value_in_rs_min
+                          ? newMaxAmount // Auto-adjust minAmount
+                          : filters?.value_in_rs_min;
+
+                      setFilters((prev) => ({
+                        ...prev,
+                        value_in_rs_max: newMaxAmount,
+                        value_in_rs_min: newMinAmount,
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Maximum Amount"
+                        placeholder="Select max amount"
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex justify-around pb-3">
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={() => handleReset("districts")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </Popover>
             </div>
           </div>
 
           {tenderData?.results?.map((tender, i) => (
             <div
               key={tender?.uid}
-              className="flex flex-col md:flex-row w-full justify-between  bg-white py-6  pl-4 rounded-md gap-4"
+              className={`flex flex-col md:flex-row w-full justify-between ${
+                i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
+              } py-6  pl-4 rounded-md gap-4`}
             >
               <div className="w-full flex flex-col gap-5">
                 <div className="flex gap-4 flex-col md:flex-row">
