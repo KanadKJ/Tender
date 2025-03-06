@@ -24,14 +24,11 @@ export const amountOptions = [
   { label: "50Cr", value: "500000000", valueLabel: "50Cr" },
   { label: "100Cr", value: "1000000000", valueLabel: "100Cr" },
 ];
-// export const queryBuilder = (params) => {
-//   const enc = window.encodeURIComponent;
-//   const qStr = Object.keys(params)
-//     .map((k) => `${enc(k)}=${enc(params[k])}`) // Fix: Use params[k] instead of params(k)
-//     .join("&");
-
-//   return qStr; // Removed the `?` prefix; add it in API call
-// };
+export const dateOptions = [
+  { label: "Publishing Today", value: "today" },
+  { label: "Published in 7 days", value: "7days" },
+  { label: "Published in 15 days", value: "15days" },
+];
 export const queryBuilder = (params) => {
   const queryParams = [];
 

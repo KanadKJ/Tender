@@ -5,7 +5,6 @@ import {
   GetTenderList,
   GetTenderListWithFilters,
 } from "../Redux/Slices/TenderSlice";
-
 import {
   Autocomplete,
   Backdrop,
@@ -15,27 +14,29 @@ import {
   Divider,
   FormControl,
   IconButton,
-  InputAdornment,
-  ListItemText,
   MenuItem,
-  OutlinedInput,
   Popover,
-  Select,
   TextField,
-  Typography,
 } from "@mui/material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { amountOptions, formatDateTime } from "../Utils/CommonUtils";
+import {
+  amountOptions,
+  dateOptions,
+  formatDateTime,
+} from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
   GetOrgList,
   GetStatesList,
 } from "../Redux/Slices/CommonSlice";
 import useQueryParams from "../Hooks/useQueryParams";
-
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -86,9 +87,12 @@ export default function Tenders() {
           return organisation ? organisation : null;
         })
         .filter(Boolean) || [],
-    value_in_rs_min: searchParams.get("value_in_rs_min") || "", // Add minAmount
-    value_in_rs_max: searchParams.get("value_in_rs_max") || "", // Add maxAmount
+    value_in_rs_min: searchParams.get("value_in_rs_min") || "",
+    value_in_rs_max: searchParams.get("value_in_rs_max") || "",
+    published_date_after: searchParams.get("published_date_after") || "",
+    published_date_before: searchParams.get("published_date_before") || "",
   });
+  const [dateOption, setDateOption] = useState("");
   const queryString = useQueryParams(filters);
   console.log(queryString);
 
@@ -107,13 +111,18 @@ export default function Tenders() {
     const organisationIds = searchParams.getAll("organisations") || [];
     const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
     const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
+    const published_date_after = searchParams.get("published_date_after") || "";
+    const published_date_before =
+      searchParams.get("published_date_before") || "";
     console.log(
       "PARAMS:",
       keywords,
       stateIDS,
       districtIds,
       value_in_rs_min,
-      value_in_rs_max
+      value_in_rs_max,
+      published_date_after,
+      published_date_before
     );
 
     // Map district IDs to district objects
@@ -144,6 +153,8 @@ export default function Tenders() {
       organisations,
       value_in_rs_min,
       value_in_rs_max,
+      published_date_after,
+      published_date_before,
     });
 
     // console.log("Mapped Districts:", districts);
@@ -155,7 +166,9 @@ export default function Tenders() {
       districts.length ||
       organisations.length ||
       value_in_rs_max ||
-      value_in_rs_min
+      value_in_rs_min ||
+      published_date_after ||
+      published_date_before
     ) {
       dispatch(GetTenderListWithFilters(queryString));
     } else {
@@ -186,15 +199,22 @@ export default function Tenders() {
   };
 
   const handleReset = (name) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: Array.isArray(filters[name]) ? "" : [],
-    }));
+    if (name === "dates") {
+      setFilters((prev) => ({
+        ...prev,
+        published_date_after: "",
+        published_date_before: "",
+      }));
+    } else {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        [name]: Array.isArray(filters[name]) ? "" : [],
+      }));
+    }
   };
 
   const handleFilterSelection = (e) => {
     const { name, value } = e.target;
-
     setFilters((prevFilters) => ({
       ...prevFilters,
       [name]: Array.isArray(value) ? value : [value], // Ensure array format for multiple values
@@ -222,6 +242,7 @@ export default function Tenders() {
       </IconButton>
     );
   };
+
   return (
     <>
       <Backdrop
@@ -270,6 +291,9 @@ export default function Tenders() {
             {/* Keywords */}
             <div>
               <Button
+                style={{
+                  backgroundColor: "#0554f2",
+                }}
                 aria-describedby="Keywords"
                 variant="contained"
                 onClick={(event) => handleClick(event, "Keywords")}
@@ -319,6 +343,9 @@ export default function Tenders() {
             {/* Organization */}
             <div>
               <Button
+                style={{
+                  backgroundColor: "#0554f2",
+                }}
                 aria-describedby="organisations"
                 variant="contained"
                 onClick={(event) => handleClick(event, "organisations")}
@@ -402,6 +429,9 @@ export default function Tenders() {
             {/* States */}
             <div>
               <Button
+                style={{
+                  backgroundColor: "#0554f2",
+                }}
                 aria-describedby="states"
                 variant="contained"
                 onClick={(event) => handleClick(event, "states")}
@@ -489,6 +519,9 @@ export default function Tenders() {
             {/* Districts */}
             <div>
               <Button
+                style={{
+                  backgroundColor: "#0554f2",
+                }}
                 aria-describedby="districts"
                 variant="contained"
                 onClick={(event) => handleClick(event, "districts")}
@@ -572,11 +605,14 @@ export default function Tenders() {
             {/* Tender Amount */}
             <div>
               <Button
+                style={{
+                  backgroundColor: "#0554f2",
+                }}
                 aria-describedby="tenderAmount"
                 variant="contained"
                 onClick={(event) => handleClick(event, "tenderAmount")}
               >
-                Tender Amount{" "}
+                Tender Amount
                 {filters?.value_in_rs_max || filters?.value_in_rs_min
                   ? "(1)"
                   : null}
@@ -594,7 +630,7 @@ export default function Tenders() {
                 }}
               >
                 <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">value_in_rs_min</label>
+                  <label className="pl-2">Tender Amount</label>
                   <CloseBTN />
                 </div>
                 <Divider />
@@ -686,8 +722,161 @@ export default function Tenders() {
                 </div>
               </Popover>
             </div>
-          </div>
+            {/* Date Pickers */}
+            <div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Button
+                  style={{
+                    backgroundColor: "#0554f2",
+                  }}
+                  aria-describedby="datePicker"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "datePicker")}
+                >
+                  Published Date
+                  {filters?.published_date_after ||
+                  filters?.published_date_before
+                    ? "(1)"
+                    : null}
+                </Button>
+                <Popover
+                  id="datePicker"
+                  open={openPopoverId === "datePicker"}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                  PaperProps={{
+                    style: {
+                      width: "400px",
+                    },
+                  }}
+                >
+                  <div className="w-full flex justify-between items-center p-2">
+                    <label className="pl-2">Published Date</label>
+                    <CloseBTN />
+                  </div>
+                  <Divider />
+                  <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                    <TextField
+                      style={{
+                        width: 300,
+                      }}
+                      select
+                      label="Date Option"
+                      value={dateOption}
+                      onChange={(e) => {
+                        const selectedOption = e.target.value;
+                        let published_date_after = "";
+                        let published_date_before = "";
 
+                        // Set published_date_after and published_date_before based on the selected option
+                        const today = new Date();
+                        switch (selectedOption) {
+                          case "today":
+                            published_date_after = today
+                              .toISOString()
+                              .split("T")[0];
+                            published_date_before = today
+                              .toISOString()
+                              .split("T")[0];
+                            break;
+                          case "7days":
+                            published_date_after = new Date(
+                              today.setDate(today.getDate() - 7)
+                            )
+                              .toISOString()
+                              .split("T")[0];
+                            published_date_before = new Date()
+                              .toISOString()
+                              .split("T")[0];
+                            break;
+                          case "15days":
+                            published_date_after = new Date(
+                              today.setDate(today.getDate() - 15)
+                            )
+                              .toISOString()
+                              .split("T")[0];
+                            published_date_before = new Date()
+                              .toISOString()
+                              .split("T")[0];
+                            break;
+                          default:
+                            break;
+                        }
+
+                        setFilters((prev) => ({
+                          ...prev,
+                          published_date_after,
+                          published_date_before,
+                        }));
+
+                        setDateOption(selectedOption);
+                      }}
+                    >
+                      {dateOptions?.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+
+                    {/* From Date Picker */}
+
+                    <DatePicker
+                      label="From Date"
+                      value={
+                        filters.published_date_after
+                          ? dayjs(filters.published_date_after)
+                          : null
+                      }
+                      onChange={(newValue) => {
+                        setFilters((prev) => ({
+                          ...prev,
+                          published_date_after: newValue
+                            ? dayjs(newValue).format("YYYY-MM-DD")
+                            : "",
+                        }));
+                      }}
+                    />
+                    {/* To Date Picker */}
+
+                    <DatePicker
+                      label="To Date"
+                      value={
+                        filters.published_date_before
+                          ? dayjs(filters?.published_date_before)
+                          : null
+                      }
+                      onChange={(newValue) => {
+                        setFilters((prev) => ({
+                          ...prev,
+                          published_date_before: newValue
+                            ? dayjs(newValue).format("YYYY-MM-DD")
+                            : "",
+                        }));
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-around pb-3">
+                    <button
+                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                      onClick={() => handleReset("dates")}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                      onClick={handleFilterSaved}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </Popover>
+              </LocalizationProvider>
+            </div>
+          </div>
           {tenderData?.results?.map((tender, i) => (
             <div
               key={tender?.uid}

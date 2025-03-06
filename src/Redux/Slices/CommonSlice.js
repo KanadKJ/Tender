@@ -25,7 +25,9 @@ export const GetStatesList = createAsyncThunk(
   "common/GetStatesList",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await ScrpApiTendersMetadata.get(`/states/`);
+      const res = await ScrpApiTendersMetadata.get(
+        `/states/?search=west bengal`
+      );
       return res.data?.results;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
