@@ -25,7 +25,7 @@ export const amountOptions = [
   { label: "100Cr", value: "1000000000", valueLabel: "100Cr" },
 ];
 export const dateOptions = [
-  { label: "Publishing Today", value: "today" },
+  { label: "Published Today", value: "today" },
   { label: "Published in 7 days", value: "7days" },
   { label: "Published in 15 days", value: "15days" },
 ];

@@ -91,6 +91,8 @@ export default function Tenders() {
     value_in_rs_max: searchParams.get("value_in_rs_max") || "",
     published_date_after: searchParams.get("published_date_after") || "",
     published_date_before: searchParams.get("published_date_before") || "",
+    // closing_date_after: searchParams.get("published_date_after") || "",
+    // published_date_before: searchParams.get("published_date_before") || "",
   });
   const [dateOption, setDateOption] = useState("");
   const queryString = useQueryParams(filters);
@@ -637,7 +639,11 @@ export default function Tenders() {
                 <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
                   <Autocomplete
                     sx={{ width: 300 }}
-                    options={amountOptions}
+                    options={amountOptions.filter(
+                      (opt) =>
+                        !filters.value_in_rs_max ||
+                        Number(opt.value) < Number(filters.value_in_rs_max)
+                    )}
                     getOptionLabel={(option) => option.label}
                     value={
                       amountOptions.find(
@@ -672,7 +678,11 @@ export default function Tenders() {
                   {/* Max Amount Autocomplete */}
                   <Autocomplete
                     sx={{ width: 300 }}
-                    options={amountOptions}
+                    options={amountOptions.filter(
+                      (opt) =>
+                        !filters.value_in_rs_min ||
+                        Number(opt.value) > Number(filters.value_in_rs_min)
+                    )}
                     getOptionLabel={(option) => option.label}
                     value={
                       amountOptions.find(
@@ -722,7 +732,7 @@ export default function Tenders() {
                 </div>
               </Popover>
             </div>
-            {/* Date Pickers */}
+            {/*Published Date*/}
             <div>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Button
@@ -876,6 +886,164 @@ export default function Tenders() {
                 </Popover>
               </LocalizationProvider>
             </div>
+            {/*Closing Date*/}
+            <div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Button
+                  style={{
+                    backgroundColor: "#0554f2",
+                  }}
+                  aria-describedby="datePickerclosing"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "datePickerclosing")}
+                >
+                  Closing Date
+                  {filters?.published_date_after ||
+                  filters?.published_date_before
+                    ? "(1)"
+                    : null}
+                </Button>
+                <Popover
+                  id="datePickerclosing"
+                  open={openPopoverId === "datePickerclosing"}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                  PaperProps={{
+                    style: {
+                      width: "400px",
+                    },
+                  }}
+                >
+                  <div className="w-full flex justify-between items-center p-2">
+                    <label className="pl-2">Closing Date</label>
+                    <CloseBTN />
+                  </div>
+                  <Divider />
+                  <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                    <TextField
+                      style={{
+                        width: 300,
+                      }}
+                      select
+                      label="Date Option"
+                      value={dateOption}
+                      onChange={(e) => {
+                        const selectedOption = e.target.value;
+                        let published_date_after = "";
+                        let published_date_before = "";
+
+                        // Set published_date_after and published_date_before based on the selected option
+                        const today = new Date();
+                        switch (selectedOption) {
+                          case "today":
+                            published_date_after = today
+                              .toISOString()
+                              .split("T")[0];
+                            published_date_before = today
+                              .toISOString()
+                              .split("T")[0];
+                            break;
+                          case "7days":
+                            published_date_after = new Date(
+                              today.setDate(today.getDate() - 7)
+                            )
+                              .toISOString()
+                              .split("T")[0];
+                            published_date_before = new Date()
+                              .toISOString()
+                              .split("T")[0];
+                            break;
+                          case "15days":
+                            published_date_after = new Date(
+                              today.setDate(today.getDate() - 15)
+                            )
+                              .toISOString()
+                              .split("T")[0];
+                            published_date_before = new Date()
+                              .toISOString()
+                              .split("T")[0];
+                            break;
+                          default:
+                            break;
+                        }
+
+                        setFilters((prev) => ({
+                          ...prev,
+                          published_date_after,
+                          published_date_before,
+                        }));
+
+                        setDateOption(selectedOption);
+                      }}
+                    >
+                      {dateOptions?.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+
+                    {/* From Date Picker */}
+
+                    <DatePicker
+                      label="From Date"
+                      value={
+                        filters.published_date_after
+                          ? dayjs(filters.published_date_after)
+                          : null
+                      }
+                      onChange={(newValue) => {
+                        setFilters((prev) => ({
+                          ...prev,
+                          published_date_after: newValue
+                            ? dayjs(newValue).format("YYYY-MM-DD")
+                            : "",
+                        }));
+                      }}
+                    />
+                    {/* To Date Picker */}
+
+                    <DatePicker
+                      label="To Date"
+                      value={
+                        filters.published_date_before
+                          ? dayjs(filters?.published_date_before)
+                          : null
+                      }
+                      onChange={(newValue) => {
+                        setFilters((prev) => ({
+                          ...prev,
+                          published_date_before: newValue
+                            ? dayjs(newValue).format("YYYY-MM-DD")
+                            : "",
+                        }));
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-around pb-3">
+                    {/* hover:bg-[#fff] hover:text-[#0554F2] */}
+                    <button
+                      className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                     transition-all duration-300 ease-in-out "
+                      onClick={() => handleReset("dates")}
+                      disabled
+                    >
+                      Reset
+                    </button>
+                    {/* hover:bg-[#fff] hover:text-[#0554F2] */}
+                    <button
+                      className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                    transition-all duration-300 ease-in-out "
+                      onClick={handleFilterSaved}
+                      disabled
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </Popover>
+              </LocalizationProvider>
+            </div>
           </div>
           {tenderData?.results?.map((tender, i) => (
             <div
@@ -955,8 +1123,7 @@ export default function Tenders() {
                     Tender Amount
                   </h6>
                   <p className="text-[#212121] text-base font-medium">
-                    Feb 23, 2025 <br />
-                    4:30 am
+                    {tender?.value_in_rs}
                   </p>
                 </div>
               </div>
