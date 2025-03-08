@@ -7,6 +7,7 @@ import Profile from "../Screens/Profile";
 import Tenders from "../Screens/Tenders";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
+const TendersPage = lazy(() => import("../Screens/Tenders"));
 
 const AppRouter = () => {
   return (
@@ -16,7 +17,7 @@ const AppRouter = () => {
           <Route path="/" element={<MainLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Register />} />
-            <Route path="/tenders" element={<Tenders />} />
+            <Route path="/tenders" element={<TendersPage />} />
             <Route index element={<HomePage />} />
             <Route path="profile" element={<Profile />} />
             <Route path="*" element={<HomePage />} />

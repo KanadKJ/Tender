@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Background from "../Components/Background";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -17,10 +17,11 @@ import {
   MenuItem,
   Popover,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
@@ -37,19 +38,7 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-      minWidth: 200,
-    },
-  },
-};
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Tenders() {
   // redux
@@ -57,6 +46,7 @@ export default function Tenders() {
   const { isDistrictCallLoading, districtsData, statesData, orgData } =
     useSelector((s) => s.common);
   //state
+  // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -91,43 +81,37 @@ export default function Tenders() {
     value_in_rs_max: searchParams.get("value_in_rs_max") || "",
     published_date_after: searchParams.get("published_date_after") || "",
     published_date_before: searchParams.get("published_date_before") || "",
+    ordering: searchParams.getAll("ordering") || [],
+    limit: searchParams.getAll("limit") || [],
+    offset: searchParams.getAll("offset") || [],
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
   const [dateOption, setDateOption] = useState("");
   const queryString = useQueryParams(filters);
-  console.log(queryString);
-
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);
+  const [scrollEndLoading, setScrollEndLoading] = useState(false);
+  const observerRef = useRef(null);
   // hooks
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(GetStatesList());
     dispatch(GetOrgList());
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     const keywords = searchParams.get("keywords") || "";
     const stateIDS = searchParams.getAll("states") || [];
     const districtIds = searchParams.getAll("districts") || [];
     const organisationIds = searchParams.getAll("organisations") || [];
+    const ordering = searchParams.getAll("ordering") || [];
     const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
     const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
     const published_date_after = searchParams.get("published_date_after") || "";
     const published_date_before =
       searchParams.get("published_date_before") || "";
-    console.log(
-      "PARAMS:",
-      keywords,
-      stateIDS,
-      districtIds,
-      value_in_rs_min,
-      value_in_rs_max,
-      published_date_after,
-      published_date_before
-    );
-
-    // Map district IDs to district objects
+    const offset = searchParams.get("offset") || "";
+    const limit = searchParams.get("limit") || "";
     const districts = districtIds
       .map((id) => {
         const district = districtsData.find((d) => d.id === parseInt(id)); // Convert id to number
@@ -146,22 +130,19 @@ export default function Tenders() {
         return org ? org : null;
       })
       .filter(Boolean); // Remove null values
-
-    // Update filters state
     setFilters({
-      keywords,
       states,
+      keywords,
+      ordering,
       districts,
       organisations,
       value_in_rs_min,
       value_in_rs_max,
       published_date_after,
       published_date_before,
+      limit,
+      offset,
     });
-
-    // console.log("Mapped Districts:", districts);
-
-    // Dispatch actions to filter data based on URL parameters
     if (
       keywords ||
       states.length ||
@@ -170,20 +151,27 @@ export default function Tenders() {
       value_in_rs_max ||
       value_in_rs_min ||
       published_date_after ||
-      published_date_before
+      published_date_before ||
+      ordering.length ||
+      limit ||
+      offset
     ) {
       dispatch(GetTenderListWithFilters(queryString));
     } else {
       dispatch(GetTenderList());
     }
-  }, [searchParams, dispatch, districtsData, statesData]);
+  }, [
+    searchParams,
+    dispatch,
+    districtsData,
+    statesData,
+    orgData,
+    tenderData?.next,
+  ]);
 
   useEffect(() => {
-    // dispatch(GetTenderList());
     dispatch(GetDistrictsList(29));
   }, []);
-
-  // console.log(tenderData, "tender page");
 
   const handleClick = (event, id) => {
     if (openPopoverId === id) {
@@ -219,16 +207,28 @@ export default function Tenders() {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [name]: Array.isArray(value) ? value : [value], // Ensure array format for multiple values
+      [name]: Array.isArray(value) ? value : [value],
     }));
   };
   const handleFilterSaved = () => {
     handleClose();
-
-    // Update the URL without refreshing the page
     navigate(`?${queryString}`, { replace: true });
   };
-
+  const handleOrderingChange = (event, newValue) => {
+    setFilters((prev) => {
+      let newOrdering = [...prev.ordering];
+      if (!newValue) {
+        newOrdering = newOrdering.filter(
+          (item) => !item.includes(event.target.value.replace("-", ""))
+        );
+      } else {
+        const field = newValue.replace("-", "");
+        newOrdering = newOrdering.filter((item) => !item.includes(field));
+        newOrdering.push(newValue);
+      }
+      return { ...prev, ordering: newOrdering };
+    });
+  };
   const CloseBTN = () => {
     return (
       <IconButton onClick={handleClose} size="small">
@@ -244,6 +244,16 @@ export default function Tenders() {
       </IconButton>
     );
   };
+  const handleScrollTrigger = () => {
+    if (tenderData?.next) {
+      let nextUrl = tenderData?.next.split("?")[1]; // Extract query params
+      // dispatch(GetTenderListWithFilters(nextUrl)); // Fetch next batch of data
+    } else {
+      console.log("No more data to load.");
+    }
+  };
+
+  console.log(tenderData?.results?.length);
 
   return (
     <>
@@ -261,12 +271,12 @@ export default function Tenders() {
         <main className="w-full flex flex-col justify-center items-center gap-6">
           <div className="mt-6 flex flex-col gap-3 w-full justify-center items-center">
             <div className="w-full flex  justify-center items-center">
-              <h1 className="font-normal text-5xl text-center">
+              <h1 className="font-normal text-5xl text-start">
                 Tenders at a glance
               </h1>
             </div>
             <div className="w-full flex  justify-center items-center">
-              <h3 className="font-normal text-xl text-center">
+              <h3 className="font-normal text-xl text-start">
                 Choose the best plan for your business.
               </h3>
             </div>
@@ -290,6 +300,58 @@ export default function Tenders() {
             />
           </div>
           <div className="flex flex-wrap gap-8 justify-center items-center">
+            {/* Save filter */}
+            <div>
+              <Button
+                style={{
+                  backgroundColor: "#0554f2",
+                }}
+                aria-describedby="Keywords"
+                variant="contained"
+                onClick={(event) => handleClick(event, "Keywords")}
+              >
+                Keywords {filters.keywords ? "(1)" : null}
+              </Button>
+              <Popover
+                id="Keywords"
+                open={openPopoverId === "Keywords"}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              >
+                <div className="w-full flex justify-between items-center p-2">
+                  <label className="pl-2">Keywords</label>
+                  <CloseBTN />
+                </div>
+                <Divider />
+                <div className="p-5 flex flex-col gap-4">
+                  <input
+                    type="text"
+                    placeholder="Keywords"
+                    name="keywords"
+                    value={filters?.keywords}
+                    onChange={handleFilterSelection}
+                    className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
+                  />
+                  <div className="flex justify-around">
+                    <button
+                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                      onClick={() => handleReset("keywords")}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                      onClick={handleFilterSaved}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </Popover>
+            </div>
             {/* Keywords */}
             <div>
               <Button
@@ -476,8 +538,6 @@ export default function Tenders() {
                         }));
                       }}
                       renderOption={(props, option, { selected }) => {
-                        console.log(selected);
-
                         const { key, ...optionProps } = props;
                         return (
                           <li key={key} {...optionProps}>
@@ -1044,7 +1104,167 @@ export default function Tenders() {
                 </Popover>
               </LocalizationProvider>
             </div>
+            {/*Sort*/}
+            <div>
+              <Button
+                style={{
+                  backgroundColor: "#0554f2",
+                }}
+                aria-describedby="sort"
+                variant="contained"
+                onClick={(event) => handleClick(event, "sort")}
+              >
+                <FilterAltIcon />
+                Sort
+                {filters?.ordering?.length
+                  ? `(${filters?.ordering?.length})`
+                  : null}
+              </Button>
+              <Popover
+                id="sort"
+                open={openPopoverId === "sort"}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                PaperProps={{
+                  style: {
+                    width: "550px",
+                  },
+                }}
+              >
+                <div className="w-full flex justify-between items-center p-2">
+                  <label className="pl-2">Sort</label>
+                  <CloseBTN />
+                </div>
+                <Divider />
+                <div className="w-full flex flex-col gap-4 justify-between items-center px-4 py-2">
+                  {/* Published Date */}
+                  <div className="w-full flex gap-6 justify-between items-center">
+                    <h1 className="w-1/3 text-base font-medium text-start">
+                      Published Date
+                    </h1>
+                    <ToggleButtonGroup
+                      color="primary"
+                      value={
+                        filters.ordering.find((o) =>
+                          o.includes("published_date")
+                        ) || null
+                      }
+                      exclusive
+                      onChange={handleOrderingChange}
+                      aria-label="Platform"
+                      sx={{ width: "100%" }}
+                    >
+                      <ToggleButton
+                        sx={{ width: "100%" }}
+                        value="published_date"
+                      >
+                        Ascending
+                      </ToggleButton>
+                      <ToggleButton
+                        sx={{ width: "100%" }}
+                        value="-published_date"
+                      >
+                        Descending
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                  {/* Closing Date */}
+                  <div className="w-full flex gap-6 justify-between items-center">
+                    <h1 className="w-1/3 text-base font-medium text-start">
+                      Closing Date
+                    </h1>
+                    <ToggleButtonGroup
+                      color="primary"
+                      // value={
+                      //   filters.ordering.find((o) =>
+                      //     o.includes("published_date")
+                      //   ) || null
+                      // }
+                      exclusive
+                      // onChange={handleOrderingChange}
+                      aria-label="Platform"
+                      sx={{ width: "100%" }}
+                    >
+                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                        Ascending
+                      </ToggleButton>
+                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                        Descending
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                  {/*   Tender Amount */}
+                  <div className="w-full flex gap-6 justify-between items-center">
+                    <h1 className="w-1/3 text-base font-medium text-start">
+                      Tender Amount
+                    </h1>
+                    <ToggleButtonGroup
+                      color="primary"
+                      value={
+                        filters.ordering.find((o) =>
+                          o.includes("value_in_rs")
+                        ) || null
+                      }
+                      exclusive
+                      onChange={handleOrderingChange}
+                      aria-label="Platform"
+                      sx={{ width: "100%" }}
+                    >
+                      <ToggleButton sx={{ width: "100%" }} value="value_in_rs">
+                        Low to High
+                      </ToggleButton>
+                      <ToggleButton sx={{ width: "100%" }} value="-value_in_rs">
+                        High to Low
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                  {/* Awarded Date */}
+                  <div className="w-full flex gap-6 justify-between items-center">
+                    <h1 className="w-1/3 text-base font-medium text-start">
+                      Awarded Date
+                    </h1>
+                    <ToggleButtonGroup
+                      color="primary"
+                      // value={
+                      //   filters.ordering.find((o) =>
+                      //     o.includes("published_date")
+                      //   ) || null
+                      // }
+                      exclusive
+                      // onChange={handleOrderingChange}
+                      aria-label="Platform"
+                      sx={{ width: "100%" }}
+                    >
+                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                        Ascending
+                      </ToggleButton>
+                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                        Descending
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                </div>
+                <div className="flex justify-around pb-3">
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={() => handleReset("dates")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </Popover>
+            </div>
           </div>
+
           {tenderData?.results?.map((tender, i) => (
             <div
               key={tender?.uid}
@@ -1052,6 +1272,8 @@ export default function Tenders() {
                 i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
               } py-6  pl-4 rounded-md gap-4`}
             >
+              {" "}
+              {i}
               <div className="w-full flex flex-col gap-5">
                 <div className="flex gap-4 flex-col md:flex-row">
                   <h1 className="text-base font-semibold">
@@ -1099,7 +1321,7 @@ export default function Tenders() {
                 </div>
               </div>
               <div className="w-full flex gap-4 justify-center items-center">
-                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm">
+                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
                   <h6 className="text-sm font-normal text-[#565656]">
                     Published Date
                   </h6>
@@ -1108,7 +1330,7 @@ export default function Tenders() {
                     {formatDateTime(tender?.published_date)[1]}
                   </p>
                 </div>
-                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm">
+                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
                   <h6 className="text-sm font-normal text-[#565656]">
                     Closing Date
                   </h6>
@@ -1118,17 +1340,35 @@ export default function Tenders() {
                     {formatDateTime(tender?.bid_submission_end_date)[1]}
                   </p>
                 </div>
-                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm">
+                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
                   <h6 className="text-sm font-normal text-[#565656]">
                     Tender Amount
                   </h6>
                   <p className="text-[#212121] text-base font-medium">
-                    {tender?.value_in_rs}
+                    {tender?.value_in_rs
+                      ? tender?.value_in_rs
+                      : "Refer Document"}
                   </p>
                 </div>
               </div>
             </div>
           ))}
+          <InfiniteScroll
+            dataLength={tenderData?.results?.length || 50}
+            next={handleScrollTrigger}
+            hasMore={!!tenderData?.next} // Ensure this returns a boolean
+            loader={
+              <Backdrop
+                sx={(theme) => ({
+                  color: "#0554f29e",
+                  zIndex: theme.zIndex.drawer + 1,
+                })}
+                open={tenderIsLoading}
+              >
+                <CircularProgress color="#0554f2" />
+              </Backdrop>
+            }
+          />
         </main>
       </div>
     </>

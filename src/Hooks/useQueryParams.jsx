@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 const useQueryParams = (filters) => {
-  console.log(filters);
+  // console.log(filters);
 
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
@@ -35,7 +35,7 @@ const useQueryParams = (filters) => {
       }
     });
 
-    console.log(params.toString());
+    // console.log(params.toString());
     return params.toString();
   }, [filters]);
 

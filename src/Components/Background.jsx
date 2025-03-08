@@ -13,7 +13,7 @@ export default function Background({ type, lifed }) {
       <img
         className={
           lifed === "up"
-            ? "absolute top-[-400px]"
+            ? "absolute top-[-100px]"
             : "h-full w-full object-cover"
         }
         src={bg[type]}
