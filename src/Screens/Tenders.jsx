@@ -598,6 +598,7 @@ export default function Tenders() {
                   <Autocomplete
                     multiple
                     id="organization-autocomplete"
+                    limitTags={1}
                     options={orgData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
                     getOptionLabel={(option) => option.name} // No optional chaining needed
@@ -633,6 +634,7 @@ export default function Tenders() {
                   {/* DEP */}
                   <Autocomplete
                     multiple
+                    limitTags={1}
                     id="Department-autocomplete"
                     options={drpData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
@@ -668,6 +670,7 @@ export default function Tenders() {
                   />
                   {/* DIV */}
                   <Autocomplete
+                    limitTags={1}
                     multiple
                     id="division-autocomplete"
                     options={divData} // Array of objects with `id` and `name`
@@ -704,6 +707,7 @@ export default function Tenders() {
                   />
                   {/*SUB DIV */}
                   <Autocomplete
+                    limitTags={1}
                     multiple
                     id="sub_divisions-autocomplete"
                     options={subDivData} // Array of objects with `id` and `name`
@@ -740,6 +744,7 @@ export default function Tenders() {
                   />
                   {/*SUB DIV */}
                   <Autocomplete
+                    limitTags={1}
                     multiple
                     id="sections-autocomplete"
                     options={sectionsData} // Array of objects with `id` and `name`
