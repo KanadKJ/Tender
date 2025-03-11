@@ -51,7 +51,27 @@ export default function Tenders() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
+  const [savedFilters, setSavedFilters] = useState([
+    {
+      name: "Saved 1",
+      filterLink: "state=29",
+    },
+    {
+      name: "Saved 2",
+      filterLink: "states=29&keywords=LED",
+    },
+    {
+      name: "Saved 3",
+      filterLink: "state=29&keywords=water&ordering=published_date",
+    },
+    {
+      name: "Saved 3",
+      filterLink: "state=29",
+    },
+  ]);
+  console.log(savedFilters);
 
+  const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
     keywords: searchParams.get("keywords") || "",
     states:
@@ -93,8 +113,6 @@ export default function Tenders() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);
   const [page, setPage] = useState(1);
-  console.log(queryString, "page", page);
-
   // hooks
   const dispatch = useDispatch();
   useEffect(() => {
@@ -171,12 +189,11 @@ export default function Tenders() {
     tenderData?.next,
     page,
     filters?.offset,
+    saveFilter,
   ]);
-
   useEffect(() => {
     dispatch(GetDistrictsList(29));
   }, []);
-
   const handleClick = (event, id) => {
     if (openPopoverId === id) {
       setAnchorEl(null);
@@ -186,12 +203,10 @@ export default function Tenders() {
       setOpenPopoverId(id);
     }
   };
-
   const handleClose = () => {
     setAnchorEl(null);
     setOpenPopoverId(null);
   };
-
   const handleReset = (name) => {
     if (name === "dates") {
       setFilters((prev) => ({
@@ -206,7 +221,6 @@ export default function Tenders() {
       }));
     }
   };
-
   const handleFilterSelection = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
@@ -251,8 +265,10 @@ export default function Tenders() {
   const handleChangePages = (event, value) => {
     const params = new URLSearchParams(searchParams);
     const newOffset = (value - 1) * 50; // Corrected calculation
-    if (!newOffset) navigate(`/tenders`, { replace: true });
-    else {
+    if (!newOffset) {
+      params.set("offset", "");
+      navigate(`?${params.toString()}`, { replace: true });
+    } else {
       params.set("offset", newOffset);
       navigate(`?${params.toString()}`, { replace: true });
 
@@ -262,6 +278,29 @@ export default function Tenders() {
       }));
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const handleSaveFiltersSearched = () => {
+    if (!saveFilter.trim()) {
+      handleClose();
+
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams).toString();
+
+    setSavedFilters((prevFilters) => [
+      ...prevFilters,
+      { name: saveFilter, filterLink: params },
+    ]);
+
+    setSaveFilter("");
+    handleClose();
+  };
+  const handleSavedSeachFromTemplate = (obj) => {
+    console.log(obj);
+
+    navigate(`?${obj?.filterLink}`, { replace: true });
+    handleClose();
   };
   return (
     <>
@@ -314,49 +353,68 @@ export default function Tenders() {
                 style={{
                   backgroundColor: "#0554f2",
                 }}
-                aria-describedby="Keywords"
+                aria-describedby="SavedFilters"
                 variant="contained"
-                onClick={(event) => handleClick(event, "Keywords")}
+                onClick={(event) => handleClick(event, "SavedFilters")}
               >
-                Keywords {filters.keywords ? "(1)" : null}
+                Save Filters
+                {savedFilters?.length ? `(${savedFilters?.length})` : null}
               </Button>
               <Popover
-                id="Keywords"
-                open={openPopoverId === "Keywords"}
+                id="SavedFilters"
+                open={openPopoverId === "SavedFilters"}
                 anchorEl={anchorEl}
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
               >
                 <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">Keywords</label>
+                  <label className="pl-2">Save Filter</label>
                   <CloseBTN />
                 </div>
                 <Divider />
                 <div className="p-5 flex flex-col gap-4">
                   <input
                     type="text"
-                    placeholder="Keywords"
+                    placeholder="Filter Name"
                     name="keywords"
-                    value={filters?.keywords}
-                    onChange={handleFilterSelection}
+                    value={saveFilter}
+                    onChange={(e) => setSaveFilter(e.target.value)}
                     className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
                   />
-                  <div className="flex justify-around">
-                    <button
-                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                      onClick={() => handleReset("keywords")}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                      onClick={handleFilterSaved}
-                    >
-                      Apply
-                    </button>
+                  <h1>Saved Filters</h1>
+                  <div className="w-full flex flex-col max-h-36 overflow-y-auto scrollbar-hide">
+                    {savedFilters.length ? (
+                      savedFilters.map((f, i) => (
+                        <button
+                          key={i}
+                          className="w-full border shadow-md cursor-pointer p-3 my-2"
+                          onClick={() => handleSavedSeachFromTemplate(f)}
+                        >
+                          <h1>{f.name}</h1>
+                        </button>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center">
+                        No saved filters
+                      </p>
+                    )}
                   </div>
+                </div>
+                <div className="flex justify-around mb-3">
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={() => handleClose()}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={handleSaveFiltersSearched}
+                  >
+                    Save Filter
+                  </button>
                 </div>
               </Popover>
             </div>
