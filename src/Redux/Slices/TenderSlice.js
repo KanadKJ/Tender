@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ScrpApiTenders } from "../../Api/SCPAPI";
-import { queryBuilder } from "../../Utils/CommonUtils";
+
 const initialState = {
   tenderData: [],
   tenderIsLoading: false,

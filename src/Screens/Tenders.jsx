@@ -31,21 +31,34 @@ import {
 } from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
+  GetDivList,
+  GetDrpList,
   GetOrgList,
+  GetSectionList,
   GetStatesList,
+  GetSubDivList,
 } from "../Redux/Slices/CommonSlice";
 import useQueryParams from "../Hooks/useQueryParams";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import CustomBadge from "../Components/CustomBadge";
 
 export default function Tenders() {
   // redux
   const { tenderData, tenderIsLoading } = useSelector((s) => s.tender);
 
-  const { isDistrictCallLoading, districtsData, statesData, orgData } =
-    useSelector((s) => s.common);
+  const {
+    isDistrictCallLoading,
+    districtsData,
+    statesData,
+    orgData,
+    drpData,
+    divData,
+    subDivData,
+    sectionsData,
+  } = useSelector((s) => s.common);
   //state
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
@@ -69,7 +82,6 @@ export default function Tenders() {
       filterLink: "state=29",
     },
   ]);
-  console.log(savedFilters);
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
@@ -98,7 +110,31 @@ export default function Tenders() {
           return organisation ? organisation : null;
         })
         .filter(Boolean) || [],
+    departments:
+      searchParams
+        .getAll("departments")
+        ?.map((id) => {
+          const department = drpData?.find((d) => d.id === parseInt(id));
+          return department ? department : null;
+        })
+        .filter(Boolean) || [],
+    divisions:
+      searchParams
+        .getAll("divisions")
+        ?.map((id) => {
+          const division = divData?.find((d) => d.id === parseInt(id));
+          return division ? division : null;
+        })
+        .filter(Boolean) || [],
     value_in_rs_min: searchParams.get("value_in_rs_min") || "",
+    sections:
+      searchParams
+        .getAll("sections")
+        ?.map((id) => {
+          const section = sectionsData?.find((d) => d.id === parseInt(id));
+          return section ? section : null;
+        })
+        .filter(Boolean) || [],
     value_in_rs_max: searchParams.get("value_in_rs_max") || "",
     published_date_after: searchParams.get("published_date_after") || "",
     published_date_before: searchParams.get("published_date_before") || "",
@@ -124,6 +160,10 @@ export default function Tenders() {
     const stateIDS = searchParams.getAll("states") || [];
     const districtIds = searchParams.getAll("districts") || [];
     const organisationIds = searchParams.getAll("organisations") || [];
+    const departmentIds = searchParams.getAll("departments") || [];
+    const divisionIds = searchParams.getAll("divisions") || [];
+    const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
+    const sectionsIds = searchParams.getAll("sections") || [];
     const ordering = searchParams.getAll("ordering") || [];
     const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
     const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
@@ -134,27 +174,55 @@ export default function Tenders() {
     const limit = searchParams.get("limit") || "";
     const districts = districtIds
       .map((id) => {
-        const district = districtsData.find((d) => d.id === parseInt(id)); // Convert id to number
-        return district ? district : null;
+        const dt = districtsData.find((d) => d.id === parseInt(id)); // Convert id to number
+        return dt ? dt : null;
       })
       .filter(Boolean); // Remove null values
     const states = stateIDS
       .map((id) => {
-        const state = statesData.find((d) => d.id === parseInt(id)); // Convert id to number
-        return state ? state : null;
+        const dt = statesData.find((d) => d.id === parseInt(id)); // Convert id to number
+        return dt ? dt : null;
       })
       .filter(Boolean); // Remove null values
     const organisations = organisationIds
       .map((id) => {
-        const org = orgData.find((d) => d.id === parseInt(id)); // Convert id to number
-        return org ? org : null;
+        const dt = orgData.find((d) => d.id === parseInt(id)); // Convert id to number
+        return dt ? dt : null;
+      })
+      .filter(Boolean); // Remove null values
+    const departments = departmentIds
+      .map((id) => {
+        const dt = drpData?.find((d) => d.id === parseInt(id)); // Convert id to number
+        return dt ? dt : null;
+      })
+      .filter(Boolean); // Remove null values
+    const divisions = divisionIds
+      .map((id) => {
+        const dt = divData?.find((d) => d.id === parseInt(id)); // Convert id to number
+        return dt ? dt : null;
+      })
+      .filter(Boolean); // Remove null values
+    const sub_divisions = sub_divisionsIds
+      .map((id) => {
+        const dt = divData?.find((d) => d.id === parseInt(id)); // Convert id to number
+        return dt ? dt : null;
+      })
+      .filter(Boolean); // Remove null values
+    const sections = sectionsIds
+      .map((id) => {
+        const dt = sectionsData?.find((d) => d.id === parseInt(id)); // Convert id to number
+        return dt ? dt : null;
       })
       .filter(Boolean); // Remove null values
     setFilters({
       states,
+      sections,
       keywords,
       ordering,
       districts,
+      divisions,
+      departments,
+      sub_divisions,
       organisations,
       value_in_rs_min,
       value_in_rs_max,
@@ -165,9 +233,13 @@ export default function Tenders() {
     });
     if (
       keywords ||
+      sections ||
       states.length ||
       districts.length ||
+      divisions.length ||
+      sub_divisions.length ||
       organisations.length ||
+      departments.length ||
       value_in_rs_max ||
       value_in_rs_min ||
       published_date_after ||
@@ -177,6 +249,9 @@ export default function Tenders() {
       offset
     ) {
       dispatch(GetTenderListWithFilters(queryString));
+      dispatch(GetDrpList(organisations));
+      dispatch(GetDivList(departments));
+      dispatch(GetSubDivList(divisions));
     } else {
       dispatch(GetTenderList());
     }
@@ -227,6 +302,7 @@ export default function Tenders() {
       ...prevFilters,
       [name]: Array.isArray(value) ? value : [value],
     }));
+    console.log(name, value);
   };
   const handleFilterSaved = () => {
     handleClose();
@@ -251,7 +327,7 @@ export default function Tenders() {
     return (
       <IconButton onClick={handleClose} size="small">
         <svg
-          xmlns="http://www.w3.org/2000/svg"
+          xmlns="http://www.w3.dt/2000/svg"
           height="24px"
           viewBox="0 -960 960 960"
           width="24px"
@@ -301,6 +377,20 @@ export default function Tenders() {
 
     navigate(`?${obj?.filterLink}`, { replace: true });
     handleClose();
+  };
+  const dataFetcher = (type, ids) => {
+    if (type === "organization") {
+      dispatch(GetDrpList(ids));
+    }
+    if (type === "department") {
+      dispatch(GetDivList(ids));
+    }
+    if (type === "divisions") {
+      dispatch(GetSubDivList(ids));
+    }
+    if (type === "sub_divisions") {
+      dispatch(GetSectionList(ids));
+    }
   };
   return (
     <>
@@ -358,7 +448,7 @@ export default function Tenders() {
                 onClick={(event) => handleClick(event, "SavedFilters")}
               >
                 Save Filters
-                {savedFilters?.length ? `(${savedFilters?.length})` : null}
+                <CustomBadge data={savedFilters} />
               </Button>
               <Popover
                 id="SavedFilters"
@@ -428,7 +518,10 @@ export default function Tenders() {
                 variant="contained"
                 onClick={(event) => handleClick(event, "Keywords")}
               >
-                Keywords {filters.keywords ? "(1)" : null}
+                Keywords{" "}
+                {filters.keywords && (
+                  <CustomBadge data={filters.keywords ? ["1"] : null} />
+                )}
               </Button>
               <Popover
                 id="Keywords"
@@ -481,9 +574,7 @@ export default function Tenders() {
                 onClick={(event) => handleClick(event, "organisations")}
               >
                 Organisations
-                {filters?.organisations?.length
-                  ? `(${filters?.organisations?.length})`
-                  : null}
+                <CustomBadge data={filters?.organisations} />
               </Button>
               <Popover
                 id="organisations"
@@ -502,10 +593,11 @@ export default function Tenders() {
                   <CloseBTN />
                 </div>
                 <Divider />
-                <div className="w-full flex justify-between items-center p-2">
+                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                  {/* ORG */}
                   <Autocomplete
                     multiple
-                    id="districts-autocomplete"
+                    id="organization-autocomplete"
                     options={orgData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
                     getOptionLabel={(option) => option.name} // No optional chaining needed
@@ -515,6 +607,7 @@ export default function Tenders() {
                         ...prev,
                         organisations: newValue, // Update the correct state key
                       }));
+                      dataFetcher("organization", newValue);
                     }}
                     renderOption={(props, option, { selected }) => {
                       const { key, ...optionProps } = props;
@@ -528,12 +621,156 @@ export default function Tenders() {
                         </li>
                       );
                     }}
-                    style={{ width: 500 }}
+                    style={{ width: 250 }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         label="Select organisation"
                         placeholder="Choose organisation"
+                      />
+                    )}
+                  />
+                  {/* DEP */}
+                  <Autocomplete
+                    multiple
+                    id="Department-autocomplete"
+                    options={drpData} // Array of objects with `id` and `name`
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option?.name} // No optional chaining needed
+                    value={filters?.departments} // Array of selected organisation objects
+                    onChange={(event, newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        departments: newValue, // Update the correct state key
+                      }));
+                      dataFetcher("department", newValue);
+                    }}
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Department"
+                        placeholder="Choose Department"
+                      />
+                    )}
+                  />
+                  {/* DIV */}
+                  <Autocomplete
+                    multiple
+                    id="division-autocomplete"
+                    options={divData} // Array of objects with `id` and `name`
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option?.name} // No optional chaining needed
+                    value={filters?.divisions} // Array of selected organisation objects
+                    onChange={(event, newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        divisions: newValue, // Update the correct state key
+                      }));
+                      dataFetcher("divisions", newValue);
+                    }}
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Division"
+                        placeholder="Choose Division"
+                      />
+                    )}
+                  />
+                  {/*SUB DIV */}
+                  <Autocomplete
+                    multiple
+                    id="sub_divisions-autocomplete"
+                    options={subDivData} // Array of objects with `id` and `name`
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option?.name} // No optional chaining needed
+                    value={filters?.sub_divisions} // Array of selected organisation objects
+                    onChange={(event, newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        sub_divisions: newValue, // Update the correct state key
+                      }));
+                      dataFetcher("sub_divisions", newValue);
+                    }}
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Sub Division"
+                        placeholder="Choose Sub Division"
+                      />
+                    )}
+                  />
+                  {/*SUB DIV */}
+                  <Autocomplete
+                    multiple
+                    id="sections-autocomplete"
+                    options={sectionsData} // Array of objects with `id` and `name`
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option?.name} // No optional chaining needed
+                    value={filters?.sectionsData} // Array of selected organisation objects
+                    onChange={(event, newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        sub_divisions: newValue, // Update the correct state key
+                      }));
+                      dataFetcher("sections", newValue);
+                    }}
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Section"
+                        placeholder="Choose Sections"
                       />
                     )}
                   />
@@ -1341,11 +1578,10 @@ export default function Tenders() {
                     i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
                   } py-6  pl-4 rounded-md gap-4 min-h-56`}
                 >
-                  {i + 1}
                   <div className="w-full flex flex-col gap-5">
-                    <div className="flex gap-4 flex-col md:flex-row">
+                    <div className="flex gap-4 flex-col ">
                       <h1 className="text-base font-semibold">
-                        {tender?.department}
+                        {tender?.organisation_chain}
                       </h1>
                       <div>
                         <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">

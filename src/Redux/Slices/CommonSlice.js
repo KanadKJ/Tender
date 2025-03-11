@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ScrpApiTendersMetadata } from "../../Api/SCPAPI";
+import { queryBuilder } from "../../Utils/CommonUtils";
 
 const initialState = {
   isDistrictCallLoading: false,
@@ -7,6 +8,10 @@ const initialState = {
   districtsData: [],
   statesData: [],
   orgData: [],
+  drpData: [],
+  divData: [],
+  subDivData: [],
+  sectionsData: [],
 };
 export const GetDistrictsList = createAsyncThunk(
   "common/GetDistrictsList",
@@ -39,6 +44,78 @@ export const GetOrgList = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await ScrpApiTendersMetadata.get(`/organisations/`);
+      return res.data?.results;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetDrpList = createAsyncThunk(
+  "common/GetDrpList",
+  async (params, { rejectWithValue }) => {
+    console.log(params);
+    const organizationIds = params?.map((item) => item.id);
+    const queryString = organizationIds
+      ?.map((id) => `organisation_id=${id}`)
+      .join("&");
+    console.log(queryString);
+
+    try {
+      const res = await ScrpApiTendersMetadata.get(
+        `/departments/?${queryString}`
+      );
+      return res.data?.results;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetDivList = createAsyncThunk(
+  "common/GetDivList",
+  async (params, { rejectWithValue }) => {
+    console.log(params);
+    const Ids = params?.map((item) => item.id);
+    const queryString = Ids?.map((id) => `department_id=${id}`).join("&");
+    console.log(queryString);
+
+    try {
+      const res = await ScrpApiTendersMetadata.get(
+        `/divisions/?${queryString}`
+      );
+      return res.data?.results;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetSubDivList = createAsyncThunk(
+  "common/GetSubDivList",
+  async (params, { rejectWithValue }) => {
+    console.log(params);
+    const Ids = params?.map((item) => item.id);
+    const queryString = Ids?.map((id) => `division_id=${id}`).join("&");
+    console.log(queryString);
+
+    try {
+      const res = await ScrpApiTendersMetadata.get(
+        `sub_divisions/?${queryString}`
+      );
+      return res.data?.results;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetSectionList = createAsyncThunk(
+  "common/GetSectionList",
+  async (params, { rejectWithValue }) => {
+    console.log(params);
+    const Ids = params?.map((item) => item.id);
+    const queryString = Ids?.map((id) => `sub_division_id=${id}`).join("&");
+    console.log(queryString);
+
+    try {
+      const res = await ScrpApiTendersMetadata.get(`sections/?${queryString}`);
       return res.data?.results;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -93,6 +170,48 @@ const commonSlice = createSlice({
         state.error = null;
       })
       .addCase(GetOrgList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetDrpList
+      .addCase(GetDrpList.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetDrpList.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.drpData = action.payload;
+        state.error = null;
+      })
+      .addCase(GetDrpList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetDivList
+      .addCase(GetDivList.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetDivList.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.divData = action.payload;
+        state.error = null;
+      })
+      .addCase(GetDivList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetSubDivList
+      .addCase(GetSubDivList.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetSubDivList.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.subDivData = action.payload;
+        state.error = null;
+      })
+      .addCase(GetSubDivList.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });
