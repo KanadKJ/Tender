@@ -249,16 +249,19 @@ export default function Tenders() {
     );
   };
   const handleChangePages = (event, value) => {
-    const params = new URLSearchParams(queryString);
-    if (value === 1) {
-      params.set("offset", "");
-      navigate("/tenders", { replace: true });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      params.set("offset", value * 50);
-      navigate(`?${params}`, { replace: true });
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    const params = new URLSearchParams(searchParams);
+    const newOffset = (value - 1) * 50; // Corrected calculation
+    if (!newOffset) navigate(`/tenders`, { replace: true });
+    else {
+      params.set("offset", newOffset);
+      navigate(`?${params.toString()}`, { replace: true });
+
+      setFilters((prev) => ({
+        ...prev,
+        offset: newOffset,
+      }));
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
   return (
     <>
@@ -1364,16 +1367,16 @@ export default function Tenders() {
             )}
           </div>
         </main>
-        <div className="w-full flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
+        <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
           <Pagination
-            count={tenderData ? Math.ceil(tenderData?.count / 50) : 1}
+            count={Math.ceil(tenderData?.count / 50) || 1}
             defaultPage={1}
             siblingCount={0}
-            boundaryCount={2}
+            boundaryCount={1}
             color="primary"
             showFirstButton
             onChange={handleChangePages}
-            page={filters?.offset / 50}
+            page={filters?.offset / 50 + 1} // Fixed calculation
           />
         </div>
       </div>
