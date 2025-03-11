@@ -15,6 +15,7 @@ import {
   FormControl,
   IconButton,
   MenuItem,
+  Pagination,
   Popover,
   TextField,
   ToggleButton,
@@ -38,11 +39,11 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Tenders() {
   // redux
   const { tenderData, tenderIsLoading } = useSelector((s) => s.tender);
+
   const { isDistrictCallLoading, districtsData, statesData, orgData } =
     useSelector((s) => s.common);
   //state
@@ -82,8 +83,8 @@ export default function Tenders() {
     published_date_after: searchParams.get("published_date_after") || "",
     published_date_before: searchParams.get("published_date_before") || "",
     ordering: searchParams.getAll("ordering") || [],
-    limit: searchParams.getAll("limit") || [],
-    offset: searchParams.getAll("offset") || [],
+    limit: searchParams.get("limit") || [],
+    offset: searchParams.get("offset") || [],
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
@@ -91,8 +92,9 @@ export default function Tenders() {
   const queryString = useQueryParams(filters);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);
-  const [scrollEndLoading, setScrollEndLoading] = useState(false);
-  const observerRef = useRef(null);
+  const [page, setPage] = useState(1);
+  console.log(queryString, "page", page);
+
   // hooks
   const dispatch = useDispatch();
   useEffect(() => {
@@ -167,6 +169,8 @@ export default function Tenders() {
     statesData,
     orgData,
     tenderData?.next,
+    page,
+    filters?.offset,
   ]);
 
   useEffect(() => {
@@ -244,17 +248,18 @@ export default function Tenders() {
       </IconButton>
     );
   };
-  const handleScrollTrigger = () => {
-    if (tenderData?.next) {
-      let nextUrl = tenderData?.next.split("?")[1]; // Extract query params
-      // dispatch(GetTenderListWithFilters(nextUrl)); // Fetch next batch of data
+  const handleChangePages = (event, value) => {
+    const params = new URLSearchParams(queryString);
+    if (value === 1) {
+      params.set("offset", "");
+      navigate("/tenders", { replace: true });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      console.log("No more data to load.");
+      params.set("offset", value * 50);
+      navigate(`?${params}`, { replace: true });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-
-  console.log(tenderData?.results?.length);
-
   return (
     <>
       <Backdrop
@@ -1264,112 +1269,113 @@ export default function Tenders() {
               </Popover>
             </div>
           </div>
+          <div>
+            {tenderIsLoading ? (
+              <div className="h-[20vh]">Loading Data</div>
+            ) : (
+              tenderData?.results?.map((tender, i) => (
+                <div
+                  key={tender?.uid}
+                  className={`flex flex-col md:flex-row w-full justify-between ${
+                    i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
+                  } py-6  pl-4 rounded-md gap-4 min-h-56`}
+                >
+                  {i + 1}
+                  <div className="w-full flex flex-col gap-5">
+                    <div className="flex gap-4 flex-col md:flex-row">
+                      <h1 className="text-base font-semibold">
+                        {tender?.department}
+                      </h1>
+                      <div>
+                        <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
+                          {tender?.product_category}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="overflow-hidden text-ellipsis line-clamp-2">
+                      <p>{tender?.description}</p>
+                    </div>
+                    <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
+                      <LocationOnIcon fontSize="small" />
+                      <p className="text-sm font-thin">{tender?.location}</p>
+                    </div>
+                    <div className="flex gap-4">
+                      <button
+                        className="px-3 py-1 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+                      hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+                      >
+                        View
+                      </button>
+                      <button
+                        className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
+                group"
+                      >
+                        Download
+                        <span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="white"
+                            className="transition-all duration-300 ease-in-out group-hover:fill-[#0554F2]"
+                          >
+                            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="w-full flex gap-4 justify-center items-center">
+                    <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                      <h6 className="text-sm font-normal text-[#565656]">
+                        Published Date
+                      </h6>
+                      <p className="text-[#212121] text-base font-medium">
+                        {formatDateTime(tender?.published_date)[0]} <br />
+                        {formatDateTime(tender?.published_date)[1]}
+                      </p>
+                    </div>
+                    <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                      <h6 className="text-sm font-normal text-[#565656]">
+                        Closing Date
+                      </h6>
 
-          {tenderData?.results?.map((tender, i) => (
-            <div
-              key={tender?.uid}
-              className={`flex flex-col md:flex-row w-full justify-between ${
-                i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
-              } py-6  pl-4 rounded-md gap-4`}
-            >
-              {" "}
-              {i}
-              <div className="w-full flex flex-col gap-5">
-                <div className="flex gap-4 flex-col md:flex-row">
-                  <h1 className="text-base font-semibold">
-                    {tender?.department}
-                  </h1>
-                  <div>
-                    <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
-                      {tender?.product_category}
-                    </span>
+                      <p className="text-[#212121] text-base font-medium">
+                        {formatDateTime(tender?.bid_submission_end_date)[0]}{" "}
+                        <br />
+                        {formatDateTime(tender?.bid_submission_end_date)[1]}
+                      </p>
+                    </div>
+                    <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                      <h6 className="text-sm font-normal text-[#565656]">
+                        Tender Amount
+                      </h6>
+                      <p className="text-[#212121] text-base font-medium">
+                        {tender?.value_in_rs
+                          ? tender?.value_in_rs
+                          : "Refer Document"}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="overflow-hidden text-ellipsis line-clamp-2">
-                  <p>{tender?.description}</p>
-                </div>
-                <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
-                  <LocationOnIcon fontSize="small" />
-                  <p className="text-sm font-thin">{tender?.location}</p>
-                </div>
-                <div className="flex gap-4">
-                  <button
-                    className="px-3 py-1 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                  hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
-                  >
-                    View
-                  </button>
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-            hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
-            group"
-                  >
-                    Download
-                    <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="24px"
-                        viewBox="0 -960 960 960"
-                        width="24px"
-                        fill="white"
-                        className="transition-all duration-300 ease-in-out group-hover:fill-[#0554F2]"
-                      >
-                        <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
-                      </svg>
-                    </span>
-                  </button>
-                </div>
-              </div>
-              <div className="w-full flex gap-4 justify-center items-center">
-                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                  <h6 className="text-sm font-normal text-[#565656]">
-                    Published Date
-                  </h6>
-                  <p className="text-[#212121] text-base font-medium">
-                    {formatDateTime(tender?.published_date)[0]} <br />
-                    {formatDateTime(tender?.published_date)[1]}
-                  </p>
-                </div>
-                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                  <h6 className="text-sm font-normal text-[#565656]">
-                    Closing Date
-                  </h6>
-
-                  <p className="text-[#212121] text-base font-medium">
-                    {formatDateTime(tender?.bid_submission_end_date)[0]} <br />
-                    {formatDateTime(tender?.bid_submission_end_date)[1]}
-                  </p>
-                </div>
-                <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                  <h6 className="text-sm font-normal text-[#565656]">
-                    Tender Amount
-                  </h6>
-                  <p className="text-[#212121] text-base font-medium">
-                    {tender?.value_in_rs
-                      ? tender?.value_in_rs
-                      : "Refer Document"}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-          <InfiniteScroll
-            dataLength={tenderData?.results?.length || 50}
-            next={handleScrollTrigger}
-            hasMore={!!tenderData?.next} // Ensure this returns a boolean
-            loader={
-              <Backdrop
-                sx={(theme) => ({
-                  color: "#0554f29e",
-                  zIndex: theme.zIndex.drawer + 1,
-                })}
-                open={tenderIsLoading}
-              >
-                <CircularProgress color="#0554f2" />
-              </Backdrop>
-            }
-          />
+              ))
+            )}
+          </div>
         </main>
+        <div className="w-full flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
+          <Pagination
+            count={tenderData ? Math.ceil(tenderData?.count / 50) : 1}
+            defaultPage={1}
+            siblingCount={0}
+            boundaryCount={2}
+            color="primary"
+            showFirstButton
+            onChange={handleChangePages}
+            page={filters?.offset / 50}
+          />
+        </div>
       </div>
     </>
   );
