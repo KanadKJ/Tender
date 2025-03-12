@@ -12,6 +12,7 @@ const initialState = {
   divData: [],
   subDivData: [],
   sectionsData: [],
+  unitData: [],
 };
 export const GetDistrictsList = createAsyncThunk(
   "common/GetDistrictsList",
@@ -122,6 +123,20 @@ export const GetSectionList = createAsyncThunk(
     }
   }
 );
+export const GetUnitList = createAsyncThunk(
+  "common/GetUnitList",
+  async (params, { rejectWithValue }) => {
+    console.log(params);
+    const Ids = params?.map((item) => item.id);
+    const queryString = Ids?.map((id) => `section_id=${id}`).join("&");
+    try {
+      const res = await ScrpApiTendersMetadata.get(`sections/?${queryString}`);
+      return res.data?.results;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 const commonSlice = createSlice({
   name: "common",
   initialState,
@@ -212,6 +227,34 @@ const commonSlice = createSlice({
         state.error = null;
       })
       .addCase(GetSubDivList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetSectionsList
+      .addCase(GetSectionList.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetSectionList.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.sectionsData = action.payload;
+        state.error = null;
+      })
+      .addCase(GetSectionList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetUnitList
+      .addCase(GetUnitList.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetUnitList.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.unitData = action.payload;
+        state.error = null;
+      })
+      .addCase(GetUnitList.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });

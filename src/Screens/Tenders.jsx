@@ -37,6 +37,7 @@ import {
   GetSectionList,
   GetStatesList,
   GetSubDivList,
+  GetUnitList,
 } from "../Redux/Slices/CommonSlice";
 import useQueryParams from "../Hooks/useQueryParams";
 import dayjs from "dayjs";
@@ -44,7 +45,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CustomBadge from "../Components/CustomBadge";
-
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
 export default function Tenders() {
   // redux
   const { tenderData, tenderIsLoading } = useSelector((s) => s.tender);
@@ -58,6 +61,7 @@ export default function Tenders() {
     divData,
     subDivData,
     sectionsData,
+    unitData,
   } = useSelector((s) => s.common);
   //state
   // eslint-disable-next-line
@@ -126,6 +130,22 @@ export default function Tenders() {
           return division ? division : null;
         })
         .filter(Boolean) || [],
+    sub_divisions:
+      searchParams
+        .getAll("sub_divisions")
+        ?.map((id) => {
+          const subdiv = subDivData?.find((d) => d.id === parseInt(id));
+          return subdiv ? subdiv : null;
+        })
+        .filter(Boolean) || [],
+    units:
+      searchParams
+        .getAll("units")
+        ?.map((id) => {
+          const unit = unitData?.find((d) => d.id === parseInt(id));
+          return unit ? unit : null;
+        })
+        .filter(Boolean) || [],
     value_in_rs_min: searchParams.get("value_in_rs_min") || "",
     sections:
       searchParams
@@ -154,7 +174,7 @@ export default function Tenders() {
   useEffect(() => {
     dispatch(GetStatesList());
     dispatch(GetOrgList());
-  }, [dispatch]);
+  }, []);
   useEffect(() => {
     const keywords = searchParams.get("keywords") || "";
     const stateIDS = searchParams.getAll("states") || [];
@@ -204,7 +224,7 @@ export default function Tenders() {
       .filter(Boolean); // Remove null values
     const sub_divisions = sub_divisionsIds
       .map((id) => {
-        const dt = divData?.find((d) => d.id === parseInt(id)); // Convert id to number
+        const dt = subDivData?.find((d) => d.id === parseInt(id)); // Convert id to number
         return dt ? dt : null;
       })
       .filter(Boolean); // Remove null values
@@ -257,7 +277,6 @@ export default function Tenders() {
     }
   }, [
     searchParams,
-    dispatch,
     districtsData,
     statesData,
     orgData,
@@ -385,11 +404,14 @@ export default function Tenders() {
     if (type === "department") {
       dispatch(GetDivList(ids));
     }
-    if (type === "divisions") {
+    if (type === "division") {
       dispatch(GetSubDivList(ids));
     }
     if (type === "sub_divisions") {
       dispatch(GetSectionList(ids));
+    }
+    if (type === "sections") {
+      dispatch(GetUnitList(ids));
     }
   };
   return (
@@ -581,10 +603,10 @@ export default function Tenders() {
                 open={openPopoverId === "organisations"}
                 anchorEl={anchorEl}
                 onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                anchorOrigin={{ vertical: "center", horizontal: "center" }}
                 PaperProps={{
-                  style: {
-                    width: "300px",
+                  sx: {
+                    width: "300px", // Adjust as needed
                   },
                 }}
               >
@@ -602,13 +624,20 @@ export default function Tenders() {
                     options={orgData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
                     getOptionLabel={(option) => option.name} // No optional chaining needed
-                    value={filters.organisations} // Array of selected organisation objects
+                    value={orgData.filter((d) =>
+                      filters?.organisations?.some((dep) => dep.id === d.id)
+                    )} // Ensure objects match by reference
                     onChange={(event, newValue) => {
+                      const validData = newValue.filter((dep) =>
+                        orgData.some((d) => d.id === dep.id)
+                      );
+
                       setFilters((prev) => ({
                         ...prev,
-                        organisations: newValue, // Update the correct state key
+                        organisations: validData,
                       }));
-                      dataFetcher("organization", newValue);
+
+                      dataFetcher("organization", validData);
                     }}
                     renderOption={(props, option, { selected }) => {
                       const { key, ...optionProps } = props;
@@ -633,19 +662,27 @@ export default function Tenders() {
                   />
                   {/* DEP */}
                   <Autocomplete
+                    disabled={!filters?.organisations?.length}
                     multiple
                     limitTags={1}
                     id="Department-autocomplete"
                     options={drpData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
                     getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={filters?.departments} // Array of selected organisation objects
+                    value={drpData.filter((d) =>
+                      filters?.departments?.some((dep) => dep.id === d.id)
+                    )} // Ensure objects match by reference
                     onChange={(event, newValue) => {
+                      const validData = newValue.filter((dep) =>
+                        drpData.some((d) => d.id === dep.id)
+                      );
+
                       setFilters((prev) => ({
                         ...prev,
-                        departments: newValue, // Update the correct state key
+                        departments: validData,
                       }));
-                      dataFetcher("department", newValue);
+
+                      dataFetcher("department", validData);
                     }}
                     renderOption={(props, option, { selected }) => {
                       const { key, ...optionProps } = props;
@@ -671,18 +708,26 @@ export default function Tenders() {
                   {/* DIV */}
                   <Autocomplete
                     limitTags={1}
+                    disabled={!filters?.departments?.length}
                     multiple
                     id="division-autocomplete"
                     options={divData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
                     getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={filters?.divisions} // Array of selected organisation objects
+                    value={divData.filter((d) =>
+                      filters?.divisions?.some((dep) => dep.id === d.id)
+                    )} // Ensure objects match by reference
                     onChange={(event, newValue) => {
+                      const validData = newValue.filter((dep) =>
+                        divData.some((d) => d.id === dep.id)
+                      );
+
                       setFilters((prev) => ({
                         ...prev,
-                        divisions: newValue, // Update the correct state key
+                        divisions: validData,
                       }));
-                      dataFetcher("divisions", newValue);
+
+                      dataFetcher("division", validData);
                     }}
                     renderOption={(props, option, { selected }) => {
                       const { key, ...optionProps } = props;
@@ -708,18 +753,26 @@ export default function Tenders() {
                   {/*SUB DIV */}
                   <Autocomplete
                     limitTags={1}
+                    disabled={!filters?.divisions?.length}
                     multiple
                     id="sub_divisions-autocomplete"
                     options={subDivData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
                     getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={filters?.sub_divisions} // Array of selected organisation objects
+                    value={subDivData.filter((d) =>
+                      filters?.sub_divisions?.some((dep) => dep.id === d.id)
+                    )} // Ensure objects match by reference
                     onChange={(event, newValue) => {
+                      const validData = newValue.filter((dep) =>
+                        subDivData.some((d) => d.id === dep.id)
+                      );
+
                       setFilters((prev) => ({
                         ...prev,
-                        sub_divisions: newValue, // Update the correct state key
+                        sub_divisions: validData,
                       }));
-                      dataFetcher("sub_divisions", newValue);
+
+                      dataFetcher("sub_divisions", validData);
                     }}
                     renderOption={(props, option, { selected }) => {
                       const { key, ...optionProps } = props;
@@ -742,21 +795,29 @@ export default function Tenders() {
                       />
                     )}
                   />
-                  {/*SUB DIV */}
+                  {/*Sections */}
                   <Autocomplete
                     limitTags={1}
+                    disabled={!filters?.sub_divisions?.length}
                     multiple
                     id="sections-autocomplete"
                     options={sectionsData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
                     getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={filters?.sectionsData} // Array of selected organisation objects
+                    value={sectionsData.filter((d) =>
+                      filters?.sections?.some((dep) => dep.id === d.id)
+                    )} // Ensure objects match by reference
                     onChange={(event, newValue) => {
+                      const validData = newValue.filter((dep) =>
+                        sectionsData.some((d) => d.id === dep.id)
+                      );
+
                       setFilters((prev) => ({
                         ...prev,
-                        sub_divisions: newValue, // Update the correct state key
+                        sections: validData,
                       }));
-                      dataFetcher("sections", newValue);
+
+                      dataFetcher("sections", validData);
                     }}
                     renderOption={(props, option, { selected }) => {
                       const { key, ...optionProps } = props;
@@ -776,6 +837,49 @@ export default function Tenders() {
                         {...params}
                         label="Select Section"
                         placeholder="Choose Sections"
+                      />
+                    )}
+                  />
+                  {/*Units */}
+                  <Autocomplete
+                    limitTags={1}
+                    disabled={!filters?.sections?.length}
+                    multiple
+                    id="units-autocomplete"
+                    options={unitData} // Array of objects with `id` and `name`
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option?.name} // No optional chaining needed
+                    value={unitData.filter((d) =>
+                      filters?.units?.some((dep) => dep.id === d.id)
+                    )} // Ensure objects match by reference
+                    onChange={(event, newValue) => {
+                      const validData = newValue.filter((dep) =>
+                        unitData.some((d) => d.id === dep.id)
+                      );
+
+                      setFilters((prev) => ({
+                        ...prev,
+                        units: validData,
+                      }));
+                    }}
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select units"
+                        placeholder="Choose units"
                       />
                     )}
                   />
@@ -809,9 +913,7 @@ export default function Tenders() {
                 onClick={(event) => handleClick(event, "states")}
               >
                 State
-                {filters?.states?.length
-                  ? `(${filters?.states?.length})`
-                  : null}
+                <CustomBadge data={filters?.states} />
               </Button>
               <Popover
                 id="states"
@@ -897,9 +999,7 @@ export default function Tenders() {
                 onClick={(event) => handleClick(event, "districts")}
               >
                 Districts
-                {filters?.districts?.length
-                  ? `(${filters?.districts?.length})`
-                  : null}
+                <CustomBadge data={filters?.districts} />
               </Button>
               <Popover
                 id="districts"
@@ -983,9 +1083,7 @@ export default function Tenders() {
                 onClick={(event) => handleClick(event, "tenderAmount")}
               >
                 Tender Amount
-                {filters?.value_in_rs_max || filters?.value_in_rs_min
-                  ? "(1)"
-                  : null}
+                <CustomBadge data={filters.value_in_rs_max ? ["1"] : null} />
               </Button>
               <Popover
                 id="tenderAmount"
@@ -1112,10 +1210,14 @@ export default function Tenders() {
                   onClick={(event) => handleClick(event, "datePicker")}
                 >
                   Published Date
-                  {filters?.published_date_after ||
-                  filters?.published_date_before
-                    ? "(1)"
-                    : null}
+                  <CustomBadge
+                    data={
+                      filters?.published_date_after ||
+                      filters?.published_date_before
+                        ? ["1"]
+                        : null
+                    }
+                  />
                 </Button>
                 <Popover
                   id="datePicker"
@@ -1266,10 +1368,14 @@ export default function Tenders() {
                   onClick={(event) => handleClick(event, "datePickerclosing")}
                 >
                   Closing Date
-                  {filters?.published_date_after ||
-                  filters?.published_date_before
-                    ? "(1)"
-                    : null}
+                  <CustomBadge
+                    data={
+                      filters?.published_date_after ||
+                      filters?.published_date_before
+                        ? ["1"]
+                        : null
+                    }
+                  />
                 </Button>
                 <Popover
                   id="datePickerclosing"
@@ -1424,9 +1530,7 @@ export default function Tenders() {
               >
                 <FilterAltIcon />
                 Sort
-                {filters?.ordering?.length
-                  ? `(${filters?.ordering?.length})`
-                  : null}
+                <CustomBadge data={filters?.ordering} />
               </Button>
               <Popover
                 id="sort"
@@ -1594,71 +1698,86 @@ export default function Tenders() {
                         </span>
                       </div>
                     </div>
-                    <div className="overflow-hidden text-ellipsis line-clamp-2">
+                    <div className="overflow-hidden text-ellipsis line-clamp-2 text-base">
                       <p>{tender?.description}</p>
                     </div>
                     <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
                       <LocationOnIcon fontSize="small" />
                       <p className="text-sm font-thin">{tender?.location}</p>
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex justify-start items-center gap-4">
                       <button
-                        className="px-3 py-1 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                      hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
-                      >
-                        View
-                      </button>
-                      <button
-                        className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                        className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                 hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
                 group"
                       >
-                        Download
-                        <span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            height="24px"
-                            viewBox="0 -960 960 960"
-                            width="24px"
-                            fill="white"
-                            className="transition-all duration-300 ease-in-out group-hover:fill-[#0554F2]"
-                          >
-                            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
-                          </svg>
+                        View
+                        <span className="flex justify-center items-center">
+                          <VisibilityOutlinedIcon fontSize="sm" />
                         </span>
+                      </button>
+                      <button
+                        className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+                      hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+                      >
+                        <FavoriteBorderOutlinedIcon />
                       </button>
                     </div>
                   </div>
-                  <div className="w-full flex gap-4 justify-center items-center">
-                    <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                      <h6 className="text-sm font-normal text-[#565656]">
-                        Published Date
-                      </h6>
-                      <p className="text-[#212121] text-base font-medium">
-                        {formatDateTime(tender?.published_date)[0]} <br />
-                        {formatDateTime(tender?.published_date)[1]}
-                      </p>
+                  <div className="w-full flex flex-col gap-5">
+                    <div className="flex gap-4 justify-around">
+                      <div className="p-2 shadow-sm shadow-[#0554F2] rounded-lg flex gap-4 justify-between items-center">
+                        <LightbulbCircleOutlinedIcon
+                          fontSize="sm"
+                          color="primary"
+                        />
+                        <h1 className="text-sm font-semibold">
+                          Corrigendum : NIT{" "}
+                        </h1>
+                        <h1 className="text-orange-300 text-center text-sm">
+                          5 days ago
+                        </h1>
+                      </div>
+                      <div className="flex flex-col justify-center items-center ">
+                        <span className=" rounded-md text-red-500 text-lg font-extrabold ">
+                          17
+                        </span>
+                        <span className=" text-xs rounded-md text-center font-medium">
+                          Days left
+                        </span>
+                      </div>
                     </div>
-                    <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                      <h6 className="text-sm font-normal text-[#565656]">
-                        Closing Date
-                      </h6>
+                    <div className="w-full flex gap-4 justify-center items-center">
+                      <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                        <h6 className="text-sm font-normal text-[#565656]">
+                          Published Date
+                        </h6>
+                        <p className="text-[#212121] text-base font-medium">
+                          {formatDateTime(tender?.published_date)[0]} <br />
+                          {formatDateTime(tender?.published_date)[1]}
+                        </p>
+                      </div>
+                      <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                        <h6 className="text-sm font-normal text-[#565656]">
+                          Closing Date
+                        </h6>
 
-                      <p className="text-[#212121] text-base font-medium">
-                        {formatDateTime(tender?.bid_submission_end_date)[0]}{" "}
-                        <br />
-                        {formatDateTime(tender?.bid_submission_end_date)[1]}
-                      </p>
-                    </div>
-                    <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                      <h6 className="text-sm font-normal text-[#565656]">
-                        Tender Amount
-                      </h6>
-                      <p className="text-[#212121] text-base font-medium">
-                        {tender?.value_in_rs
-                          ? tender?.value_in_rs
-                          : "Refer Document"}
-                      </p>
+                        <p className="text-[#212121] text-base font-medium">
+                          {formatDateTime(tender?.bid_submission_end_date)[0]}{" "}
+                          <br />
+                          {formatDateTime(tender?.bid_submission_end_date)[1]}
+                        </p>
+                      </div>
+                      <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                        <h6 className="text-sm font-normal text-[#565656]">
+                          Tender Amount
+                        </h6>
+                        <p className="text-[#212121] text-base font-medium">
+                          {tender?.value_in_rs
+                            ? tender?.value_in_rs
+                            : "Refer Document"}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
