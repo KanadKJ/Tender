@@ -5,10 +5,12 @@ import Header from "../Components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 import Footer from "../Screens/Footer";
-
+import { Backdrop, CircularProgress } from "@mui/material";
 const MainLayout = () => {
   const dispatch = useDispatch();
-
+  const { tenderIsLoading } = useSelector((s) => s.tender);
+  const { isDistrictCallLoading } = useSelector((s) => s.common);
+  const { authIsLoading } = useSelector((s) => s.auth);
   const { isSidebarOpen } = useSelector((state) => state.common);
   const location = useLocation();
   const noHeaderRoutes = ["/login", "/signup"];
@@ -41,6 +43,15 @@ const MainLayout = () => {
 
         <main className="flex-1 flex flex-col">
           <div className="flex-1 overflow-y-auto">
+            <Backdrop
+              sx={(theme) => ({
+                color: "#0554f29e",
+                zIndex: theme.zIndex.drawer + 100,
+              })}
+              open={tenderIsLoading || isDistrictCallLoading || authIsLoading}
+            >
+              <CircularProgress color="#0554f2" />
+            </Backdrop>
             <Outlet />
           </div>
         </main>

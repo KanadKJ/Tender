@@ -416,15 +416,6 @@ export default function Tenders() {
   };
   return (
     <>
-      <Backdrop
-        sx={(theme) => ({
-          color: "#0554f29e",
-          zIndex: theme.zIndex.drawer + 1,
-        })}
-        open={tenderIsLoading || isDistrictCallLoading}
-      >
-        <CircularProgress color="#0554f2" />
-      </Backdrop>
       <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
         <Background type="vector" lifed="up" />
         <main className="w-full flex flex-col justify-center items-center gap-6">
@@ -1678,7 +1669,7 @@ export default function Tenders() {
           </div>
           <div>
             {tenderIsLoading ? (
-              <div className="h-[20vh]">Loading Data</div>
+              <div className="h-[20vh]"></div>
             ) : (
               tenderData?.results?.map((tender, i) => (
                 <div
