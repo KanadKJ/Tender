@@ -23,8 +23,7 @@ export default function Footer() {
         <div className="w-full flex flex-col gap-8">
           <h1 className="text-4xl">Menoka Enterprise</h1>
           <p className="text-sm">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere
-            nulla modi ab?
+            Tender Sourcing Platform for Contractors in West Bengal
           </p>
         </div>
         <div className="w-full flex flex-col justify-center items-center gap-2">

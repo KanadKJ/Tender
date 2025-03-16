@@ -55,6 +55,8 @@ export const queryBuilder = (params) => {
   return queryParams.length ? `?${queryParams.join("&")}` : "";
 };
 export const formatDateTime = (dateString) => {
+  console.log(dateString);
+  if (dateString === undefined) return [null, null];
   const date = new Date(dateString);
 
   // Format the date (Feb 28, 2025)
@@ -72,4 +74,14 @@ export const formatDateTime = (dateString) => {
   }).format(date);
 
   return [formattedDate, formattedTime];
+};
+export const formatIndianCurrency = (num) => {
+  if (num >= 1_00_00_000) {
+    return (num / 1_00_00_000).toFixed(2) + " Cr"; // Crores
+  } else if (num >= 1_00_000) {
+    return (num / 1_00_000).toFixed(2) + " Lakhs"; // Lakhs
+  } else if (num >= 1_000) {
+    return (num / 1_000).toFixed(2) + "K"; // Thousands
+  }
+  return num.toString(); // If less than 1000, return as is
 };

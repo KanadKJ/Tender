@@ -72,7 +72,7 @@ const Register = () => {
   return (
     <>
       <div className="max-w-md mx-auto flex justify-center flex-col items-center z-10 pt-4">
-        <Background type={"default"} />
+        <Background type={"default"} show="yes" />
         <div className="w-full max-w-[360px] md:max-w-[400px] flex flex-col justify-center items-center">
           <div
             className="h-[90px] w-[90px] mb-2 cursor-pointer"
@@ -216,7 +216,6 @@ const Register = () => {
             </div>
           </div>
         </div>
-        <Ribbons />
       </div>
     </>
   );

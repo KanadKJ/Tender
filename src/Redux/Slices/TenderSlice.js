@@ -4,6 +4,7 @@ import { ScrpApiTenders } from "../../Api/SCPAPI";
 const initialState = {
   tenderData: [],
   tenderIsLoading: false,
+  tenderDetails: [],
   error: "",
 };
 export const GetTenderList = createAsyncThunk(
@@ -31,7 +32,17 @@ export const GetTenderListWithFilters = createAsyncThunk(
     }
   }
 );
-
+export const GetTenderDetails = createAsyncThunk(
+  "tender/GetTenderDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await ScrpApiTenders.get(`/tenders/${id}`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 const tenderSlice = createSlice({
   name: "tender",
   initialState,
@@ -61,6 +72,20 @@ const tenderSlice = createSlice({
         state.error = null;
       })
       .addCase(GetTenderListWithFilters.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetTenderDetails
+      .addCase(GetTenderDetails.pending, (state) => {
+        state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetTenderDetails.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.tenderDetails = action.payload;
+        state.error = null;
+      })
+      .addCase(GetTenderDetails.rejected, (state, action) => {
         state.tenderIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

@@ -28,6 +28,7 @@ import {
   amountOptions,
   dateOptions,
   formatDateTime,
+  formatIndianCurrency,
 } from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
@@ -417,7 +418,7 @@ export default function Tenders() {
   return (
     <>
       <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
-        <Background type="vector" lifed="up" />
+        <Background type="vector" lifed="up" show="no" />
         <main className="w-full flex flex-col justify-center items-center gap-6">
           <div className="mt-6 flex flex-col gap-3 w-full justify-center items-center">
             <div className="w-full flex  justify-center items-center">
@@ -531,7 +532,7 @@ export default function Tenders() {
                 variant="contained"
                 onClick={(event) => handleClick(event, "Keywords")}
               >
-                Keywords{" "}
+                Keywords
                 {filters.keywords && (
                   <CustomBadge data={filters.keywords ? ["1"] : null} />
                 )}
@@ -1680,9 +1681,14 @@ export default function Tenders() {
                 >
                   <div className="w-full flex flex-col gap-5">
                     <div className="flex gap-4 flex-col ">
-                      <h1 className="text-base font-semibold">
-                        {tender?.organisation_chain}
-                      </h1>
+                      <div>
+                        <h1 className="text-base font-semibold">
+                          {tender?.organisation_chain}
+                        </h1>
+                        <h1 className="text-base font-semibold">
+                          {tender?.id}
+                        </h1>
+                      </div>
                       <div>
                         <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
                           {tender?.product_category}
@@ -1698,6 +1704,7 @@ export default function Tenders() {
                     </div>
                     <div className="flex justify-start items-center gap-4">
                       <button
+                        onClick={() => navigate(`/tenders/${tender?.uid}`)}
                         className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                 hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
                 group"
@@ -1765,7 +1772,7 @@ export default function Tenders() {
                         </h6>
                         <p className="text-[#212121] text-base font-medium">
                           {tender?.value_in_rs
-                            ? tender?.value_in_rs
+                            ? formatIndianCurrency(tender?.value_in_rs)
                             : "Refer Document"}
                         </p>
                       </div>

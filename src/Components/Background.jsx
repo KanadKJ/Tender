@@ -2,7 +2,10 @@ import React from "react";
 import bgvector from "../Assets/BackgroundPattern.png";
 import bgvectorBlank from "../Assets/bg_vector.png";
 import blueBg from "../Assets/onlyBlueBg.png";
-export default function Background({ type, lifed }) {
+import Ribbons from "./Ribbons";
+export default function Background({ type, lifed, show }) {
+  console.log(show);
+
   const bg = {
     default: bgvector,
     empty: blueBg,
@@ -19,6 +22,11 @@ export default function Background({ type, lifed }) {
         src={bg[type]}
         alt="background"
       />
+      {show === "yes" && show !== undefined && (
+        <div className="absolute top-[90%] z-50 w-full overflow-x-clip">
+          <Ribbons />
+        </div>
+      )}
     </div>
   );
 }

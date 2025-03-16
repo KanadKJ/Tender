@@ -8,6 +8,7 @@ import Tenders from "../Screens/Tenders";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
 const TendersPage = lazy(() => import("../Screens/Tenders"));
+const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
             <Route path="/tenders" element={<TendersPage />} />
             <Route index element={<HomePage />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="/tenders/:id" element={<TenderDetails />} />
             <Route path="*" element={<HomePage />} />
           </Route>
         </Routes>
