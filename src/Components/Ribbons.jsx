@@ -40,6 +40,7 @@ export default function Ribbons() {
         </span>
         <span className="text-[#276BF2] font-medium text-[40px]">•</span>
         <span className="text-[#276BF2] font-medium">Tender</span>
+        <span className="text-[#276BF2] font-medium text-[40px]">•</span>
       </div>
       <div className="w-full shadow-lg flex justify-center items-center gap-2  transform -rotate-[4deg] bg-white">
         <span className="text-[#276BF2] font-medium text-[40px]">•</span>
@@ -78,6 +79,7 @@ export default function Ribbons() {
         </span>
         <span className="text-[#276BF2] font-medium text-[40px]">•</span>
         <span className="text-[#276BF2] font-medium">Tender</span>
+        <span className="text-[#276BF2] font-medium text-[40px]">•</span>
       </div>
     </div>
   );
