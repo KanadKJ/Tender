@@ -85,3 +85,25 @@ export const formatIndianCurrency = (num) => {
   }
   return num.toString(); // If less than 1000, return as is
 };
+export const carouselResponsive = {
+  superLargeDesktop: { breakpoint: { max: 4000, min: 1024 }, items: 1 },
+  desktop: { breakpoint: { max: 1024, min: 768 }, items: 1 },
+  tablet: { breakpoint: { max: 768, min: 464 }, items: 1 },
+  mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
+};
+// export const CustomButtonGroup = ({ next, previous }) => (
+//   <div className="absolute top-1/2 w-full flex justify-between px-8 md:px-12 lg:px-16 -translate-y-1/2 ">
+//     <button
+//       onClick={previous}
+//       className="text-white bg-gray-800 p-3 rounded-full shadow-lg hover:bg-gray-700 translate-x-32"
+//     >
+//       <ArrowBackIcon />
+//     </button>
+//     <button
+//       onClick={next}
+//       className="text-white bg-gray-800 p-3 rounded-full shadow-lg hover:bg-gray-700 -translate-x-32"
+//     >
+//       <ArrowBackIcon />
+//     </button>
+//   </div>
+// );

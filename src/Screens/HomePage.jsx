@@ -1,11 +1,41 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import Background from "../Components/Background";
-import { Autocomplete, TextField } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Autocomplete,
+  TextField,
+  Typography,
+} from "@mui/material";
 import gradiant from "../Assets/GradientSection.png";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import { carouselResponsive } from "../Utils/CommonUtils";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import tm from "../Assets/testimonial.png";
 export default function HomePage() {
   const { userData } = useSelector((s) => s.auth);
-
+  const carouselRef = useRef(null);
+  const CustomButtonGroup = ({ next, previous }) => (
+    <div className="hidden absolute top-1/2 w-full md:flex justify-between px-8 md:px-12 lg:px-16 -translate-y-1/2 mt-8">
+      <button
+        onClick={() => carouselRef.current?.previous()}
+        className="p-3 rounded-full shadow-lg  translate-x-32"
+      >
+        <ArrowBackIcon />
+      </button>
+      <button
+        onClick={() => carouselRef.current?.next()}
+        className=" p-3 rounded-full shadow-lg  -translate-x-32"
+      >
+        <ArrowForwardIcon />
+      </button>
+    </div>
+  );
   return (
     <div className="mt-36 mb-10 z-40 ">
       <Background type={"default"} show={"yes"} isHome="yes" />
@@ -180,6 +210,135 @@ export default function HomePage() {
                 customer satisfaction score
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full flex flex-col items-center relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
+        <h1 className="w-full text-4xl font-normal text-center mb-8 text-[#212121]">
+          Testimonials
+        </h1>
+        <CustomButtonGroup />
+
+        <Carousel
+          ref={carouselRef}
+          showDots
+          responsive={carouselResponsive}
+          infinite
+          autoPlay={false}
+          containerClass="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl mx-auto"
+          arrows={false}
+        >
+          <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
+            <img
+              src={tm}
+              alt="testimonial"
+              className="h-72 object-cover rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
+            />
+            <div className="flex flex-col gap-4">
+              <p className="text-justify text-base text-[#565656] font-normal">
+                I've been using the Runway tender platform for some time now,
+                and it has proven to be an invaluable resource. The platform
+                delivers the latest tenders right to my dashboard as soon as
+                they are released, ensuring I never miss out on an opportunity.
+                Additionally, the detailed and accurate pricing for the
+                materials they offer helps me plan and budget effectively,
+                giving me the confidence to make well-informed decisions every
+                time.
+              </p>
+              <div className="flex flex-col">
+                <span className="text-base font-medium">Tej Pratap Singh</span>
+                <span className="text-sm font-normal text-[#565656]">
+                  Runway Tender Platform
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
+            <img
+              src={tm}
+              alt="testimonial"
+              className="h-72  rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
+            />
+            <div className="flex flex-col gap-4">
+              <p className="text-justify text-base text-[#565656] font-normal">
+                I've been using the Runway tender platform for some time now,
+                and it has proven to be an invaluable resource. The platform
+                delivers the latest tenders right to my dashboard as soon as
+                they are released, ensuring I never miss out on an opportunity.
+                Additionally, the detailed and accurate pricing for the
+                materials they offer helps me plan and budget effectively,
+                giving me the confidence to make well-informed decisions every
+                time.
+              </p>
+              <div className="flex flex-col">
+                <span className="text-base font-medium">Tej Pratap Singh</span>
+                <span className="text-sm font-normal text-[#565656]">
+                  Runway Tender Platform
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
+            <img
+              src={tm}
+              alt="testimonial"
+              className="h-72  rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
+            />
+            <div className="flex flex-col gap-4">
+              <p className="text-justify text-base text-[#565656] font-normal">
+                I've been using the Runway tender platform for some time now,
+                and it has proven to be an invaluable resource. The platform
+                delivers the latest tenders right to my dashboard as soon as
+                they are released, ensuring I never miss out on an opportunity.
+                Additionally, the detailed and accurate pricing for the
+                materials they offer helps me plan and budget effectively,
+                giving me the confidence to make well-informed decisions every
+                time.
+              </p>
+              <div className="flex flex-col">
+                <span className="text-base font-medium">Tej Pratap Singh</span>
+                <span className="text-sm font-normal text-[#565656]">
+                  Runway Tender Platform
+                </span>
+              </div>
+            </div>
+          </div>
+        </Carousel>
+      </div>
+      <div className="w-full flex flex-col md:flex-row items-center relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
+        <div className="w-full">
+          <h1 className="flex flex-col text-4xl font-normal">
+            <span>Frequently Asked</span> <span>Questions </span>
+          </h1>
+        </div>
+        <div className="w-full">
+          <div className="p-3 border-t border-gray-500">
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <Typography component="span">Accordion 1</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                eget.
+              </AccordionDetails>
+            </Accordion>
+          </div>
+          <div className="p-3 border-t border-gray-500">
+            <h5></h5>
+          </div>
+          <div className="p-3 border-t border-gray-500">
+            <h5></h5>
+          </div>
+          <div className="p-3 border-t border-gray-500">
+            <h5></h5>
+          </div>
+          <div className="p-3 border-t border-gray-500">
+            <h5></h5>
           </div>
         </div>
       </div>
