@@ -304,7 +304,7 @@ export default function HomePage() {
           </div>
         </Carousel>
       </div>
-      <div className="w-full flex flex-col md:flex-row items-center relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
+      <div className="w-full gap-8 flex flex-col md:flex-row items-center relative px-6 sm:px-8 md:px-12 lg:px-24 xl:px-32 mt-16">
         <div className="w-full">
           <h1 className="flex flex-col text-4xl font-normal">
             <span>Frequently Asked</span> <span>Questions </span>
