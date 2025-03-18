@@ -5,6 +5,7 @@ import Login from "../Screens/Login";
 import Register from "../Screens/Register";
 import Profile from "../Screens/Profile";
 import Tenders from "../Screens/Tenders";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
 const TendersPage = lazy(() => import("../Screens/Tenders"));
@@ -20,10 +21,18 @@ const AppRouter = () => {
             <Route path="/signup" element={<Register />} />
             <Route path="/tenders" element={<TendersPage />} />
             <Route index element={<HomePage />} />
-            <Route path="profile" element={<Profile />} />
+            <Route
+              path="profile"
+              element={
+                <ProtectedRoutes>
+                  <Profile />
+                </ProtectedRoutes>
+              }
+            />
             <Route path="/tenders/:id" element={<TenderDetails />} />
             <Route path="*" element={<HomePage />} />
           </Route>
+          
         </Routes>
       </Suspense>
     </Router>

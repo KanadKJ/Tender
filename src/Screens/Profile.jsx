@@ -128,7 +128,7 @@ export default function Profile() {
     <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10">
       <Background type="empty" />
       <section className="mt-[5.2rem] flex justify-between gap-4">
-        <nav className="hidden md:flex justify-center items-start  max-w-[250px] w-full h-[90vh] rounded-md">
+        <nav className="hidden md:flex justify-center items-start  max-w-[250px] w-full  rounded-md sticky">
           <ul className="w-full flex flex-col gap-2">
             <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
               <span>
@@ -212,7 +212,7 @@ export default function Profile() {
             </li>
           </ul>
         </nav>
-        <main className="w-full h-screen flex flex-col gap-5 ">
+        <main className="w-full flex flex-col gap-5 ">
           <div className="flex flex-col w-full p-5 gap-5 rounded-lg shadow-md bg-white">
             <div className="w-full flex justify-between">
               <h1 className="text-lg text-[#212121] font-medium">
@@ -302,7 +302,7 @@ export default function Profile() {
                     Save Changes
                   </button>
                 ) : (
-                  <button onClick={() => handleFormEdit("personal")}>
+                  <button onClick={() => handleFormEdit("company")}>
                     <img src={editSvg} />
                   </button>
                 )}
@@ -396,7 +396,7 @@ export default function Profile() {
                     Save Changes
                   </button>
                 ) : (
-                  <button onClick={() => handleFormEdit("personal")}>
+                  <button onClick={() => handleFormEdit("address")}>
                     <img src={editSvg} />
                   </button>
                 )}

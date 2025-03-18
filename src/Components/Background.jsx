@@ -6,8 +6,6 @@ import Ribbons from "./Ribbons";
 import illLeft from "../Assets/illLeft.png";
 import char from "../Assets/Characters.png";
 export default function Background({ type, lifed, show, isHome }) {
-  console.log(show);
-
   const bg = {
     default: bgvector,
     empty: blueBg,

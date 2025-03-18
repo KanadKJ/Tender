@@ -1,31 +1,46 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { BASE_URL } from "../../Utils/CommonUtils";
 import { TMGetUserDetails } from "../../Api/TMAPI";
+
 const initialState = {
-  userData: [],
+  userData: null, // Should be an object, not an array
   authIsLoading: false,
-  error: "",
+  error: null, // Consistent with rejection
 };
+
 export const GetUserDetails = createAsyncThunk(
-  "auth",
+  "auth/GetUserDetails", // Corrected action type
   async (data, { rejectWithValue }) => {
     try {
       const response = await TMGetUserDetails.post(`/GetUserDetails`, data);
-      if (response?.data?.value?.length === 0) {
+
+      if (!response?.data?.value?.length) {
         return rejectWithValue("Invalid Email or Password");
       }
-      localStorage.setItem("user", JSON.stringify(response?.data?.value));
-      return response.data.value;
+
+      const user = response.data.value[0]; // Store only the user object
+      localStorage.setItem("user", JSON.stringify(user));
+
+      console.log(user);
+      return user;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
 );
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
-
+  reducers: {
+    logout: (state) => {
+      state.userData = null;
+      localStorage.removeItem("user");
+    },
+    setData: (state, action) => {
+      state.userData = action.payload;
+      console.log(action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(GetUserDetails.pending, (state) => {
@@ -44,5 +59,5 @@ const authSlice = createSlice({
   },
 });
 
-// export const { userData } = authSlice.actions;
+export const { logout, setData } = authSlice.actions; // Export logout action
 export default authSlice.reducer;

@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setData } from "../Redux/Slices/AuthSlice";
 
 export default function ProtectedRoutes({ children }) {
-  const [userData, setUserData] = useState(null);
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.userData);
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const data = JSON.parse(user);
-      setUserData(data);
-    }
-  }, []);
+  const isAuthenticated = userData || localStorage.getItem("user");
+  console.log(JSON.parse(localStorage.getItem("user")));
 
-  if (!userData) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (localStorage.getItem("user") && !userData) {
+    dispatch(setData(JSON.parse(localStorage.getItem("user"))));
   }
 
   return children;
