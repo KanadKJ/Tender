@@ -77,11 +77,11 @@ export const formatDateTime = (dateString) => {
 };
 export const formatIndianCurrency = (num) => {
   if (num >= 1_00_00_000) {
-    return (num / 1_00_00_000).toFixed(2) + " Cr"; 
+    return (num / 1_00_00_000).toFixed(2) + " Cr";
   } else if (num >= 1_00_000) {
-    return (num / 1_00_000).toFixed(2) + " Lakhs"; 
+    return (num / 1_00_000).toFixed(2) + " Lakhs";
   } else if (num >= 1_000) {
-    return (num / 1_000).toFixed(2) + "K"; 
+    return (num / 1_000).toFixed(2) + "K";
   }
   return num.toString();
 };
@@ -91,4 +91,20 @@ export const carouselResponsive = {
   tablet: { breakpoint: { max: 768, min: 464 }, items: 1 },
   mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
 };
+export const dateDifferenceCalculator = (d1, d2) => {
+  const diffTime = new Date(d2) - new Date(d1);
+  let col = "";
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
+  if (diffDays > 20) {
+    col = "#14AD30";
+  } else if (diffDays < 20 && diffDays > 15) {
+    col = "#E58B15";
+  } else {
+    col = "#C91D1D";
+  }
+  return {
+    diffDays,
+    col,
+  };
+};

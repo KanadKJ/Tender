@@ -3,10 +3,30 @@ import Background from "../Components/Background";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GetTenderDetails } from "../Redux/Slices/TenderSlice";
-import DownloadIcon from "@mui/icons-material/Download";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { formatDateTime, formatIndianCurrency } from "../Utils/CommonUtils";
-import { Divider } from "@mui/material";
+import {
+  Divider,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+function createData(name, calories, fat) {
+  return { name, calories, fat };
+}
+
+const rows = [
+  createData("Frozen yoghurt", 159, 6.0),
+  createData("Ice cream sandwich", 237, 9.0),
+  createData("Eclair", 262, 16.0),
+  createData("Cupcake", 305, 3.7),
+  createData("Gingerbread", 356, 16.0),
+];
 export default function TenderDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -20,11 +40,19 @@ export default function TenderDetails() {
       <div className="flex flex-col gap-4">
         <div className="w-full flex flex-col md:flex-row justify-between">
           <div className="w-full flex flex-col gap-4">
-            <h6 className="text-3xl">{tenderDetails?.organisation}</h6>
             <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
               <LocationOnIcon fontSize="small" />
-              <p className="text-sm font-thin">{tenderDetails?.location}</p>
+              <p className="text-sm font-extralight">
+                {tenderDetails?.district},{tenderDetails?.state},
+                {tenderDetails?.pincode}
+              </p>
             </div>
+            <h6 className="text-3xl">{tenderDetails?.organisation_chain}</h6>
+            <h6 className="text-md">Tender ID : {tenderDetails?.id}</h6>
+            <h6 className="text-md">
+              Reference Number : {tenderDetails?.reference_number}
+            </h6>
+            <h6 className="text-xl">{tenderDetails?.type}</h6>
             <div>
               <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
                 {tenderDetails?.product_category}
@@ -43,37 +71,22 @@ export default function TenderDetails() {
         </div>
         <div className="w-full flex flex-col md:flex-row justify-between gap-4">
           <div className="w-full flex flex-col gap-4">
-            <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
-              <div>
-                <h1 className="text-base font-semibold">Date</h1>
-              </div>
+            <div className="p-4 border rounded-md flex flex-col gap-4 bg-white">
+              <h1 className="text-base font-semibold">Title</h1>
               <Divider />
-              <div className="flex justify-between">
-                <p className="text-[#565656] text-sm">Published Date</p>
-                <p className="text-[#212121] font-normal text-sm flex gap-4">
-                  <span>
-                    {formatDateTime(tenderDetails?.published_date)[0]}
-                  </span>
-                  <span>
-                    {formatDateTime(tenderDetails?.published_date)[1]}
-                  </span>
-                </p>
-              </div>
-              <div className="flex justify-between bg-white">
-                <p className="text-[#565656] text-sm">Closing Date</p>
-                <p className="text-[#212121] font-normal text-sm flex gap-4">
-                  <span>
-                    {formatDateTime(tenderDetails?.bid_submission_end_date)[0]}
-                  </span>
-                  <span>
-                    {formatDateTime(tenderDetails?.bid_submission_end_date)[1]}
-                  </span>
-                </p>
-              </div>
+              <p className="text-sm text-[#565656] font-normal">
+                {tenderDetails?.title}
+              </p>
+              <h1 className="text-base font-semibold">Description</h1>
+              <Divider />
+              <p className="text-sm text-[#565656] font-normal">
+                {tenderDetails?.description}
+              </p>
             </div>
+
             <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
               <div>
-                <h1 className="text-base font-semibold">COST</h1>
+                <h1 className="text-base font-semibold">Fees & EMD Details</h1>
               </div>
               <Divider />
               <div className="flex justify-between">
@@ -100,30 +113,182 @@ export default function TenderDetails() {
                     : "Refer Document"}
                 </p>
               </div>
+              <div className="flex justify-between">
+                <p className="text-[#565656] text-sm">
+                  Tender Fee Exemption Allowed
+                </p>
+                <p className="text-[#212121] font-normal text-sm flex gap-4">
+                  {tenderDetails?.fee_exemption_allowed
+                    ? tenderDetails?.fee_exemption_allowed
+                    : "-"}
+                </p>
+              </div>
+              <div className="flex justify-between">
+                <p className="text-[#565656] text-sm">EMD Exemption Allowed</p>
+                <p className="text-[#212121] font-normal text-sm flex gap-4">
+                  {tenderDetails?.emd_exemption_allowed
+                    ? tenderDetails?.emd_exemption_allowed
+                    : "-"}
+                </p>
+              </div>
             </div>
             <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
               <div>
-                <h1 className="text-base font-semibold">Contact</h1>
+                <h1 className="text-base font-semibold">
+                  Tender Inviting Authority
+                </h1>
               </div>
               <Divider />
               <div className="flex justify-between">
-                <p className="text-[#565656] text-sm">Inviting Authority</p>
+                <p className="text-[#565656] text-sm">
+                  Inviting Authority Name
+                </p>
                 <p className="text-[#212121] font-normal text-sm flex gap-4">
                   {tenderDetails?.inviting_authority_name}
                 </p>
               </div>
+              <div className="flex justify-between">
+                <p className="text-[#565656] text-sm">Website</p>
+                <a
+                  className="text-[#0554F2] font-normal text-sm flex gap-4"
+                  href={`${tenderDetails?.website}`}
+                  target="_blank"
+                >
+                  {tenderDetails?.website}
+                </a>
+              </div>
             </div>
           </div>
           <div className="w-full flex flex-col gap-4">
-            <div className="p-4 border rounded-md flex flex-col gap-4 bg-white">
-              <h1 className="text-base font-semibold">Description</h1>
+            <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
+              <div>
+                <h1 className="text-base font-semibold">Critical Dates</h1>
+              </div>
               <Divider />
-              <p className="text-sm text-[#565656] font-normal">
-                {tenderDetails?.description}
-              </p>
+              <div className="flex justify-between">
+                <p className="text-[#565656] text-sm">Published Date</p>
+                <p className="text-[#212121] font-normal text-sm flex gap-4">
+                  <span>
+                    {formatDateTime(tenderDetails?.published_date)[0]}
+                  </span>
+                  <span>
+                    {formatDateTime(tenderDetails?.published_date)[1]}
+                  </span>
+                </p>
+              </div>
+              <div className="flex justify-between">
+                <p className="text-[#565656] text-sm">
+                  Document Download Start Date
+                </p>
+                <p className="text-[#212121] font-normal text-sm flex gap-4">
+                  <span>
+                    {
+                      formatDateTime(
+                        tenderDetails?.document_download_start_date
+                      )[0]
+                    }
+                  </span>
+                  <span>
+                    {
+                      formatDateTime(
+                        tenderDetails?.document_download_start_date
+                      )[1]
+                    }
+                  </span>
+                </p>
+              </div>
+              {/* <div className="flex justify-between bg-white">
+                <p className="text-[#565656] text-sm">Closing Date</p>
+                <p className="text-[#212121] font-normal text-sm flex gap-4">
+                  <span>
+                    {formatDateTime(tenderDetails?.bid_submission_end_date)[0]}
+                  </span>
+                  <span>
+                    {formatDateTime(tenderDetails?.bid_submission_end_date)[1]}
+                  </span>
+                </p>
+              </div> */}
+              <div className="flex justify-between bg-white">
+                <p className="text-[#565656] text-sm">
+                  Bid Submission End Date
+                </p>
+                <p className="text-[#212121] font-normal text-sm flex gap-4">
+                  <span>
+                    {formatDateTime(tenderDetails?.bid_submission_end_date)[0]}
+                  </span>
+                  <span>
+                    {formatDateTime(tenderDetails?.bid_submission_end_date)[1]}
+                  </span>
+                </p>
+              </div>
+              <div className="flex justify-between bg-white">
+                <p className="text-[#565656] text-sm">Bid Opening Date</p>
+                <p className="text-[#212121] font-normal text-sm flex gap-4">
+                  <span>
+                    {formatDateTime(tenderDetails?.bid_opening_date)[0]}
+                  </span>
+                  <span>
+                    {formatDateTime(tenderDetails?.bid_opening_date)[1]}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
+              <div>
+                <h1 className="text-base font-semibold">
+                  Latest Corrigendum List
+                </h1>
+              </div>
+              <Divider />
+              <div>
+                <TableContainer component={Paper}>
+                  <Table aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Title</TableCell>
+                        <TableCell align="right">Type</TableCell>
+                        <TableCell align="right">Description</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tenderDetails?.corrigendums?.length !== 0 ? (
+                        tenderDetails?.corrigendums?.map((row) => (
+                          <TableRow
+                            key={row?.id}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {row?.title}
+                            </TableCell>
+                            <TableCell align="center">{row?.type}</TableCell>
+                            <TableCell align="right">
+                              {row?.description}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell align="center">No Data</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
             </div>
             <div className="p-4 border rounded-md flex flex-col gap-4">
-              <h1 className="text-base font-medium">Tender Documents</h1>
+              <div className="flex justify-between items-center">
+                <h1 className="text-base font-medium">Tender Documents</h1>
+                <button
+                  className="gap-2 flex p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+                hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+                >
+                  <span className="text-center">Download All</span>
+                  <FileDownloadOutlinedIcon />
+                </button>
+              </div>
               <Divider />
               <div className="flex flex-col gap-4">
                 {tenderDetails?.documents?.map((d) => (
@@ -137,8 +302,7 @@ export default function TenderDetails() {
                         className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                                          hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                       >
-                        <span>Download</span>
-                        <DownloadIcon />
+                        <FileDownloadOutlinedIcon />
                       </button>
                     </p>
                   </div>

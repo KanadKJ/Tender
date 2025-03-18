@@ -26,6 +26,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
+  dateDifferenceCalculator,
   dateOptions,
   formatDateTime,
   formatIndianCurrency,
@@ -1672,114 +1673,125 @@ export default function Tenders() {
             {tenderIsLoading ? (
               <div className="h-[20vh]"></div>
             ) : (
-              tenderData?.results?.map((tender, i) => (
-                <div
-                  key={tender?.uid}
-                  className={`flex flex-col md:flex-row w-full justify-between ${
-                    i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
-                  } py-6  pl-4 rounded-md gap-4 min-h-56`}
-                >
-                  <div className="w-full flex flex-col gap-5">
-                    <div className="flex gap-4 flex-col ">
-                      <div>
-                        <h1 className="text-base font-semibold">
-                          {tender?.organisation_chain}
-                        </h1>
-                        <h1 className="text-base font-semibold">
-                          {tender?.id}
-                        </h1>
+              tenderData?.results?.map((tender, i) => {
+                const { diffDays, col } = dateDifferenceCalculator(
+                  tender?.published_date,
+                  tender?.bid_submission_end_date
+                );
+                return (
+                  <div
+                    key={tender?.uid}
+                    className={`flex flex-col md:flex-row w-full justify-between ${
+                      i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
+                    } py-6  pl-4 rounded-md gap-4 min-h-56`}
+                  >
+                    <div className="w-full flex flex-col gap-5">
+                      <div className="flex gap-4 flex-col ">
+                        <div>
+                          <h1 className="text-base font-semibold">
+                            {tender?.id}|{tender?.organisation_chain}
+                          </h1>
+                        </div>
+                        <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
+                          <LocationOnIcon fontSize="small" />
+                          <p className="text-sm font-thin">
+                            {tender?.location}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
+                            {tender?.product_category}
+                          </span>
+                        </div>
                       </div>
-                      <div>
-                        <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
-                          {tender?.product_category}
-                        </span>
+                      <div className="overflow-hidden text-ellipsis line-clamp-2 text-base">
+                        <p>{tender?.description}</p>
                       </div>
-                    </div>
-                    <div className="overflow-hidden text-ellipsis line-clamp-2 text-base">
-                      <p>{tender?.description}</p>
-                    </div>
-                    <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
-                      <LocationOnIcon fontSize="small" />
-                      <p className="text-sm font-thin">{tender?.location}</p>
-                    </div>
-                    <div className="flex justify-start items-center gap-4">
-                      <button
-                        onClick={() => navigate(`/tenders/${tender?.uid}`)}
-                        className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+
+                      <div className="flex justify-start items-center gap-4">
+                        <button
+                          onClick={() => navigate(`/tenders/${tender?.uid}`)}
+                          className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                 hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
                 group"
-                      >
-                        View
-                        <span className="flex justify-center items-center">
-                          <VisibilityOutlinedIcon fontSize="sm" />
-                        </span>
-                      </button>
-                      <button
-                        className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+                        >
+                          View
+                          <span className="flex justify-center items-center">
+                            <VisibilityOutlinedIcon fontSize="sm" />
+                          </span>
+                        </button>
+                        <button
+                          className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                       hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
-                      >
-                        <FavoriteBorderOutlinedIcon />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="w-full flex flex-col gap-5">
-                    <div className="flex gap-4 justify-around">
-                      <div className="p-2 shadow-sm shadow-[#0554F2] rounded-lg flex gap-4 justify-between items-center">
-                        <LightbulbCircleOutlinedIcon
-                          fontSize="sm"
-                          color="primary"
-                        />
-                        <h1 className="text-sm font-semibold">
-                          Corrigendum : NIT{" "}
-                        </h1>
-                        <h1 className="text-orange-300 text-center text-sm">
-                          5 days ago
-                        </h1>
-                      </div>
-                      <div className="flex flex-col justify-center items-center ">
-                        <span className=" rounded-md text-red-500 text-lg font-extrabold ">
-                          17
-                        </span>
-                        <span className=" text-xs rounded-md text-center font-medium">
-                          Days left
-                        </span>
+                        >
+                          <FavoriteBorderOutlinedIcon />
+                        </button>
                       </div>
                     </div>
-                    <div className="w-full flex gap-4 justify-center items-center">
-                      <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                        <h6 className="text-sm font-normal text-[#565656]">
-                          Published Date
-                        </h6>
-                        <p className="text-[#212121] text-base font-medium">
-                          {formatDateTime(tender?.published_date)[0]} <br />
-                          {formatDateTime(tender?.published_date)[1]}
-                        </p>
-                      </div>
-                      <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                        <h6 className="text-sm font-normal text-[#565656]">
-                          Closing Date
-                        </h6>
+                    <div className="w-full flex flex-col gap-5">
+                      <div className="flex gap-4 justify-around">
+                        <div className="p-2 shadow-sm bg-[#EBCF1326] rounded-lg flex gap-4 justify-between items-center">
+                          <LightbulbCircleOutlinedIcon
+                            fontSize="sm"
+                            color="primary"
+                          />
+                          <h1 className="text-sm font-semibold">
+                            Corrigendum : NIT{" "}
+                          </h1>
+                          <h1 className="text-[#C9B00F] text-center text-sm">
+                            5 days ago
+                          </h1>
+                        </div>
 
-                        <p className="text-[#212121] text-base font-medium">
-                          {formatDateTime(tender?.bid_submission_end_date)[0]}{" "}
-                          <br />
-                          {formatDateTime(tender?.bid_submission_end_date)[1]}
-                        </p>
+                        <div className="flex flex-col justify-center items-center ">
+                          <span
+                            className={` rounded-md text-[${col}] text-lg font-extrabold `}
+                          >
+                            {diffDays}
+                          </span>
+                          <span
+                            className={`text-xs text-[${col}] rounded-md text-center font-medium`}
+                          >
+                            Days left
+                          </span>
+                        </div>
                       </div>
-                      <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                        <h6 className="text-sm font-normal text-[#565656]">
-                          Tender Amount
-                        </h6>
-                        <p className="text-[#212121] text-base font-medium">
-                          {tender?.value_in_rs
-                            ? formatIndianCurrency(tender?.value_in_rs)
-                            : "Refer Document"}
-                        </p>
+                      <div className="w-full flex gap-4 justify-center items-center">
+                        <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                          <h6 className="text-sm font-normal text-[#565656]">
+                            Published Date
+                          </h6>
+                          <p className="text-[#212121] text-base font-medium">
+                            {formatDateTime(tender?.published_date)[0]} <br />
+                            {formatDateTime(tender?.published_date)[1]}
+                          </p>
+                        </div>
+                        <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                          <h6 className="text-sm font-normal text-[#565656]">
+                            Closing Date
+                          </h6>
+
+                          <p className="text-[#212121] text-base font-medium">
+                            {formatDateTime(tender?.bid_submission_end_date)[0]}{" "}
+                            <br />
+                            {formatDateTime(tender?.bid_submission_end_date)[1]}
+                          </p>
+                        </div>
+                        <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
+                          <h6 className="text-sm font-normal text-[#565656]">
+                            Tender Amount
+                          </h6>
+                          <p className="text-[#212121] text-base font-medium">
+                            {tender?.value_in_rs
+                              ? formatIndianCurrency(tender?.value_in_rs)
+                              : "Refer Document"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </main>
