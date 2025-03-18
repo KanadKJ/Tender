@@ -221,11 +221,10 @@ export default function HomePage() {
 
         <Carousel
           ref={carouselRef}
-          showDots
           responsive={carouselResponsive}
           infinite
           autoPlay={false}
-          containerClass="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl mx-auto"
+          containerClass="w-full rounded-xl max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl mx-auto shadow-md m-5"
           arrows={false}
         >
           <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
@@ -234,7 +233,7 @@ export default function HomePage() {
               alt="testimonial"
               className="h-72 object-cover rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
               <p className="text-justify text-base text-[#565656] font-normal">
                 I've been using the Runway tender platform for some time now,
                 and it has proven to be an invaluable resource. The platform
@@ -259,7 +258,7 @@ export default function HomePage() {
               alt="testimonial"
               className="h-72  rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
               <p className="text-justify text-base text-[#565656] font-normal">
                 I've been using the Runway tender platform for some time now,
                 and it has proven to be an invaluable resource. The platform
@@ -284,7 +283,7 @@ export default function HomePage() {
               alt="testimonial"
               className="h-72  rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
               <p className="text-justify text-base text-[#565656] font-normal">
                 I've been using the Runway tender platform for some time now,
                 and it has proven to be an invaluable resource. The platform
@@ -312,14 +311,16 @@ export default function HomePage() {
           </h1>
         </div>
         <div className="w-full">
-          <div className="p-3 border-t border-gray-500">
-            <Accordion>
+          <div className="p-3 border-t border-gray-300">
+            <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1-content"
                 id="panel1-header"
               >
-                <Typography component="span">Accordion 1</Typography>
+                <h1 className="text-base font-normal text-[#212121]">
+                  What is a tender and how does it work?
+                </h1>
               </AccordionSummary>
               <AccordionDetails>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -328,17 +329,77 @@ export default function HomePage() {
               </AccordionDetails>
             </Accordion>
           </div>
-          <div className="p-3 border-t border-gray-500">
-            <h5></h5>
+          <div className="p-3 border-t border-gray-300">
+            <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <h1 className="text-base font-normal text-[#212121]">
+                  What is a tender sourcing platform?
+                </h1>
+              </AccordionSummary>
+              <AccordionDetails>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                eget.
+              </AccordionDetails>
+            </Accordion>
           </div>
-          <div className="p-3 border-t border-gray-500">
-            <h5></h5>
+          <div className="p-3 border-t border-gray-300">
+            <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <h1 className="text-base font-normal text-[#212121]">
+                  What are the 4 pillars of sourcing?
+                </h1>
+              </AccordionSummary>
+              <AccordionDetails>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                eget.
+              </AccordionDetails>
+            </Accordion>
           </div>
-          <div className="p-3 border-t border-gray-500">
-            <h5></h5>
+          <div className="p-3 border-t border-gray-300">
+            <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <h1 className="text-base font-normal text-[#212121]">
+                  How to apply for a tender?
+                </h1>
+              </AccordionSummary>
+              <AccordionDetails>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                eget.
+              </AccordionDetails>
+            </Accordion>
           </div>
-          <div className="p-3 border-t border-gray-500">
-            <h5></h5>
+          <div className="p-3 border-t border-gray-300">
+            <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <h1 className="text-base font-normal text-[#212121]">
+                  Is there a free trial available?
+                </h1>
+              </AccordionSummary>
+              <AccordionDetails>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                eget.
+              </AccordionDetails>
+            </Accordion>
           </div>
         </div>
       </div>

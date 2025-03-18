@@ -77,13 +77,13 @@ export const formatDateTime = (dateString) => {
 };
 export const formatIndianCurrency = (num) => {
   if (num >= 1_00_00_000) {
-    return (num / 1_00_00_000).toFixed(2) + " Cr"; // Crores
+    return (num / 1_00_00_000).toFixed(2) + " Cr"; 
   } else if (num >= 1_00_000) {
-    return (num / 1_00_000).toFixed(2) + " Lakhs"; // Lakhs
+    return (num / 1_00_000).toFixed(2) + " Lakhs"; 
   } else if (num >= 1_000) {
-    return (num / 1_000).toFixed(2) + "K"; // Thousands
+    return (num / 1_000).toFixed(2) + "K"; 
   }
-  return num.toString(); // If less than 1000, return as is
+  return num.toString();
 };
 export const carouselResponsive = {
   superLargeDesktop: { breakpoint: { max: 4000, min: 1024 }, items: 1 },
@@ -91,19 +91,4 @@ export const carouselResponsive = {
   tablet: { breakpoint: { max: 768, min: 464 }, items: 1 },
   mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
 };
-// export const CustomButtonGroup = ({ next, previous }) => (
-//   <div className="absolute top-1/2 w-full flex justify-between px-8 md:px-12 lg:px-16 -translate-y-1/2 ">
-//     <button
-//       onClick={previous}
-//       className="text-white bg-gray-800 p-3 rounded-full shadow-lg hover:bg-gray-700 translate-x-32"
-//     >
-//       <ArrowBackIcon />
-//     </button>
-//     <button
-//       onClick={next}
-//       className="text-white bg-gray-800 p-3 rounded-full shadow-lg hover:bg-gray-700 -translate-x-32"
-//     >
-//       <ArrowBackIcon />
-//     </button>
-//   </div>
-// );
+
