@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import Background from "../Components/Background";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Ribbons from "../Components/Ribbons";
 import logo from "../Assets/Logo.png";
+import { SignUpUser } from "../Redux/Slices/AuthSlice";
 const Register = () => {
+  const { error } = useSelector((s) => s.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: "",
+    first_name: "",
     email: "",
-    phone: "",
+    mobile_no: "",
     password: "",
     termsAccepted: false,
   });
@@ -33,8 +35,12 @@ const Register = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full Name is required";
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = "Full Name is required";
+    }
+    if (!formData.termsAccepted) {
+      newErrors.termsAccepted =
+        "Terms and Conditions must be accepted to signup.";
     }
 
     if (!formData.email.trim()) {
@@ -43,10 +49,10 @@ const Register = () => {
       newErrors.email = "Invalid email address";
     }
 
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
-    } else if (!/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = "Phone must be 10 digits";
+    if (!formData.mobile_no.trim()) {
+      newErrors.mobile_no = "Phone is required";
+    } else if (!/^\d{10}$/.test(formData.mobile_no)) {
+      newErrors.mobile_no = "Phone must be 10 digits";
     }
 
     if (!formData.password.trim()) {
@@ -59,13 +65,25 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return; //implement toaster
+    }
+    // if (validateForm()) {
+    //   console.log("Form Data:", formData);
+    //   dispatch(SignUpUser(formData));
+    // }
+    try {
+      const response = await dispatch(SignUpUser(formData)).unwrap();
 
-    if (validateForm()) {
-      console.log("Form Data:", formData);
-    } else {
-      console.log("Form has errors");
+      if (!response) {
+        return; // Stop execution, prevent navigation
+      }
+
+      navigate("/profile");
+    } catch (error) {
+      setErrors({ loginError: error });
     }
   };
 
@@ -100,16 +118,18 @@ const Register = () => {
                 </label>
                 <input
                   type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
                   onChange={handleChange}
                   className={`w-full p-2 border ${
                     errors.lname ? "border-red-500" : "border-gray-300"
                   } rounded`}
                 />
-                {errors.fullName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                {errors.first_name && (
+                  <p className="text-red-500 text-sm mt-1">
+                    *{errors.first_name}
+                  </p>
                 )}
               </div>
 
@@ -131,29 +151,31 @@ const Register = () => {
                   } rounded`}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  <p className="text-red-500 text-sm mt-1">*{errors.email}</p>
                 )}
               </div>
 
               <div className="mb-4">
                 <label
                   className="block text-sm font-medium mb-1"
-                  htmlFor="phone"
+                  htmlFor="mobile_no"
                 >
                   Phone
                 </label>
                 <input
                   type="text"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
+                  id="mobile_no"
+                  name="mobile_no"
+                  value={formData.mobile_no}
                   onChange={handleChange}
                   className={`w-full p-2 border ${
-                    errors.phone ? "border-red-500" : "border-gray-300"
+                    errors.mobile_no ? "border-red-500" : "border-gray-300"
                   } rounded`}
                 />
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                {errors.mobile_no && (
+                  <p className="text-red-500 text-sm mt-1">
+                    *{errors.mobile_no}
+                  </p>
                 )}
               </div>
 
@@ -175,7 +197,9 @@ const Register = () => {
                   } rounded`}
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    *{errors.password}
+                  </p>
                 )}
               </div>
               <div className="mb-2 flex items-center gap-4">
@@ -195,13 +219,13 @@ const Register = () => {
               </div>
               {errors.termsAccepted && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.termsAccepted}
+                  *{errors.termsAccepted}
                 </p>
               )}
 
               <button
                 type="submit"
-                className="w-full bg-[#212121] text-white p-2 rounded"
+                className="w-full bg-[#212121] text-white p-2 rounded mt-4"
               >
                 Register
               </button>
@@ -214,6 +238,9 @@ const Register = () => {
                 </a>
               </span>
             </div>
+            {errors.loginError && (
+              <p className="text-red-500 text-sm mt-1">*{errors.loginError}</p>
+            )}
           </div>
         </div>
       </div>

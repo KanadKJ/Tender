@@ -14,13 +14,16 @@ import howdoesitworks from "../Assets/howdoesitworks.svg";
 
 import { useDispatch, useSelector } from "react-redux";
 export default function Profile() {
+  const { userData } = useSelector((s) => s.auth);
+  console.log(userData);
+
   // hooks
   //local states
-  const [userData, setUserData] = useState({});
+
   const [formData, setFormData] = useState({
-    fullName: "",
+    first_name: userData?.firstName || "",
     email: "",
-    mobileNo: userData?.mobileNo || "",
+    mobile_no: userData?.mobileNo || "",
     companyName: "",
     gstin: "",
     yearOfEstablishment: "",
@@ -47,9 +50,9 @@ export default function Profile() {
     return re.test(String(email).toLowerCase());
   };
 
-  const validateMobileNo = (mobileNo) => {
+  const validateMobileNo = (mobile_no) => {
     const re = /^\+?\d{10,}$/;
-    return re.test(String(mobileNo));
+    return re.test(String(mobile_no));
   };
 
   const validateGSTIN = (gstin) => {
@@ -75,16 +78,16 @@ export default function Profile() {
     const newErrors = {};
 
     if (section === "personal") {
-      if (!formData.fullName) newErrors.fullName = "Full name is required";
+      if (!formData.first_name) newErrors.first_name = "Full name is required";
       if (!formData.email) {
         newErrors.email = "Email is required";
       } else if (!validateEmail(formData.email)) {
         newErrors.email = "Invalid email address";
       }
-      if (!formData.mobileNo) {
-        newErrors.mobileNo = "Phone number is required";
-      } else if (!validateMobileNo(formData.mobileNo)) {
-        newErrors.mobileNo = "Invalid phone number";
+      if (!formData.mobile_no) {
+        newErrors.mobile_no = "Phone number is required";
+      } else if (!validateMobileNo(formData.mobile_no)) {
+        newErrors.mobile_no = "Invalid phone number";
       }
     }
 
@@ -239,15 +242,15 @@ export default function Profile() {
               </label>
               <div className="w-full">
                 <input
-                  name="fullName"
-                  value={formData.fullName}
+                  name="first_name"
+                  value={formData.first_name}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
                   placeholder="Cameron Williamson"
                   disabled={!editSections.personal}
                 />
-                {errors.fullName && (
-                  <span className="text-red-500">{errors.fullName}</span>
+                {errors.first_name && (
+                  <span className="text-red-500">{errors.first_name}</span>
                 )}
               </div>
             </div>
@@ -275,15 +278,15 @@ export default function Profile() {
               </label>
               <div className="w-full">
                 <input
-                  name="mobileNo"
-                  value={formData.mobileNo}
+                  name="mobile_no"
+                  value={formData.mobile_no}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
                   placeholder="+91 9874563210"
                   disabled={!editSections.personal}
                 />
-                {errors.mobileNo && (
-                  <span className="text-red-500">{errors.mobileNo}</span>
+                {errors.mobile_no && (
+                  <span className="text-red-500">{errors.mobile_no}</span>
                 )}
               </div>
             </div>

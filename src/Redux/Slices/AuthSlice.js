@@ -27,6 +27,29 @@ export const GetUserDetails = createAsyncThunk(
     }
   }
 );
+export const SignUpUser = createAsyncThunk(
+  "auth/SignUpUser",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await TMGetUserDetails.post(`/SignupUser`, data);
+
+      if (response?.data?.status === 400) {
+        return rejectWithValue("Please fill valid data");
+      }
+      if (response?.data?.value[0] === "User already exists") {
+        return rejectWithValue(
+          "User already exists with this details,Please try to login"
+        );
+      }
+      return response?.data?.value;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Please fill valid data or try again later"
+      );
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -53,6 +76,18 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(GetUserDetails.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      .addCase(SignUpUser.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(SignUpUser.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+      })
+      .addCase(SignUpUser.rejected, (state, action) => {
         state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });
