@@ -26,6 +26,7 @@ import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import Ribbons from "../Components/Ribbons";
 export default function HomePage() {
   const { userData } = useSelector((s) => s.auth);
   const carouselRef = useRef(null);
@@ -558,7 +559,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
                 explicabo qui, facere sint laboriosam porro assumenda unde!
               </p>
               <div className="flex flex-col">
-                <span className="text-base font-medium">Tej Pratap Singh</span>
+                <span className="text-base font-medium">test user</span>
                 <span className="text-sm font-normal text-[#565656]">TEST</span>
               </div>
             </div>
@@ -576,7 +577,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
                 explicabo qui, facere sint laboriosam porro assumenda unde!
               </p>
               <div className="flex flex-col">
-                <span className="text-base font-medium">Tej Pratap Singh</span>
+                <span className="text-base font-medium">test user</span>
                 <span className="text-sm font-normal text-[#565656]">TEST</span>
               </div>
             </div>
@@ -594,7 +595,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
                 explicabo qui, facere sint laboriosam porro assumenda unde!
               </p>
               <div className="flex flex-col">
-                <span className="text-base font-medium">Tej Pratap Singh</span>
+                <span className="text-base font-medium">test user</span>
                 <span className="text-sm font-normal text-[#565656]">TEST</span>
               </div>
             </div>

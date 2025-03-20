@@ -1678,6 +1678,12 @@ export default function Tenders() {
                   tender?.published_date,
                   tender?.bid_submission_end_date
                 );
+
+                const corrigendum = dateDifferenceCalculator(
+                  tender?.corrigendum?.published_date,
+                  new Date().toISOString().slice(0, 19)
+                );
+
                 return (
                   <div
                     key={tender?.uid}
@@ -1738,9 +1744,15 @@ export default function Tenders() {
                           <h1 className="text-sm font-semibold">
                             Corrigendum : NIT{" "}
                           </h1>
-                          <h1 className="text-[#C9B00F] text-center text-sm">
-                            5 days ago
-                          </h1>
+                          {corrigendum?.diffDays ? (
+                            <h1 className="text-[#C9B00F] text-center text-sm">
+                              {corrigendum?.diffDays} days ago
+                            </h1>
+                          ) : (
+                            <h1 className="text-[#C9B00F] text-center text-sm">
+                              -
+                            </h1>
+                          )}
                         </div>
 
                         <div className="flex flex-col justify-center items-center ">

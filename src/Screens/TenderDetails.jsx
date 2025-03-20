@@ -233,51 +233,49 @@ export default function TenderDetails() {
                 </p>
               </div>
             </div>
-            <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
-              <div>
-                <h1 className="text-base font-semibold">
-                  Latest Corrigendum List
-                </h1>
-              </div>
-              <Divider />
-              <div>
-                <TableContainer component={Paper}>
-                  <Table aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Title</TableCell>
-                        <TableCell align="right">Type</TableCell>
-                        <TableCell align="right">Description</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tenderDetails?.corrigendums?.length !== 0 ? (
-                        tenderDetails?.corrigendums?.map((row) => (
-                          <TableRow
-                            key={row?.id}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {row?.title}
-                            </TableCell>
-                            <TableCell align="center">{row?.type}</TableCell>
-                            <TableCell align="right">
-                              {row?.description}
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell align="center">No Data</TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-            </div>
+            {tenderDetails?.corrigendums?.length !== 0
+              ? tenderDetails?.corrigendums?.map((row) => (
+                  <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
+                    <div>
+                      <h1 className="text-base font-semibold">
+                        Latest Corrigendum List
+                      </h1>
+                    </div>
+                    <Divider />
+                    <div>
+                      <TableContainer component={Paper}>
+                        <Table aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Title</TableCell>
+                              <TableCell align="right">Type</TableCell>
+                              <TableCell align="right">Description</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            <TableRow
+                              key={row?.id}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                {row?.title}
+                              </TableCell>
+                              <TableCell align="center">{row?.type}</TableCell>
+                              <TableCell align="right">
+                                {row?.description}
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </div>
+                  </div>
+                ))
+              : null}
             <div className="p-4 border rounded-md flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <h1 className="text-base font-medium">Tender Documents</h1>

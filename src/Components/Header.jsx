@@ -4,8 +4,9 @@ import logo from "../Assets/Logo.png";
 import { useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useState } from "react";
-import { Popover } from "@mui/material";
+import { Avatar, Popover } from "@mui/material";
 import { logout } from "../Redux/Slices/AuthSlice";
+import LogoutIcon from "@mui/icons-material/Logout";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { userData } = useSelector((s) => s.auth);
@@ -142,29 +143,53 @@ const Header = () => {
                   vertical: "bottom",
                   horizontal: "center",
                 }}
+                sx={{
+                  borderRadius: "25px",
+                }}
               >
-                <div className="p-4 w-full flex flex-col gap-4 min-w-40">
-                  <button
+                <div className="p-4 w-full flex flex-col justify-center items-center min-w-56">
+                  <Avatar
+                    sx={{
+                      bgcolor: "#0554F2",
+                      width: 80,
+                      height: 80,
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    {userData?.firstName?.split(" ")[0][0]?.toUpperCase()}
+                    {(userData?.firstName?.split(" ")[1]?.length &&
+                      userData?.firstName?.split(" ")[1][0]?.toUpperCase()) ||
+                      userData?.firstName
+                        ?.split(" ")[0]
+                        [
+                          userData?.firstName?.split(" ")[0]?.length - 1
+                        ]?.toUpperCase()}
+                  </Avatar>
+                  <div
+                    className="cursor-pointer mt-5"
                     onClick={() => navigate("/profile")}
-                    className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                      hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                   >
-                    Profile
-                  </button>
+                    <h1 className="text-2xl font-medium text-center">
+                      {userData?.firstName}
+                    </h1>
+                    <h6 className="text-xs font-normal text-[#747474] text-center">
+                      {userData?.email}
+                    </h6>
+                  </div>
+                  <div className="border rounded-md p-3 mt-5">
+                    <h6 className="text-xs font-semibold text-[#747474] text-center">
+                      PLAN DETAILS
+                    </h6>
+                    <p className="p-1">Valid Till : 01 Dec 2026 </p>
+                  </div>
                   <button
-                    onClick={() => navigate("/")}
-                    className="flex flex-col gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                      hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
-                  >
-                    <span>Plan details</span>
-                    <span className="text-xs">Valid till : 01 Dec 2025</span>
-                  </button>
-                  <button
+                    className="p-1 mt-5 text-[#565656] flex gap-2"
                     onClick={() => dispatch(logout())}
-                    className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                      hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                   >
-                    Logout
+                    <LogoutIcon />
+                    <span className="text-[#565656] text-sm font-semibold">
+                      Logout
+                    </span>
                   </button>
                 </div>
               </Popover>

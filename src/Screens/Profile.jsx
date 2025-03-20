@@ -22,7 +22,7 @@ export default function Profile() {
 
   const [formData, setFormData] = useState({
     first_name: userData?.firstName || "",
-    email: "",
+    email: userData?.email || "",
     mobile_no: userData?.mobileNo || "",
     companyName: "",
     gstin: "",

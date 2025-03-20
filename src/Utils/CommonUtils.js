@@ -55,7 +55,6 @@ export const queryBuilder = (params) => {
   return queryParams.length ? `?${queryParams.join("&")}` : "";
 };
 export const formatDateTime = (dateString) => {
-  console.log(dateString);
   if (dateString === undefined) return [null, null];
   const date = new Date(dateString);
 
@@ -76,14 +75,10 @@ export const formatDateTime = (dateString) => {
   return [formattedDate, formattedTime];
 };
 export const formatIndianCurrency = (num) => {
-  if (num >= 1_00_00_000) {
-    return (num / 1_00_00_000).toFixed(2) + " Cr";
-  } else if (num >= 1_00_000) {
-    return (num / 1_00_000).toFixed(2) + " Lakhs";
-  } else if (num >= 1_000) {
-    return (num / 1_000).toFixed(2) + "K";
-  }
-  return num.toString();
+  return `₹ ${new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num)}`;
 };
 export const carouselResponsive = {
   superLargeDesktop: { breakpoint: { max: 4000, min: 1024 }, items: 1 },
@@ -92,19 +87,22 @@ export const carouselResponsive = {
   mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
 };
 export const dateDifferenceCalculator = (d1, d2) => {
-  const diffTime = new Date(d2) - new Date(d1);
-  let col = "";
+  const date1 = new Date(d1);
+  const date2 = new Date(d2);
+
+  if (isNaN(date1) || isNaN(date2)) {
+    return { diffDays: null, col: "#000000" };
+  }
+
+  const diffTime = date2 - date1;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
+  let col = "#C91D1D";
   if (diffDays > 20) {
     col = "#14AD30";
-  } else if (diffDays < 20 && diffDays > 15) {
+  } else if (diffDays > 15) {
     col = "#E58B15";
-  } else {
-    col = "#C91D1D";
   }
-  return {
-    diffDays,
-    col,
-  };
+
+  return { diffDays, col };
 };
