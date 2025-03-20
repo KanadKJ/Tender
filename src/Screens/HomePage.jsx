@@ -17,6 +17,15 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import tm from "../Assets/testimonial.png";
+import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
+import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
+import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined";
+import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
+import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 export default function HomePage() {
   const { userData } = useSelector((s) => s.auth);
   const carouselRef = useRef(null);
@@ -39,7 +48,7 @@ export default function HomePage() {
   return (
     <div className="mt-36 mb-10 z-40 ">
       <Background type={"default"} show={"yes"} isHome="yes" />
-      <div className="flex px-6 md:px-12 lg:px-24 xl:px-32 ">
+      <div className="flex justify-center items-center px-6 md:px-12 lg:px-24 xl:px-32 ">
         <div className="flex flex-col justify-center items-center gap-4">
           <div className="w-3/4">
             <h1 className="font-extrabold text-5xl flex-1 text-center text-wrap">
@@ -142,74 +151,383 @@ export default function HomePage() {
         }}
         className="lg:mt-64 min-h-full bg-slate-500 relative top-10 text-white px-6 md:px-12 lg:px-24 xl:px-32"
       >
-        <div className="w-full flex flex-col md:flex-row justify-center items-center gap-6">
-          <div className="w-full my-8">
-            <h1 className="text-4xl font-semibold w-full flex flex-col gap-6">
-              <span>Use Our Cutting Edge Tech</span>
-              <span>& Boost Your Business to</span>
-              <span>the Next Level</span>
-            </h1>
-          </div>
-          <div className="w-full flex flex-col gap-8 my-16">
-            <div className="relative pb-4">
-              <h1 className="text-xl text-right font-semibold">
-                Realtime Update
-              </h1>
-              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
-            </div>
-            <div className="relative pb-4">
-              <h1 className="text-xl text-right font-semibold">
-                Personalized Daily Notifications
-              </h1>
-              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
-            </div>
-            <div className="relative pb-4">
-              <h1 className="text-xl text-right font-semibold">Easy Search</h1>
-              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
-            </div>
-            <div className="relative pb-4">
-              <h1 className="text-xl text-right font-semibold">Get Quote</h1>
-              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
-            </div>
-          </div>
-        </div>
-        <div className="w-full flex flex-col gap-8 pb-16">
-          <div className="w-full flex justify-center items-center">
+        <div className="w-full flex flex-col gap-8">
+          <div className="w-full  mt-16 flex justify-center items-center">
             <h1 className="font-semibold text-2xl uppercase">
               Our Achivements
             </h1>
           </div>
           <div className="flex flex-col md:flex-row gap-10 justify-center items-center">
             <div
-              className="relative px-8 py-6 bg-gradient-to-br from-white/30 to-transparent 
-    rounded-2xl border border-white/30 text-center w-72"
+              className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent 
+rounded-2xl border border-white/30 text-center  w-72 sm:w-52 lg:w-72 h-32"
             >
               {/* Upper-left Fading Shadow */}
               <div
                 className="absolute top-0 left-0 w-full h-full 
-      bg-transparent rounded-2xl 
-      shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"
+  bg-transparent rounded-2xl 
+  shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"
               ></div>
 
               {/* Number */}
-              <h1 className="relative text-4xl font-bold text-white">24k+</h1>
+              <h1 className="relative text-4xl font-bold text-white">87%</h1>
 
               {/* Description */}
               <p className="relative font-normal text-base text-white/80">
-                number of successful tenders
+                tender purchase growth
               </p>
             </div>
+            <div
+              className="relative flex flex-col justify-center gap-1 bg-gradient-to-br from-white/30 to-transparent 
+rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-36"
+            >
+              {/* Upper-left Fading Shadow */}
+              <div
+                className="absolute top-0 left-0 w-full h-full 
+  bg-transparent rounded-2xl 
+  shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"
+              ></div>
 
-            <div className="px-8 py-6 bg-gradient-to-br from-[#ffffff4c] to-transparent rounded-2xl border border-white/30 shadow-lg text-center w-72">
-              <h1 className="text-4xl font-bold text-white">87%</h1>
-              <p className="font-normal text-base">tender purchase growth</p>
+              {/* Number */}
+              <h1 className="relative text-5xl  font-bold text-white">450k+</h1>
+
+              {/* Description */}
+              <p className="relative font-normal text-lg text-white/80">
+                number of active tenders
+              </p>
             </div>
-            <div className="px-8 py-6 bg-gradient-to-br from-[#ffffff4c] to-transparent rounded-2xl border border-white/30 shadow-lg text-center w-72">
-              <h1 className="text-4xl font-bold text-white">9/10</h1>
-              <p className="font-normal text-base">
+            <div
+              className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent 
+rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
+            >
+              {/* Upper-left Fading Shadow */}
+              <div
+                className="absolute top-0 left-0 w-full h-full 
+  bg-transparent rounded-2xl 
+  shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"
+              ></div>
+
+              {/* Number */}
+              <h1 className="relative text-4xl font-bold text-white">9/10</h1>
+
+              {/* Description */}
+              <p className="relative font-normal text-base text-white/80">
                 customer satisfaction score
               </p>
             </div>
+          </div>
+        </div>
+        <div className="w-full flex flex-col md:flex-row justify-center items-center gap-6">
+          <div className="w-full ">
+            <h1 className="text-4xl font-semibold w-full flex flex-col gap-3 md:gap-6">
+              <span>Take a demo & get a </span>
+              <span>guided walkthrough with a </span>
+              <span>platform expert</span>
+            </h1>
+          </div>
+          <div className="w-full flex flex-col gap-8 my-16">
+            <div className="relative pb-4 flex justify-center md:justify-end items-center gap-1">
+              <h1 className="text-xl text-right font-semibold">
+                Keyword & Category Searches
+              </h1>
+              <div className="absolute bottom-0 right-0 w-full md:w-3/4  h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
+            </div>
+            <div className="relative pb-4 flex justify-center md:justify-end items-center gap-1">
+              <h1 className="text-xl text-right font-semibold ">
+                Alerts on Email, SMS & WhatsApp
+              </h1>
+              <div className="absolute bottom-0 right-0 w-full  h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
+            </div>
+            <div className="relative pb-4 flex justify-center md:justify-end items-center gap-1">
+              <h1 className="text-xl text-right font-semibold">
+                Tender Document Downloads
+              </h1>
+              <div className="absolute bottom-0 right-0 w-full md:w-3/4 h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full  grid grid-cols-2 md:grid-cols-4  gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-32">
+        <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+          <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+            <ArticleOutlinedIcon
+              sx={{
+                height: 25,
+                width: 25,
+              }}
+            />
+          </span>
+          <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+            Get Documents Easily
+          </h6>
+          <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+            Download all the documents like Tender notice, NIT, BOQ etc
+          </p>
+        </div>
+        <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+          <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+            <NotificationsActiveOutlinedIcon
+              sx={{
+                height: 25,
+                width: 25,
+              }}
+            />
+          </span>
+          <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+            Get notified for changes
+          </h6>
+          <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+            Download all the documents like Tender notice, NIT, BOQ etc
+          </p>
+        </div>
+        <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+          <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+            <SettingsSuggestOutlinedIcon
+              sx={{
+                height: 25,
+                width: 25,
+              }}
+            />
+          </span>
+          <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+            Automate your search
+          </h6>
+          <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+            Download all the documents like Tender notice, NIT, BOQ etc
+          </p>
+        </div>
+        <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+          <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+            <SearchOutlinedIcon
+              sx={{
+                height: 25,
+                width: 25,
+              }}
+            />
+          </span>
+          <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+            Search easily like Google
+          </h6>
+          <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+            Download all the documents like Tender notice, NIT, BOQ etc
+          </p>
+        </div>
+      </div>
+      <div className="w-full flex flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
+        <h1 className="w-full text-center text-4xl font-normal text-black">
+          Explore by Keywords
+        </h1>
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 ">
+          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ArticleOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Get Documents Easily
+            </h6>
+            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+              Download all the documents like Tender notice, NIT, BOQ etc
+            </p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ArticleOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Get Documents Easily
+            </h6>
+            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+              Download all the documents like Tender notice, NIT, BOQ etc
+            </p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ArticleOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Get Documents Easily
+            </h6>
+            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+              Download all the documents like Tender notice, NIT, BOQ etc
+            </p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ArticleOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Get Documents Easily
+            </h6>
+            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+              Download all the documents like Tender notice, NIT, BOQ etc
+            </p>
+          </div>
+        </div>
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 ">
+          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ArticleOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Get Documents Easily
+            </h6>
+            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+              Download all the documents like Tender notice, NIT, BOQ etc
+            </p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ArticleOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Get Documents Easily
+            </h6>
+            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+              Download all the documents like Tender notice, NIT, BOQ etc
+            </p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ArticleOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Get Documents Easily
+            </h6>
+            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
+              Download all the documents like Tender notice, NIT, BOQ etc
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="w-full flex flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
+        <h1 className="w-full text-center text-4xl font-normal text-black">
+          Tender by Categories
+        </h1>
+        <div className="w-full grid grid-cols-2 md:grid-cols-5 justify-center gap-4 ">
+          <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <AccountBalanceOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Tender by Sector
+            </h6>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <SearchOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Tender by Keyword
+            </h6>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <CurrencyRupeeOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Tender by Financiers
+            </h6>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <StarBorderRoundedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Tender by Authority
+            </h6>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+              <ApartmentOutlinedIcon
+                sx={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+            </span>
+            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+              Tender by City
+            </h6>
+          </div>
+        </div>
+      </div>
+      <div className="w-full flex flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
+        <h1 className="w-full text-center text-4xl font-normal text-black">
+          Guaranteed Value for Money Plans
+        </h1>
+        <div className="flex flex-col md:flex-row justify-between mt-4">
+          <div className="text-green-500 flex justify-center items-center gap-2">
+            <CheckCircleOutlineOutlinedIcon />
+            <h1 className="text-[#212121] text-xl font-normal">
+              No Key Restriction
+            </h1>
+          </div>
+          <div className="text-green-500 flex justify-center items-center gap-2">
+            <CheckCircleOutlineOutlinedIcon />
+            <h1 className="text-[#212121] text-xl font-normal">
+              3 Days Free Trial for New Year
+            </h1>
+          </div>
+          <div className="text-green-500 flex justify-center items-center gap-2">
+            <CheckCircleOutlineOutlinedIcon />
+            <h1 className="text-[#212121] text-xl font-normal">
+              No Credit Card Required
+            </h1>
           </div>
         </div>
       </div>
