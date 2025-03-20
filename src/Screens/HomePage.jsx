@@ -553,20 +553,13 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
             />
             <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
               <p className="text-justify text-base text-[#565656] font-normal">
-                I've been using the Runway tender platform for some time now,
-                and it has proven to be an invaluable resource. The platform
-                delivers the latest tenders right to my dashboard as soon as
-                they are released, ensuring I never miss out on an opportunity.
-                Additionally, the detailed and accurate pricing for the
-                materials they offer helps me plan and budget effectively,
-                giving me the confidence to make well-informed decisions every
-                time.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
+                vitae recusandae ab ut cumque reprehenderit accusantium beatae
+                explicabo qui, facere sint laboriosam porro assumenda unde!
               </p>
               <div className="flex flex-col">
                 <span className="text-base font-medium">Tej Pratap Singh</span>
-                <span className="text-sm font-normal text-[#565656]">
-                  Runway Tender Platform
-                </span>
+                <span className="text-sm font-normal text-[#565656]">TEST</span>
               </div>
             </div>
           </div>
@@ -578,20 +571,13 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
             />
             <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
               <p className="text-justify text-base text-[#565656] font-normal">
-                I've been using the Runway tender platform for some time now,
-                and it has proven to be an invaluable resource. The platform
-                delivers the latest tenders right to my dashboard as soon as
-                they are released, ensuring I never miss out on an opportunity.
-                Additionally, the detailed and accurate pricing for the
-                materials they offer helps me plan and budget effectively,
-                giving me the confidence to make well-informed decisions every
-                time.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
+                vitae recusandae ab ut cumque reprehenderit accusantium beatae
+                explicabo qui, facere sint laboriosam porro assumenda unde!
               </p>
               <div className="flex flex-col">
                 <span className="text-base font-medium">Tej Pratap Singh</span>
-                <span className="text-sm font-normal text-[#565656]">
-                  Runway Tender Platform
-                </span>
+                <span className="text-sm font-normal text-[#565656]">TEST</span>
               </div>
             </div>
           </div>
@@ -603,20 +589,13 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
             />
             <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
               <p className="text-justify text-base text-[#565656] font-normal">
-                I've been using the Runway tender platform for some time now,
-                and it has proven to be an invaluable resource. The platform
-                delivers the latest tenders right to my dashboard as soon as
-                they are released, ensuring I never miss out on an opportunity.
-                Additionally, the detailed and accurate pricing for the
-                materials they offer helps me plan and budget effectively,
-                giving me the confidence to make well-informed decisions every
-                time.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
+                vitae recusandae ab ut cumque reprehenderit accusantium beatae
+                explicabo qui, facere sint laboriosam porro assumenda unde!
               </p>
               <div className="flex flex-col">
                 <span className="text-base font-medium">Tej Pratap Singh</span>
-                <span className="text-sm font-normal text-[#565656]">
-                  Runway Tender Platform
-                </span>
+                <span className="text-sm font-normal text-[#565656]">TEST</span>
               </div>
             </div>
           </div>
