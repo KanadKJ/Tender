@@ -54,12 +54,12 @@ export const GetOrgList = createAsyncThunk(
 export const GetDrpList = createAsyncThunk(
   "common/GetDrpList",
   async (params, { rejectWithValue }) => {
-    console.log(params);
     const organizationIds = params?.map((item) => item.id);
     const queryString = organizationIds
       ?.map((id) => `organisation_id=${id}`)
       .join("&");
     console.log(queryString);
+    if (params?.length === 0) return [];
 
     try {
       const res = await ScrpApiTendersMetadata.get(
@@ -99,7 +99,7 @@ export const GetSubDivList = createAsyncThunk(
 
     try {
       const res = await ScrpApiTendersMetadata.get(
-        `sub_divisions/?${queryString}`
+        `/sub_divisions/?${queryString}`
       );
       return res.data?.results;
     } catch (error) {
@@ -116,7 +116,7 @@ export const GetSectionList = createAsyncThunk(
     console.log(queryString);
 
     try {
-      const res = await ScrpApiTendersMetadata.get(`sections/?${queryString}`);
+      const res = await ScrpApiTendersMetadata.get(`/sections/?${queryString}`);
       return res.data?.results;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -130,7 +130,7 @@ export const GetUnitList = createAsyncThunk(
     const Ids = params?.map((item) => item.id);
     const queryString = Ids?.map((id) => `section_id=${id}`).join("&");
     try {
-      const res = await ScrpApiTendersMetadata.get(`sections/?${queryString}`);
+      const res = await ScrpApiTendersMetadata.get(`/sections/?${queryString}`);
       return res.data?.results;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

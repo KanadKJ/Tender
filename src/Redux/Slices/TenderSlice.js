@@ -11,7 +11,7 @@ export const GetTenderList = createAsyncThunk(
   "tender/GetTenderList",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await ScrpApiTenders.get("/tenders");
+      const res = await ScrpApiTenders.get("/tenders/");
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -22,7 +22,7 @@ export const GetTenderListWithFilters = createAsyncThunk(
   "tender/GetTenderListWithFilters",
   async (params, { rejectWithValue }) => {
     try {
-      const res = await ScrpApiTenders.get(`/tenders?${params}`);
+      const res = await ScrpApiTenders.get(`/tenders/?${params}`);
 
       return res.data;
     } catch (error) {

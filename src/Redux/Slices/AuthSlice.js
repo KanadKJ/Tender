@@ -11,7 +11,7 @@ export const GetUserDetails = createAsyncThunk(
   "auth/GetUserDetails", // Corrected action type
   async (data, { rejectWithValue }) => {
     try {
-      const response = await TMGetUserDetails.post(`/GetUserDetails`, data);
+      const response = await TMGetUserDetails.post(`/GetUserDetails/`, data);
 
       if (!response?.data?.value?.length) {
         return rejectWithValue("Invalid Email or Password");
@@ -31,7 +31,7 @@ export const SignUpUser = createAsyncThunk(
   "auth/SignUpUser",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await TMGetUserDetails.post(`/SignupUser`, data);
+      const response = await TMGetUserDetails.post(`/SignupUser/`, data);
 
       if (response?.data?.status === 400) {
         return rejectWithValue("Please fill valid data");

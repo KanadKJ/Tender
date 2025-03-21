@@ -8,7 +8,7 @@ export const ScrpApiTenders = axios.create({
   },
 });
 export const ScrpApiTendersMetadata = axios.create({
-  baseURL: `${SCRP_BASE_URL}/metadata`,
+  baseURL: `${SCRP_BASE_URL}/metadata/`,
   headers: {
     "Content-Type": "application/json",
   },
