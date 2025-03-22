@@ -73,7 +73,8 @@ export default function Tenders() {
   const [savedFilters, setSavedFilters] = useState([
     {
       name: "Saved 1",
-      filterLink: "state=29",
+      filterLink:
+        "ordering=-value_in_rs&organisations=1&value_in_rs_min=100000&value_in_rs_max=500000000&published_date_after=2025-03-07&published_date_before=2025-03-22",
     },
     {
       name: "Saved 2",
@@ -85,7 +86,7 @@ export default function Tenders() {
     },
     {
       name: "Saved 3",
-      filterLink: "state=29",
+      filterLink: "keywords=LED&value_in_rs_min=10000&value_in_rs_max=10000000",
     },
   ]);
 

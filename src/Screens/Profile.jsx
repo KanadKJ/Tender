@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
 import editSvg from "../Assets/Edit.svg";
-import profile from "../Assets/profile.svg";
-import download from "../Assets/download.svg";
-import Enquiries from "../Assets/Enquiries.svg";
-import locked from "../Assets/locked.svg";
-import logout from "../Assets/logout.svg";
-import rupee from "../Assets/rupee.svg";
-import saved from "../Assets/saved.svg";
-import trems from "../Assets/trems.svg";
-import viewed from "../Assets/viewed.svg";
-import howdoesitworks from "../Assets/howdoesitworks.svg";
 
 import { useDispatch, useSelector } from "react-redux";
+import Sidebar from "../Components/SideBar";
 export default function Profile() {
   const { userData } = useSelector((s) => s.auth);
   console.log(userData);
@@ -128,93 +119,8 @@ export default function Profile() {
   };
 
   return (
-    <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10">
-      <Background type="empty" />
-      <section className="mt-[5.2rem] flex justify-between gap-4">
-        <nav className="hidden md:flex justify-center items-start  max-w-[250px] w-full  rounded-md sticky">
-          <ul className="w-full flex flex-col gap-2">
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={profile} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Profile
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={rupee} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Active Plan
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={Enquiries} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Enquiries
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={viewed} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Viewed Tenders
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={download} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Downloaded Tenders
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={saved} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Followed Tenders
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={howdoesitworks} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                How it Works
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={locked} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Privacy Policy
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={trems} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Terms & Conditions
-              </span>
-            </li>
-            <li className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md">
-              <span>
-                <img src={logout} />
-              </span>
-              <span className="text-[#565656] font-normal text-base">
-                Logout
-              </span>
-            </li>
-          </ul>
-        </nav>
+    <div>
+      <section className=" flex justify-between gap-4">
         <main className="w-full flex flex-col gap-5 ">
           <div className="flex flex-col w-full p-5 gap-5 rounded-lg shadow-md bg-white">
             <div className="w-full flex justify-between">

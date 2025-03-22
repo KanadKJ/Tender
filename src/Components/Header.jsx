@@ -167,7 +167,7 @@ const Header = () => {
                   </Avatar>
                   <div
                     className="cursor-pointer mt-5"
-                    onClick={() => navigate("/profile")}
+                    onClick={() => navigate("/dashboard")}
                   >
                     <h1 className="text-2xl font-medium text-center">
                       {userData?.firstName}

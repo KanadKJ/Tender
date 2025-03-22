@@ -106,3 +106,21 @@ export const dateDifferenceCalculator = (d1, d2) => {
 
   return { diffDays, col };
 };
+
+export const testJson = {
+  ORGANIZATION: [],
+  STATE: [],
+  DISTRICT: [],
+  DEPARTMENT: [],
+  DIVISION: [],
+  SUB_DIVISION: [],
+  SECTION: [],
+  UNIT: [],
+  Keyword: [],
+  Category: [],
+  Pin_Code: [],
+  Tender_id: [],
+  expiryDate: "",
+};
+//uid
+// expiry date

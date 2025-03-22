@@ -4,35 +4,54 @@ import MainLayout from "../Layouts/MainLayout";
 import Login from "../Screens/Login";
 import Register from "../Screens/Register";
 import Profile from "../Screens/Profile";
-import Tenders from "../Screens/Tenders";
 import ProtectedRoutes from "./ProtectedRoutes";
-import TenderPer from "../Screens/TenderPer";
+import Dashboard from "../Screens/Dashboard";
+import SystemConfigSuper from "../Screens/SystemConfigSuper";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
-const TendersPage = lazy(() => import("../Screens/Tenders"));
+const TendersPage = lazy(() => import("../Screens/TenderPer"));
 const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
 
 const AppRouter = () => {
   return (
-    <Router>
+    <Router basename="/">
       <Suspense fallback={<h1>Loading...</h1>}>
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Register />} />
             {/* <Route path="/tenders" element={<TendersPage />} /> */}
-            <Route path="/tenders/" element={<TenderPer />} />
+            <Route path="/tenders/" element={<TendersPage />} />
             <Route index element={<HomePage />} />
-            <Route
-              path="profile"
-              element={
-                <ProtectedRoutes>
-                  <Profile />
-                </ProtectedRoutes>
-              }
-            />
+
             <Route path="/tenders/:id" element={<TenderDetails />} />
             <Route path="*" element={<HomePage />} />
+            <Route path="/dashboard" element={<Dashboard />}>
+              <Route
+                index
+                element={
+                  <ProtectedRoutes>
+                    <Profile />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoutes>
+                    <Profile />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="SystemConfigSuper"
+                element={
+                  <ProtectedRoutes>
+                    <SystemConfigSuper />
+                  </ProtectedRoutes>
+                }
+              />
+            </Route>
           </Route>
         </Routes>
       </Suspense>

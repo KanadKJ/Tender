@@ -26,7 +26,16 @@ import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import Ribbons from "../Components/Ribbons";
+import wave from "../Assets/Waves.png";
+import i1 from "../Assets/i1.png";
+import i2 from "../Assets/i2.png";
+import i3 from "../Assets/i3.png";
+import i4 from "../Assets/i4.png";
+import i5 from "../Assets/i5.png";
+import i6 from "../Assets/i6.png";
+import i7 from "../Assets/i7.png";
+import ExplorGrid from "../Components/ExplorGrid";
+import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 export default function HomePage() {
   const { userData } = useSelector((s) => s.auth);
   const carouselRef = useRef(null);
@@ -142,6 +151,22 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+      <div className="w-full lg:mt-64 flex justify-center items-center flex-col gap-1 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-10">
+        <div className="flex justify-center items-center gap-2">
+          <PlayCircleFilledWhiteOutlinedIcon />
+          <span className="text-2xl font-normal text-[#565656]">
+            See how it works
+          </span>
+        </div>
+        <div>
+          <button
+            className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+                                hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+          >
+            Register Now ! It’s free
+          </button>
+        </div>
+      </div>
       <div
         style={{
           backgroundImage: `url(${gradiant})`, // Corrected syntax
@@ -150,7 +175,7 @@ export default function HomePage() {
           backgroundPosition: "center",
           objectFit: "contain",
         }}
-        className="lg:mt-64 min-h-full bg-slate-500 relative top-10 text-white px-6 md:px-12 lg:px-24 xl:px-32"
+        className="lg:mt-34 min-h-full bg-slate-500 relative top-10 text-white px-6 md:px-12 lg:px-24 xl:px-32"
       >
         <div className="w-full flex flex-col gap-8">
           <div className="w-full  mt-16 flex justify-center items-center">
@@ -319,120 +344,43 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
           Explore by Keywords
         </h1>
         <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 ">
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
-            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
-              <ArticleOutlinedIcon
-                sx={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </span>
-            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-              Get Documents Easily
-            </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
-            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
-              <ArticleOutlinedIcon
-                sx={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </span>
-            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-              Get Documents Easily
-            </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
-            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
-              <ArticleOutlinedIcon
-                sx={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </span>
-            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-              Get Documents Easily
-            </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
-            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
-              <ArticleOutlinedIcon
-                sx={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </span>
-            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-              Get Documents Easily
-            </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
-          </div>
+          <ExplorGrid
+            title={"Construction Tenders"}
+            subTitle={"11.4K Tenders"}
+            pic={i1}
+          />
+          <ExplorGrid
+            title={"Road Tenders"}
+            subTitle={"11.4K Tenders"}
+            pic={i2}
+          />
+          <ExplorGrid
+            title={"Water Tenders"}
+            subTitle={"11.4K Tenders"}
+            pic={i3}
+          />
+          <ExplorGrid
+            title={"Building Tenders"}
+            subTitle={"11.4K Tenders"}
+            pic={i4}
+          />
         </div>
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 ">
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
-            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
-              <ArticleOutlinedIcon
-                sx={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </span>
-            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-              Get Documents Easily
-            </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
-            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
-              <ArticleOutlinedIcon
-                sx={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </span>
-            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-              Get Documents Easily
-            </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
-            <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
-              <ArticleOutlinedIcon
-                sx={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </span>
-            <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-              Get Documents Easily
-            </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
-          </div>
+          <ExplorGrid
+            title={"Electrical Tenders"}
+            subTitle={"11.4K Tenders"}
+            pic={i5}
+          />
+          <ExplorGrid
+            title={"Painting Tenders"}
+            subTitle={"11.4K Tenders"}
+            pic={i6}
+          />
+          <ExplorGrid
+            title={"Medical Tenders"}
+            subTitle={"11.4K Tenders"}
+            pic={i7}
+          />
         </div>
       </div>
       <div className="w-full flex flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
@@ -507,7 +455,17 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
+
+      <div
+        style={{
+          backgroundImage: `url(${wave})`, // Corrected syntax
+          backgroundSize: "cover", // Ensures it covers the area
+          backgroundRepeat: "no-repeat", // Prevents repeating
+          backgroundPosition: "center",
+          objectFit: "contain",
+        }}
+        className="relative top-10 text-white px-6 md:px-12 lg:px-24 xl:px-32 min-h-72 flex flex-col justify-center items-center gap-8"
+      >
         <h1 className="w-full text-center text-4xl font-normal text-black">
           Guaranteed Value for Money Plans
         </h1>
@@ -530,6 +488,15 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
               No Credit Card Required
             </h1>
           </div>
+        </div>
+        <div className="w-full flex justify-center items-center">
+          <button
+            className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
+                group"
+          >
+            View Pricing Plans
+          </button>
         </div>
       </div>
       <div className="w-full flex flex-col items-center relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">

@@ -30,6 +30,7 @@ import {
   dateOptions,
   formatDateTime,
   formatIndianCurrency,
+  testJson,
 } from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
@@ -69,7 +70,17 @@ export default function TenderPer() {
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [savedFilters, setSavedFilters] = useState([]);
+  const [savedFilters, setSavedFilters] = useState([
+    {
+      name: "Saved 3",
+      filterLink: "keywords=LED&value_in_rs_min=10000&value_in_rs_max=10000000",
+    },
+    {
+      name: "Saved 1",
+      filterLink:
+        "ordering=-value_in_rs&organisations=1&value_in_rs_min=100000&value_in_rs_max=500000000&published_date_after=2025-03-07&published_date_before=2025-03-22",
+    },
+  ]);
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
@@ -148,6 +159,8 @@ export default function TenderPer() {
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
+
+  // const [newDist, setNewDist] = useState({});
   const [dateOption, setDateOption] = useState("");
   const queryString = useQueryParams(filters);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -158,6 +171,7 @@ export default function TenderPer() {
   useEffect(() => {
     dispatch(GetStatesList());
     dispatch(GetOrgList());
+    dispatch(GetDistrictsList(29));
   }, []);
   useEffect(() => {
     const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
@@ -264,8 +278,7 @@ export default function TenderPer() {
     });
 
     console.log("run end");
-  }, []);
-  useEffect(() => {}, [tenderData]);
+  }, [tenderData]);
 
   useEffect(() => {
     const organisationIds = searchParams.getAll("organisations") || [];
@@ -350,39 +363,8 @@ export default function TenderPer() {
     });
   }, [sectionsData]);
 
-  /**
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
-
-
-
-
-
-
-
-
-
-
-
-
- */
   useEffect(() => {
     console.log("rerendered");
-
     dispatch(GetTenderListWithFilters(searchParams.toString()));
   }, [searchParams]);
   const handleClick = (event, id) => {
@@ -422,7 +404,6 @@ export default function TenderPer() {
   };
   const handleFilterSaved = () => {
     handleClose();
-    dispatch(GetTenderListWithFilters(searchParams.toString()));
     navigate(`?${queryString}`, { replace: true });
   };
   const handleOrderingChange = (event, newValue) => {
@@ -1109,6 +1090,12 @@ export default function TenderPer() {
                     id="districts-autocomplete"
                     options={districtsData}
                     disableCloseOnSelect
+                    getOptionDisabled={(option) =>
+                      testJson.DISTRICT.length > 0 &&
+                      !testJson.DISTRICT.some(
+                        (district) => district.id === option.id
+                      )
+                    }
                     getOptionLabel={(option) => option.name}
                     value={filters.districts} // Pass the full array of selected district objects
                     onChange={(event, newValue) => {
@@ -1779,14 +1766,14 @@ export default function TenderPer() {
                 return (
                   <div
                     key={tender?.uid}
-                    className={`flex flex-col md:flex-row w-full justify-between ${
+                    className={`flex flex-col md:flex-row  justify-between ${
                       i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
-                    } py-6  pl-4 rounded-md gap-4 min-h-56`}
+                    } py-6  pl-4 rounded-md gap-4 min-h-56 max-w-xs sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg`}
                   >
                     <div className="w-full flex flex-col gap-5">
                       <div className="flex gap-4 flex-col ">
-                        <div>
-                          <h1 className="text-base font-semibold">
+                        <div className="">
+                          <h1 className="text-base font-semibold text-ellipsis">
                             {tender?.id}|{tender?.organisation_chain}
                           </h1>
                         </div>
@@ -1860,7 +1847,7 @@ export default function TenderPer() {
                           </span>
                         </div>
                       </div>
-                      <div className="w-full flex gap-4 justify-center items-center">
+                      <div className="w-full flex flex-col md:flex-row gap-4 justify-center items-center">
                         <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
                           <h6 className="text-sm font-normal text-[#565656]">
                             Published Date

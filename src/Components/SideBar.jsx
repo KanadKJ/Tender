@@ -1,52 +1,53 @@
 // src/components/Sidebar/Sidebar.js
 import React from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
+import profile from "../Assets/profile.svg";
+import download from "../Assets/download.svg";
+import Enquiries from "../Assets/Enquiries.svg";
+import locked from "../Assets/locked.svg";
+import logoutPic from "../Assets/logout.svg";
+import rupee from "../Assets/rupee.svg";
+import saved from "../Assets/saved.svg";
+import trems from "../Assets/trems.svg";
+import viewed from "../Assets/viewed.svg";
+import howdoesitworks from "../Assets/howdoesitworks.svg";
+import DriverLink from "./DriverLink";
+import { useDispatch } from "react-redux";
+import { logout } from "../Redux/Slices/AuthSlice";
 const Sidebar = ({ onLinkClick }) => {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  console.log(location.pathname);
+
   return (
-    <div className="h-full bg-white">
-      <nav>
-        <ul>
-          <li className="mb-2">
-            <Link
-              to="/"
-              className="block py-2 px-4 hover:bg-gray-700 rounded"
-              onClick={onLinkClick} // Close sidebar on mobile after clicking a link
-            >
-              Home
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link
-              to="/about"
-              className="block py-2 px-4 hover:bg-gray-700 rounded"
-              onClick={onLinkClick}
-            >
-              About
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link
-              to="/dashboard"
-              className="block py-2 px-4 hover:bg-gray-700 rounded"
-              onClick={onLinkClick}
-            >
-              Dashboard
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link
-              to="/register"
-              className="block py-2 px-4 hover:bg-gray-700 rounded"
-              onClick={onLinkClick}
-            >
-              register
-            </Link>
-          </li>
-          {/* Add more links */}
-        </ul>
-      </nav>
-    </div>
+    <nav className="flex justify-center items-start max-w-[250px] w-full  rounded-md sticky">
+      <ul className="w-full flex flex-col gap-2">
+        <DriverLink src={profile} name="Profile" to="profile" />
+        <DriverLink src={rupee} name="Active Plan" to="" />
+        <DriverLink src={Enquiries} name="Enquiries" to="" />
+        <DriverLink src={viewed} name="Viewed Tenders" to="" />
+        <DriverLink src={download} name="Downloaded Tenders" to="" />
+        <DriverLink src={saved} name="Followed Tenders" to="" />
+        <DriverLink src={howdoesitworks} name="How it Works" to="" />
+        <DriverLink src={locked} name="Privacy Policy" to="" />
+        <DriverLink src={trems} name="Terms & Conditions" to="" />
+        <DriverLink
+          src={trems}
+          name="SystemConfigSuper"
+          to="/dashboard/SystemConfigSuper"
+        />
+
+        <Link
+          onClick={() => dispatch(logout())}
+          className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md"
+        >
+          <span>
+            <img src={logoutPic} />
+          </span>
+          <span className="text-[#565656] font-normal text-base">Logout</span>
+        </Link>
+      </ul>
+    </nav>
   );
 };
 
