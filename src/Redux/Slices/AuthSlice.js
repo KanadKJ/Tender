@@ -1,17 +1,52 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { TMGetUserDetails } from "../../Api/TMAPI";
+import { TMGetApi } from "../../Api/TMAPI";
 
 const initialState = {
   userData: null, // Should be an object, not an array
   authIsLoading: false,
   error: null, // Consistent with rejection
 };
+// InsertFilterJson
+export const InsertFilterJson = createAsyncThunk(
+  "auth/InsertFilterJson",
+  async (
+    { adminFilters, userDetails, plan, userData },
+    { rejectWithValue }
+  ) => {
+    console.log(userData);
+    const planid = plan?.planId;
+    const userid = userDetails?.id;
+
+    // Convert filterjson to a JSON string
+    const filterjson = JSON.stringify(adminFilters);
+
+    try {
+      const res = await TMGetApi.post(
+        `/InsertFilterJson`,
+        {
+          filterjson, // This is now a string
+          userid,
+          planid,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json", // Ensure correct content type
+          },
+        }
+      );
+
+      return res.data?.value;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 
 export const GetUserDetails = createAsyncThunk(
   "auth/GetUserDetails", // Corrected action type
   async (data, { rejectWithValue }) => {
     try {
-      const response = await TMGetUserDetails.post(`/GetUserDetails/`, data);
+      const response = await TMGetApi.post(`/GetUserDetails/`, data);
 
       if (!response?.data?.value?.length) {
         return rejectWithValue("Invalid Email or Password");
@@ -31,7 +66,7 @@ export const SignUpUser = createAsyncThunk(
   "auth/SignUpUser",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await TMGetUserDetails.post(`/SignupUser/`, data);
+      const response = await TMGetApi.post(`/SignupUser/`, data);
 
       if (response?.data?.status === 400) {
         return rejectWithValue("Please fill valid data");

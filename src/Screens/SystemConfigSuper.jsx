@@ -6,11 +6,16 @@ import {
   GetDivList,
   GetDrpList,
   GetOrgList,
+  GetPlanList,
   GetSectionList,
   GetStatesList,
   GetSubDivList,
   GetUnitList,
+  GetUserList,
 } from "../Redux/Slices/CommonSlice";
+import { InsertFilterJson } from "../Redux/Slices/AuthSlice";
+
+const plans = [{}];
 
 export default function SystemConfigSuper() {
   const {
@@ -23,8 +28,14 @@ export default function SystemConfigSuper() {
     subDivData,
     sectionsData,
     unitData,
+    planData,
+    userList,
   } = useSelector((s) => s.common);
+  const { userData } = useSelector((s) => s.auth);
+  console.log(userList);
+
   const dispatch = useDispatch();
+  const [inputValue, setInputValue] = useState("");
   const [adminFilters, setAdminFilters] = useState({
     ORGANIZATION: [],
     STATE: [],
@@ -36,15 +47,35 @@ export default function SystemConfigSuper() {
     UNIT: [],
     Keyword: [],
     Category: [],
-    Pin_Code: [],
-    Tender_id: [],
-    expiryDate: "",
+    PinCode: [],
+    TenderValue: 10000,
+    ExpiryDate: "",
+    template: 0,
   });
 
+  //   {
+  //     "UNIT": [],
+  //     "STATE": [],
+  //     "Keyword": [],
+  //     "PinCode": [],
+  //     "SECTION": [],
+  //     "Category": [],
+  //     "DISTRICT": [],
+  //     "DIVISION": [],
+  //     "DEPARTMENT": [],
+  //     "ExpiryDate": "2025-04-06",
+  //     "SUBDIVISION": [],
+  //     "TenderValue": [],
+  //     "ORGANIZATION": []
+  // }
+  const [plan, setPlan] = useState({});
+  const [userDetails, setUserDetails] = useState({});
   useEffect(() => {
     dispatch(GetStatesList());
     dispatch(GetOrgList());
     dispatch(GetDistrictsList(29));
+    dispatch(GetPlanList());
+    dispatch(GetUserList());
   }, []);
   const dataFetcher = (type, ids) => {
     if (type === "organization") {
@@ -63,11 +94,129 @@ export default function SystemConfigSuper() {
       dispatch(GetUnitList(ids));
     }
   };
+
+  const handleSend = () => {
+    console.log(adminFilters, userDetails, plan);
+    dispatch(InsertFilterJson({ adminFilters, userDetails, plan, userData }));
+  };
   return (
-    <div className="w-full flex flex-col gap-8">
+    <div className="w-full flex flex-col gap-8 rounded-lg shadow-md bg-white p-5">
       <h1 className="w-full text-4xl font-normal text-center mb-8 text-[#212121]">
         Manager
       </h1>
+      {/* Users */}
+      <div className="w-full flex flex-col md:flex-row  justify-between">
+        <label className="w-2/3 text-base text-[#565656] font-medium">
+          Users
+        </label>
+        <div className="w-full">
+          {/* <Autocomplete
+            multiple
+            id="Users-autocomplete"
+            limitTags={1}
+            options={userList} // Array of objects with `id` and `name`
+            disableCloseOnSelect
+            getOptionLabel={(option) => option.first_name} // No optional chaining needed
+            value={userDetails?.id} // Ensure objects match by reference
+            onChange={(event, newValue) => {
+              const validData = newValue.filter((dep) =>
+                userList.some((d) => d.id === dep.id)
+              );
+
+              setUserDetails((prev) => ({
+                ...prev,
+                validData,
+              }));
+            }}
+            renderOption={(props, option, { selected }) => {
+              const { key, ...optionProps } = props;
+              return (
+                <li key={key} {...optionProps}>
+                  <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                  {option.first_name}
+                </li>
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Users"
+                placeholder="Choose Users"
+              />
+            )}
+          /> */}
+
+          <Autocomplete
+            value={userDetails}
+            onChange={(event, newValue) => {
+              setUserDetails(newValue);
+            }}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) => {
+              setInputValue(newInputValue);
+            }}
+            id="controllable-states-demo"
+            options={userList}
+            getOptionLabel={(option) => option?.first_name || ""}
+            renderInput={(params) => <TextField {...params} label="Users" />}
+          />
+        </div>
+      </div>
+      {/* Plans */}
+      <div className="w-full flex flex-col md:flex-row  justify-between">
+        <label className="w-2/3 text-base text-[#565656] font-medium">
+          Plans
+        </label>
+        <div className="w-full">
+          {/* <Autocomplete
+            multiple
+            id="Plans-autocomplete"
+            limitTags={1}
+            options={planData} // Array of objects with `id` and `name`
+            disableCloseOnSelect
+            getOptionLabel={(option) => option.name} // No optional chaining needed
+            value={plan?.planId} // Ensure objects match by reference
+            onChange={(event, newValue) => {
+              const validData = newValue.filter((dep) =>
+                planData.some((d) => d.planId === dep.planId)
+              );
+
+              setPlan((prev) => ({
+                ...prev,
+                validData,
+              }));
+            }}
+            renderOption={(props, option, { selected }) => {
+              const { key, ...optionProps } = props;
+              return (
+                <li key={key} {...optionProps}>
+                  <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                  {option.name}
+                </li>
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Plan"
+                placeholder="Choose Plan"
+              />
+            )}
+          /> */}
+          <Autocomplete
+            value={plan}
+            onChange={(event, newValue) => {
+              setPlan(newValue);
+            }}
+            id="controllable-states-demo"
+            options={planData}
+            getOptionLabel={(option) => option?.name || ""}
+            renderInput={(params) => (
+              <TextField {...params} label="Choose Plan" />
+            )}
+          />
+        </div>
+      </div>
       {/* District */}
       <div className="w-full flex flex-col md:flex-row  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
@@ -76,7 +225,7 @@ export default function SystemConfigSuper() {
         <div className="w-full">
           <Autocomplete
             multiple
-            id="organization-autocomplete"
+            id="districts-autocomplete"
             limitTags={1}
             options={districtsData} // Array of objects with `id` and `name`
             disableCloseOnSelect
@@ -104,8 +253,8 @@ export default function SystemConfigSuper() {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Select organisation"
-                placeholder="Choose organisation"
+                label="Select districts"
+                placeholder="Choose districts"
               />
             )}
           />
@@ -431,6 +580,14 @@ export default function SystemConfigSuper() {
             )}
           />
         </div>
+      </div>
+      <div className="w-full flex justify-center items-center">
+        <button
+          onClick={handleSend}
+          className="max-w-screen-sm md:w-32 flex justify-center items-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium"
+        >
+          Submit
+        </button>
       </div>
     </div>
   );

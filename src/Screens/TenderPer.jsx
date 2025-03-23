@@ -66,6 +66,7 @@ export default function TenderPer() {
     sectionsData,
     unitData,
   } = useSelector((s) => s.common);
+  const { userData } = useSelector((s) => s.auth);
   //state
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
@@ -159,7 +160,7 @@ export default function TenderPer() {
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
-
+  const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
   const [dateOption, setDateOption] = useState("");
   const queryString = useQueryParams(filters);
@@ -168,6 +169,15 @@ export default function TenderPer() {
   const [page, setPage] = useState(1);
   // hooks
   const dispatch = useDispatch();
+  console.log(userData);
+
+  useEffect(() => {
+    let data = userData?.filterjson;
+    if (data) {
+      setUserFilters(JSON.parse(data));
+    }
+  }, [userData]);
+
   useEffect(() => {
     dispatch(GetStatesList());
     dispatch(GetOrgList());
@@ -689,6 +699,10 @@ export default function TenderPer() {
                     limitTags={1}
                     options={orgData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
+                    getOptionDisabled={(option) =>
+                      userFilters?.ORGANIZATION.length > 0 &&
+                      !userFilters?.ORGANIZATION.some((d) => d.id === option.id)
+                    }
                     getOptionLabel={(option) => option.name} // No optional chaining needed
                     value={orgData.filter((d) =>
                       filters?.organisations?.some((dep) => dep.id === d.id)
@@ -730,6 +744,10 @@ export default function TenderPer() {
                   <Autocomplete
                     disabled={!filters?.organisations?.length}
                     multiple
+                    getOptionDisabled={(option) =>
+                      userFilters?.DEPARTMENT.length > 0 &&
+                      !userFilters?.DEPARTMENT.some((d) => d.id === option.id)
+                    }
                     limitTags={1}
                     id="Department-autocomplete"
                     options={drpData} // Array of objects with `id` and `name`
@@ -776,6 +794,10 @@ export default function TenderPer() {
                     limitTags={1}
                     disabled={!filters?.departments?.length}
                     multiple
+                    getOptionDisabled={(option) =>
+                      userFilters?.DIVISION.length > 0 &&
+                      !userFilters?.DIVISION.some((d) => d.id === option.id)
+                    }
                     id="division-autocomplete"
                     options={divData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
@@ -821,6 +843,10 @@ export default function TenderPer() {
                     limitTags={1}
                     disabled={!filters?.divisions?.length}
                     multiple
+                    getOptionDisabled={(option) =>
+                      userFilters?.SUB_DIVISION.length > 0 &&
+                      !userFilters?.SUB_DIVISION.some((d) => d.id === option.id)
+                    }
                     id="sub_divisions-autocomplete"
                     options={subDivData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
@@ -866,6 +892,10 @@ export default function TenderPer() {
                     limitTags={1}
                     disabled={!filters?.sub_divisions?.length}
                     multiple
+                    getOptionDisabled={(option) =>
+                      userFilters?.SECTION.length > 0 &&
+                      !userFilters?.SECTION.some((d) => d.id === option.id)
+                    }
                     id="sections-autocomplete"
                     options={sectionsData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
@@ -911,6 +941,10 @@ export default function TenderPer() {
                     limitTags={1}
                     disabled={!filters?.sections?.length}
                     multiple
+                    getOptionDisabled={(option) =>
+                      userFilters?.UNIT.length > 0 &&
+                      !userFilters?.UNIT.some((d) => d.id === option.id)
+                    }
                     id="units-autocomplete"
                     options={unitData} // Array of objects with `id` and `name`
                     disableCloseOnSelect
@@ -1005,6 +1039,12 @@ export default function TenderPer() {
                       id="states-autocomplete"
                       options={statesData} // Pass states list
                       disableCloseOnSelect
+                      getOptionDisabled={(option) =>
+                        userFilters?.STATE?.length > 0 &&
+                        !userFilters?.STATE?.some(
+                          (district) => district.id === option.id
+                        )
+                      }
                       getOptionLabel={(option) => option.name} // Show state names
                       value={filters.states} // Set selected states
                       onChange={(event, newValue) => {
@@ -1091,8 +1131,8 @@ export default function TenderPer() {
                     options={districtsData}
                     disableCloseOnSelect
                     getOptionDisabled={(option) =>
-                      testJson.DISTRICT.length > 0 &&
-                      !testJson.DISTRICT.some(
+                      userFilters?.DISTRICT.length > 0 &&
+                      !userFilters?.DISTRICT.some(
                         (district) => district.id === option.id
                       )
                     }

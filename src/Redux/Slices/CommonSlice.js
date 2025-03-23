@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ScrpApiTendersMetadata } from "../../Api/SCPAPI";
 import { queryBuilder } from "../../Utils/CommonUtils";
+import { TMGetApi } from "../../Api/TMAPI";
 
 const initialState = {
   isDistrictCallLoading: false,
@@ -13,7 +14,31 @@ const initialState = {
   subDivData: [],
   sectionsData: [],
   unitData: [],
+  planData: [],
+  userList: [],
 };
+export const GetUserList = createAsyncThunk(
+  "common/GetUserList",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(`/GetUserList`);
+      return res.data?.value;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetPlanList = createAsyncThunk(
+  "common/GetPlanList",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(`/GetPlanList`);
+      return res.data?.value;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 export const GetDistrictsList = createAsyncThunk(
   "common/GetDistrictsList",
   async (params, { rejectWithValue }) => {
@@ -255,6 +280,34 @@ const commonSlice = createSlice({
         state.error = null;
       })
       .addCase(GetUnitList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetPlanList
+      .addCase(GetPlanList.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetPlanList.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.planData = action.payload;
+        state.error = null;
+      })
+      .addCase(GetPlanList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetUserList
+      .addCase(GetUserList.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetUserList.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.userList = action.payload;
+        state.error = null;
+      })
+      .addCase(GetUserList.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });

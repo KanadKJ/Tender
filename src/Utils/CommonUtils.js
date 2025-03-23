@@ -108,19 +108,84 @@ export const dateDifferenceCalculator = (d1, d2) => {
 };
 
 export const testJson = {
-  ORGANIZATION: [],
-  STATE: [],
-  DISTRICT: [],
-  DEPARTMENT: [],
-  DIVISION: [],
-  SUB_DIVISION: [],
-  SECTION: [],
   UNIT: [],
+  STATE: [
+    {
+      id: 29,
+      name: "West Bengal",
+    },
+  ],
   Keyword: [],
+  PinCode: [],
+  SECTION: [],
   Category: [],
-  Pin_Code: [],
-  Tender_id: [],
-  expiryDate: "",
+  DISTRICT: [
+    {
+      id: 558,
+      name: "24 Paraganas North",
+      state: "West Bengal",
+    },
+    {
+      id: 559,
+      name: "24 Paraganas South",
+      state: "West Bengal",
+    },
+  ],
+  DIVISION: [
+    {
+      id: 1,
+      name: "AEO - DURGAPUR",
+    },
+  ],
+  template: 0,
+  DEPARTMENT: [
+    {
+      id: 1,
+      name: "WB LIVESTOCK DEV CORP LTD",
+    },
+    {
+      id: 2,
+      name: "PASCHIM BANGA GO SAMPAD BIKASH SANSTHA",
+    },
+    {
+      id: 4,
+      name: "MOTHER DAIRY KOLKATA",
+    },
+    {
+      id: 14,
+      name: "BANGLAR DAIRY LIMITED",
+    },
+    {
+      id: 5,
+      name: "DURGAPUR",
+    },
+  ],
+  ExpiryDate: "",
+  TenderValue: 10000,
+  ORGANIZATION: [
+    {
+      id: 1,
+      name: "ANIMAL RESOURCES DEVELOPMENT DEPARTMENT",
+    },
+    {
+      id: 2,
+      name: "ASANSOL DURGAPUR DEVELOPMENT AUTHORITY",
+    },
+    {
+      id: 3,
+      name: "BIDHAN CHANDRA KRISHI VISWAVIDYALAYA",
+    },
+    {
+      id: 4,
+      name: "BISWA BANGLA MARKETING CORPORATION LIMITED",
+    },
+  ],
+  SUB_DIVISION: [
+    {
+      id: 2,
+      name: "EE - DURGAPUR",
+    },
+  ],
 };
 //uid
 // expiry date
