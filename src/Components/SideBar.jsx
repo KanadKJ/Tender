@@ -17,8 +17,6 @@ import { logout } from "../Redux/Slices/AuthSlice";
 const Sidebar = ({ onLinkClick }) => {
   const location = useLocation();
   const dispatch = useDispatch();
-  console.log(location.pathname);
-
   return (
     <nav className="flex justify-center items-start max-w-[250px] w-full  rounded-md sticky">
       <ul className="w-full flex flex-col gap-2">

@@ -13,7 +13,7 @@ export const InsertFilterJson = createAsyncThunk(
     { adminFilters, userDetails, plan, userData },
     { rejectWithValue }
   ) => {
-    console.log(userData);
+
     const planid = plan?.planId;
     const userid = userDetails?.id;
 
@@ -55,7 +55,7 @@ export const GetUserDetails = createAsyncThunk(
       const user = response.data.value[0]; // Store only the user object
       localStorage.setItem("user", JSON.stringify(user));
 
-      console.log(user);
+
       return user;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
@@ -96,7 +96,7 @@ const authSlice = createSlice({
     },
     setData: (state, action) => {
       state.userData = action.payload;
-      console.log(action.payload);
+
     },
   },
   extraReducers: (builder) => {

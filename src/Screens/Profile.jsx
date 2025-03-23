@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../Components/SideBar";
 export default function Profile() {
   const { userData } = useSelector((s) => s.auth);
-  console.log(userData);
+
 
   // hooks
   //local states

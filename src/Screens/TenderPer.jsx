@@ -169,7 +169,6 @@ export default function TenderPer() {
   const [page, setPage] = useState(1);
   // hooks
   const dispatch = useDispatch();
-  console.log(userData);
 
   useEffect(() => {
     let data = userData?.filterjson;
@@ -195,10 +194,8 @@ export default function TenderPer() {
     const stateIDS = searchParams.getAll("states") || [];
     const districtIds = searchParams.getAll("districts") || [];
     const organisationIds = searchParams.getAll("organisations") || [];
-    console.log(organisationIds, "ORGID");
 
     const departmentIds = searchParams.getAll("departments") || [];
-    console.log(departmentIds, "drpIDs");
 
     const divisionIds = searchParams.getAll("divisions") || [];
     const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
@@ -208,25 +205,21 @@ export default function TenderPer() {
     const organisations = organisationIds
       .map((id) => {
         const dt = orgData.find((d) => d.id === parseInt(id));
-        console.log(dt, "dt");
-
         return dt ? dt : null;
       })
       .filter(Boolean);
     if (organisationIds.length) {
-      console.log(" drp dispatch", organisationIds);
       dispatch(GetDrpList(organisations));
     }
-    console.log(organisations, "orgs");
+
     const departments = departmentIds
       .map((id) => {
         const dt = drpData?.find((d) => d.id === parseInt(id));
         return dt ? dt : null;
       })
       .filter(Boolean);
-    console.log(departments, "drps");
+
     if (departments.length) {
-      console.log(" div dispatch", organisationIds);
       dispatch(GetDivList(departments));
     }
     const divisions = divisionIds
@@ -314,7 +307,6 @@ export default function TenderPer() {
         return dt ? dt : null;
       })
       .filter(Boolean);
-    console.log(departments, "drps");
     if (departments.length) {
       dispatch(GetDivList(departments));
     }
@@ -374,7 +366,6 @@ export default function TenderPer() {
   }, [sectionsData]);
 
   useEffect(() => {
-    console.log("rerendered");
     dispatch(GetTenderListWithFilters(searchParams.toString()));
   }, [searchParams]);
   const handleClick = (event, id) => {
@@ -410,7 +401,6 @@ export default function TenderPer() {
       ...prevFilters,
       [name]: Array.isArray(value) ? value : [value],
     }));
-    console.log(name, value);
   };
   const handleFilterSaved = () => {
     handleClose();
@@ -481,8 +471,6 @@ export default function TenderPer() {
     handleClose();
   };
   const handleSavedSeachFromTemplate = (obj) => {
-    console.log(obj);
-
     navigate(`?${obj?.filterLink}`, { replace: true });
     handleClose();
   };

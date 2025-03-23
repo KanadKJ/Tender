@@ -5,6 +5,7 @@ import {
   GetDistrictsList,
   GetDivList,
   GetDrpList,
+  GetFiltersBasedOnUserId,
   GetOrgList,
   GetPlanList,
   GetSectionList,
@@ -14,7 +15,10 @@ import {
   GetUserList,
 } from "../Redux/Slices/CommonSlice";
 import { InsertFilterJson } from "../Redux/Slices/AuthSlice";
-
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 const plans = [{}];
 
 export default function SystemConfigSuper() {
@@ -30,14 +34,15 @@ export default function SystemConfigSuper() {
     unitData,
     planData,
     userList,
+    filtersBasedOnUsers,
   } = useSelector((s) => s.common);
   const { userData } = useSelector((s) => s.auth);
-  console.log(userList);
+  console.log(filtersBasedOnUsers);
 
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
   const [adminFilters, setAdminFilters] = useState({
-    ORGANIZATION: [],
+    ORGANIZATION: filtersBasedOnUsers?.filterJson?.ORGANIZATION || [],
     STATE: [],
     DISTRICT: [],
     DEPARTMENT: [],
@@ -52,22 +57,6 @@ export default function SystemConfigSuper() {
     ExpiryDate: "",
     template: 0,
   });
-
-  //   {
-  //     "UNIT": [],
-  //     "STATE": [],
-  //     "Keyword": [],
-  //     "PinCode": [],
-  //     "SECTION": [],
-  //     "Category": [],
-  //     "DISTRICT": [],
-  //     "DIVISION": [],
-  //     "DEPARTMENT": [],
-  //     "ExpiryDate": "2025-04-06",
-  //     "SUBDIVISION": [],
-  //     "TenderValue": [],
-  //     "ORGANIZATION": []
-  // }
   const [plan, setPlan] = useState({});
   const [userDetails, setUserDetails] = useState({});
   useEffect(() => {
@@ -96,9 +85,15 @@ export default function SystemConfigSuper() {
   };
 
   const handleSend = () => {
-    console.log(adminFilters, userDetails, plan);
     dispatch(InsertFilterJson({ adminFilters, userDetails, plan, userData }));
   };
+  const getFiltersBasedOnUserId = (id) => {
+    // dispatch(GetFiltersBasedOnUserId(id?.id));
+  };
+  useEffect(() => {
+    dispatch(GetFiltersBasedOnUserId(userDetails?.id));
+  }, [userDetails]);
+  useEffect(() => {}, [filtersBasedOnUsers]);
   return (
     <div className="w-full flex flex-col gap-8 rounded-lg shadow-md bg-white p-5">
       <h1 className="w-full text-4xl font-normal text-center mb-8 text-[#212121]">
@@ -149,6 +144,7 @@ export default function SystemConfigSuper() {
           <Autocomplete
             value={userDetails}
             onChange={(event, newValue) => {
+              getFiltersBasedOnUserId(newValue);
               setUserDetails(newValue);
             }}
             inputValue={inputValue}
@@ -581,6 +577,76 @@ export default function SystemConfigSuper() {
           />
         </div>
       </div>
+      {/*Dates */}
+      <div className="w-full flex flex-col md:flex-row  justify-between">
+        <label className="w-2/3 text-base text-[#565656] font-medium">
+          Expiry Date
+        </label>
+        <div className="w-full">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              sx={{
+                width: "100%",
+              }}
+              label="Expiry Date"
+              value={
+                adminFilters.ExpiryDate ? dayjs(adminFilters.ExpiryDate) : null
+              }
+              onChange={(newValue) => {
+                setAdminFilters((prev) => ({
+                  ...prev,
+                  ExpiryDate: newValue
+                    ? dayjs(newValue).format("YYYY-MM-DD")
+                    : "",
+                }));
+              }}
+            />
+          </LocalizationProvider>
+        </div>
+      </div>
+      {/* Tender value */}
+      <div className="w-full flex flex-col md:flex-row  justify-between">
+        <label className="w-2/3 text-base text-[#565656] font-medium">
+          Tender Value
+        </label>
+        <TextField
+          type="number"
+          id="outlined-controlled"
+          label="Tender Value"
+          value={adminFilters.TenderValue || 0}
+          onChange={(event) => {
+            setAdminFilters({
+              ...adminFilters,
+              TenderValue: event.target.value,
+            });
+          }}
+          sx={{
+            width: "100%",
+          }}
+        />
+      </div>
+      {/* templates */}
+      <div className="w-full flex flex-col md:flex-row  justify-between">
+        <label className="w-2/3 text-base text-[#565656] font-medium">
+          Templates
+        </label>
+        <TextField
+          type="number"
+          id="outlined-controlled"
+          label="Templates"
+          value={adminFilters?.template || 0}
+          onChange={(event) => {
+            setAdminFilters({
+              ...adminFilters,
+              template: event.target.value,
+            });
+          }}
+          sx={{
+            width: "100%",
+          }}
+        />
+      </div>
+
       <div className="w-full flex justify-center items-center">
         <button
           onClick={handleSend}

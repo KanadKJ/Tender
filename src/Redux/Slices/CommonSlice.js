@@ -16,6 +16,7 @@ const initialState = {
   unitData: [],
   planData: [],
   userList: [],
+  filtersBasedOnUsers: [],
 };
 export const GetUserList = createAsyncThunk(
   "common/GetUserList",
@@ -23,6 +24,23 @@ export const GetUserList = createAsyncThunk(
     try {
       const res = await TMGetApi.get(`/GetUserList`);
       return res.data?.value;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetFiltersBasedOnUserId = createAsyncThunk(
+  "common/GetFiltersBasedOnUserId",
+  async (params, { rejectWithValue }) => {
+    if (params?.length === 0 || params === "") return [];
+    try {
+      const res = await TMGetApi.get(`/GetFilterJson/${params}`);
+
+      let result = {
+        filterJson: JSON.parse(res.data?.value[0]?.filterJson),
+        planid: res.data?.value[0]?.planId,
+      };
+      return result;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
@@ -83,7 +101,7 @@ export const GetDrpList = createAsyncThunk(
     const queryString = organizationIds
       ?.map((id) => `organisation_id=${id}`)
       .join("&");
-    console.log(queryString);
+
     if (params?.length === 0) return [];
 
     try {
@@ -99,10 +117,8 @@ export const GetDrpList = createAsyncThunk(
 export const GetDivList = createAsyncThunk(
   "common/GetDivList",
   async (params, { rejectWithValue }) => {
-    console.log(params);
     const Ids = params?.map((item) => item.id);
     const queryString = Ids?.map((id) => `department_id=${id}`).join("&");
-    console.log(queryString);
 
     try {
       const res = await ScrpApiTendersMetadata.get(
@@ -117,10 +133,8 @@ export const GetDivList = createAsyncThunk(
 export const GetSubDivList = createAsyncThunk(
   "common/GetSubDivList",
   async (params, { rejectWithValue }) => {
-    console.log(params);
     const Ids = params?.map((item) => item.id);
     const queryString = Ids?.map((id) => `division_id=${id}`).join("&");
-    console.log(queryString);
 
     try {
       const res = await ScrpApiTendersMetadata.get(
@@ -135,10 +149,8 @@ export const GetSubDivList = createAsyncThunk(
 export const GetSectionList = createAsyncThunk(
   "common/GetSectionList",
   async (params, { rejectWithValue }) => {
-    console.log(params);
     const Ids = params?.map((item) => item.id);
     const queryString = Ids?.map((id) => `sub_division_id=${id}`).join("&");
-    console.log(queryString);
 
     try {
       const res = await ScrpApiTendersMetadata.get(`/sections/?${queryString}`);
@@ -151,7 +163,6 @@ export const GetSectionList = createAsyncThunk(
 export const GetUnitList = createAsyncThunk(
   "common/GetUnitList",
   async (params, { rejectWithValue }) => {
-    console.log(params);
     const Ids = params?.map((item) => item.id);
     const queryString = Ids?.map((id) => `section_id=${id}`).join("&");
     try {
@@ -308,6 +319,20 @@ const commonSlice = createSlice({
         state.error = null;
       })
       .addCase(GetUserList.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetFiltersBasedOnUserId
+      .addCase(GetFiltersBasedOnUserId.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetFiltersBasedOnUserId.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.filtersBasedOnUsers = action.payload;
+        state.error = null;
+      })
+      .addCase(GetFiltersBasedOnUserId.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });

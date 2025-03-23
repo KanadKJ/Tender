@@ -31,10 +31,7 @@ export const dateOptions = [
 ];
 export const queryBuilder = (params) => {
   const queryParams = [];
-
   Object.entries(params).forEach(([key, value]) => {
-    console.log(key, value);
-
     if (Array.isArray(value) && value.length > 0) {
       // If array, handle objects or primitive values
       value.forEach((item) => {
@@ -51,7 +48,6 @@ export const queryBuilder = (params) => {
       queryParams.push(`${key}=${encodeURIComponent(value)}`);
     }
   });
-
   return queryParams.length ? `?${queryParams.join("&")}` : "";
 };
 export const formatDateTime = (dateString) => {

@@ -8,7 +8,7 @@ export default function ProtectedRoutes({ children }) {
   const userData = useSelector((state) => state.auth.userData);
 
   const isAuthenticated = userData || localStorage.getItem("user");
-  console.log(JSON.parse(localStorage.getItem("user")));
+
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
