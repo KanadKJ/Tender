@@ -37,12 +37,10 @@ export default function SystemConfigSuper() {
     filtersBasedOnUsers,
   } = useSelector((s) => s.common);
   const { userData } = useSelector((s) => s.auth);
-  console.log(filtersBasedOnUsers);
-
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
   const [adminFilters, setAdminFilters] = useState({
-    ORGANIZATION: filtersBasedOnUsers?.filterJson?.ORGANIZATION || [],
+    ORGANIZATION: [],
     STATE: [],
     DISTRICT: [],
     DEPARTMENT: [],
@@ -53,9 +51,9 @@ export default function SystemConfigSuper() {
     Keyword: [],
     Category: [],
     PinCode: [],
-    TenderValue: 10000,
+    TenderValue: "",
     ExpiryDate: "",
-    template: 0,
+    template: "",
   });
   const [plan, setPlan] = useState({});
   const [userDetails, setUserDetails] = useState({});
@@ -93,7 +91,30 @@ export default function SystemConfigSuper() {
   useEffect(() => {
     dispatch(GetFiltersBasedOnUserId(userDetails?.id));
   }, [userDetails]);
-  useEffect(() => {}, [filtersBasedOnUsers]);
+  useEffect(() => {
+    setAdminFilters({
+      ...adminFilters,
+      ORGANIZATION: filtersBasedOnUsers?.filterJson?.ORGANIZATION || [],
+      STATE: filtersBasedOnUsers?.filterJson?.STATE || [],
+      DISTRICT: filtersBasedOnUsers?.filterJson?.DISTRICT || [],
+      DEPARTMENT: filtersBasedOnUsers?.filterJson?.DEPARTMENT || [],
+      DIVISION: filtersBasedOnUsers?.filterJson?.DIVISION || [],
+      SUB_DIVISION: filtersBasedOnUsers?.filterJson?.SUB_DIVISION || [],
+      SECTION: filtersBasedOnUsers?.filterJson?.SECTION || [],
+      UNIT: filtersBasedOnUsers?.filterJson?.UNIT || [],
+      Keyword: filtersBasedOnUsers?.filterJson?.Keyword || [],
+      Category: filtersBasedOnUsers?.filterJson?.Category || [],
+      PinCode: filtersBasedOnUsers?.filterJson?.PinCode || [],
+      TenderValue: filtersBasedOnUsers?.filterJson?.TenderValue || "",
+      ExpiryDate: filtersBasedOnUsers?.filterJson?.ExpiryDate || "",
+      template: filtersBasedOnUsers?.filterJson?.template || "",
+    });
+
+    setPlan(
+      planData?.find((plan) => plan?.planId === filtersBasedOnUsers?.planid)
+    );
+  }, [filtersBasedOnUsers]);
+
   return (
     <div className="w-full flex flex-col gap-8 rounded-lg shadow-md bg-white p-5">
       <h1 className="w-full text-4xl font-normal text-center mb-8 text-[#212121]">
@@ -142,6 +163,10 @@ export default function SystemConfigSuper() {
           /> */}
 
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             value={userDetails}
             onChange={(event, newValue) => {
               getFiltersBasedOnUserId(newValue);
@@ -200,6 +225,10 @@ export default function SystemConfigSuper() {
             )}
           /> */}
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             value={plan}
             onChange={(event, newValue) => {
               setPlan(newValue);
@@ -220,13 +249,19 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             multiple
             id="districts-autocomplete"
             limitTags={1}
             options={districtsData} // Array of objects with `id` and `name`
             disableCloseOnSelect
             getOptionLabel={(option) => option.name} // No optional chaining needed
-            value={adminFilters?.DISTRICT} // Ensure objects match by reference
+            value={districtsData.filter((d) =>
+              adminFilters?.DISTRICT?.some((dep) => dep.id === d.id)
+            )} // Ensure objects match by reference
             onChange={(event, newValue) => {
               const validData = newValue.filter((dep) =>
                 districtsData.some((d) => d.id === dep.id)
@@ -263,13 +298,19 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             multiple
             id="organization-autocomplete"
             limitTags={1}
             options={orgData} // Array of objects with `id` and `name`
             disableCloseOnSelect
             getOptionLabel={(option) => option.name} // No optional chaining needed
-            value={adminFilters?.ORGANIZATION} // Ensure objects match by reference
+            value={orgData.filter((d) =>
+              adminFilters?.ORGANIZATION?.some((dep) => dep.id === d.id)
+            )} // Ensure objects match by reference
             onChange={(event, newValue) => {
               const validData = newValue.filter((dep) =>
                 orgData.some((d) => d.id === dep.id)
@@ -308,6 +349,10 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             multiple
             id="states-autocomplete"
             options={statesData} // Pass states list
@@ -346,6 +391,10 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             disabled={!adminFilters?.ORGANIZATION?.length}
             multiple
             limitTags={1}
@@ -394,6 +443,10 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             limitTags={1}
             disabled={!adminFilters?.DEPARTMENT?.length}
             multiple
@@ -442,6 +495,10 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             limitTags={1}
             disabled={!adminFilters?.DIVISION?.length}
             multiple
@@ -490,6 +547,10 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             limitTags={1}
             disabled={!adminFilters?.SUB_DIVISION?.length}
             multiple
@@ -538,6 +599,10 @@ export default function SystemConfigSuper() {
         </label>
         <div className="w-full">
           <Autocomplete
+            sx={{
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
             limitTags={1}
             disabled={!adminFilters?.SECTION?.length}
             multiple

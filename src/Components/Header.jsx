@@ -3,19 +3,26 @@ import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 import logo from "../Assets/Logo.png";
 import { useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, Popover } from "@mui/material";
-import { logout } from "../Redux/Slices/AuthSlice";
+import { logout, setData } from "../Redux/Slices/AuthSlice";
 import LogoutIcon from "@mui/icons-material/Logout";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { userData } = useSelector((s) => s.auth);
+  const { userData, userFilters } = useSelector((s) => s.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   // redux states
   const { isSidebarOpen } = useSelector((state) => state.common);
+  useEffect(() => {
+    console.log(userFilters?.ExpiryDate);
+    console.log(userFilters);
+    console.log(userData);
 
+    if (localStorage.getItem("user") && !userData) {
+      dispatch(setData(JSON.parse(localStorage.getItem("user"))));
+    }
+  }, [userData, userFilters]);
   const handleSidebar = () => {
     dispatch(sibebarHandler(true));
   };
@@ -180,11 +187,16 @@ const Header = () => {
                     <h6 className="text-xs font-semibold text-[#747474] text-center">
                       PLAN DETAILS
                     </h6>
-                    <p className="p-1">Valid Till : 01 Dec 2026 </p>
+                    <p className="p-1">
+                      Valid Till :{userFilters?.ExpiryDate || ""}
+                    </p>
                   </div>
                   <button
                     className="p-1 mt-5 text-[#565656] flex gap-2"
-                    onClick={() => dispatch(logout())}
+                    onClick={() => {
+                      dispatch(logout());
+                      navigate("/login");
+                    }}
                   >
                     <LogoutIcon />
                     <span className="text-[#565656] text-sm font-semibold">

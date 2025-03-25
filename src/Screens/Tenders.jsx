@@ -324,7 +324,6 @@ export default function Tenders() {
       ...prevFilters,
       [name]: Array.isArray(value) ? value : [value],
     }));
-    console.log(name, value);
   };
   const handleFilterSaved = () => {
     handleClose();
@@ -395,8 +394,6 @@ export default function Tenders() {
     handleClose();
   };
   const handleSavedSeachFromTemplate = (obj) => {
-    console.log(obj);
-
     navigate(`?${obj?.filterLink}`, { replace: true });
     handleClose();
   };

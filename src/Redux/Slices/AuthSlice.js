@@ -5,6 +5,7 @@ const initialState = {
   userData: null, // Should be an object, not an array
   authIsLoading: false,
   error: null, // Consistent with rejection
+  userFilters: null,
 };
 // InsertFilterJson
 export const InsertFilterJson = createAsyncThunk(
@@ -13,7 +14,6 @@ export const InsertFilterJson = createAsyncThunk(
     { adminFilters, userDetails, plan, userData },
     { rejectWithValue }
   ) => {
-
     const planid = plan?.planId;
     const userid = userDetails?.id;
 
@@ -55,7 +55,6 @@ export const GetUserDetails = createAsyncThunk(
       const user = response.data.value[0]; // Store only the user object
       localStorage.setItem("user", JSON.stringify(user));
 
-
       return user;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
@@ -93,10 +92,11 @@ const authSlice = createSlice({
     logout: (state) => {
       state.userData = null;
       localStorage.removeItem("user");
+      state.userFilters = null;
     },
     setData: (state, action) => {
       state.userData = action.payload;
-
+      state.userFilters = JSON.parse(action.payload?.filterjson);
     },
   },
   extraReducers: (builder) => {
@@ -108,6 +108,7 @@ const authSlice = createSlice({
       .addCase(GetUserDetails.fulfilled, (state, action) => {
         state.authIsLoading = false;
         state.userData = action.payload;
+        state.userFilters = JSON.parse(action.payload?.filterjson);
         state.error = null;
       })
       .addCase(GetUserDetails.rejected, (state, action) => {

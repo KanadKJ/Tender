@@ -65,10 +65,13 @@ export default function TenderPer() {
     subDivData,
     sectionsData,
     unitData,
+    filtersBasedOnUsers,
   } = useSelector((s) => s.common);
-  const { userData } = useSelector((s) => s.auth);
+  const { userData, userFilters } = useSelector((s) => s.auth);
   //state
   // eslint-disable-next-line
+  const [isPlanExpired, setIsPlanExpired] = useState(null);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [savedFilters, setSavedFilters] = useState([
@@ -160,7 +163,7 @@ export default function TenderPer() {
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
-  const [userFilters, setUserFilters] = useState({});
+  // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
   const [dateOption, setDateOption] = useState("");
   const queryString = useQueryParams(filters);
@@ -170,17 +173,19 @@ export default function TenderPer() {
   // hooks
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    let data = userData?.filterjson;
-    if (data) {
-      setUserFilters(JSON.parse(data));
-    }
-  }, [userData]);
+  // useEffect(() => {
+  //   let data = localStorage?.getItem("user")?.filterjson;
+  //   console.log(data);
+
+  //   if (data) {
+  //     setUserFilters(data);
+  //   }
+  // }, []);
 
   useEffect(() => {
+    dispatch(GetDistrictsList(29));
     dispatch(GetStatesList());
     dispatch(GetOrgList());
-    dispatch(GetDistrictsList(29));
   }, []);
   useEffect(() => {
     const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
@@ -249,19 +254,20 @@ export default function TenderPer() {
     if (sections.length) {
       dispatch(GetUnitList(sections));
     }
-    const districts = districtIds
-      .map((id) => {
-        const dt = districtsData.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
+
     const states = stateIDS
       .map((id) => {
         const dt = statesData.find((d) => d.id === parseInt(id));
         return dt ? dt : null;
       })
       .filter(Boolean);
-
+    const districts = districtIds
+      .map((id) => {
+        const dt = districtsData.find((d) => d.id === parseInt(id));
+        return dt ? dt : null;
+      })
+      .filter(Boolean);
+    console.log(districts, districtsData, "UE");
     setFilters({
       states,
       sections,
@@ -1034,7 +1040,9 @@ export default function TenderPer() {
                         )
                       }
                       getOptionLabel={(option) => option.name} // Show state names
-                      value={filters.states} // Set selected states
+                      value={statesData?.filter((d) =>
+                        filters?.states?.some((dep) => dep.id === d.id)
+                      )} // Set selected states
                       onChange={(event, newValue) => {
                         setFilters((prev) => ({
                           ...prev,
@@ -1125,7 +1133,9 @@ export default function TenderPer() {
                       )
                     }
                     getOptionLabel={(option) => option.name}
-                    value={filters.districts} // Pass the full array of selected district objects
+                    value={districtsData?.filter((d) =>
+                      filters?.districts?.some((dep) => dep.id === d.id)
+                    )} // Pass the full array of selected district objects
                     onChange={(event, newValue) => {
                       setFilters((prev) => ({
                         ...prev,
