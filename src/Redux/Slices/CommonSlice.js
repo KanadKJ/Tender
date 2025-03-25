@@ -180,6 +180,9 @@ const commonSlice = createSlice({
     sibebarHandler: (state, actions) => {
       state.isSidebarOpen = actions.payload;
     },
+    cleanUpFilterBasedOnUser: (state) => {
+      state.filtersBasedOnUsers = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -339,5 +342,5 @@ const commonSlice = createSlice({
   },
 });
 
-export const { sibebarHandler } = commonSlice.actions;
+export const { sibebarHandler, cleanUpFilterBasedOnUser } = commonSlice.actions;
 export default commonSlice.reducer;

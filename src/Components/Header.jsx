@@ -7,6 +7,11 @@ import { useEffect, useState } from "react";
 import { Avatar, Popover } from "@mui/material";
 import { logout, setData } from "../Redux/Slices/AuthSlice";
 import LogoutIcon from "@mui/icons-material/Logout";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined";
+import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { userData, userFilters } = useSelector((s) => s.auth);
@@ -56,7 +61,10 @@ const Header = () => {
               )}
             </button>
 
-            <div className="flex flex-col w-[40px] h-[40px]">
+            <div
+              className="flex flex-col w-[40px] h-[40px] cursor-pointer"
+              onClick={() => navigate("/")}
+            >
               <img src={logo} alt="Logo" />
             </div>
           </div>
@@ -66,54 +74,89 @@ const Header = () => {
           <div className="hidden md:flex">
             <div className="flex flex-col justify-center items-center mx-3 text-center text-xs">
               <span
-                className="text-[#212121] text-sm font-normal hover:text-[#0554F2] relative flex items-center space-x-3 rounded-lg cursor-pointer 
+                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
                 hover:before:left-0"
                 onClick={() => navigate("/")}
               >
-                Home
+                <span>
+                  <HomeOutlinedIcon
+                    sx={{
+                      height: 20,
+                    }}
+                  />
+                </span>
+                <span>Home</span>
               </span>
             </div>
             <div className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
               <span
-                className="text-[#212121] text-sm font-normal hover:text-[#0554F2] relative flex items-center space-x-3 rounded-lg cursor-pointer 
+                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
                 hover:before:left-0 "
                 onClick={() => navigate("/tenders?")}
               >
-                Tenders
+                <span>
+                  <DescriptionOutlinedIcon
+                    sx={{
+                      height: 20,
+                    }}
+                  />
+                </span>
+                <span>Tenders</span>
               </span>
             </div>
             <div className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
               <span
-                className="text-[#212121] text-sm font-normal hover:text-[#0554F2] relative flex items-center space-x-3 rounded-lg cursor-pointer 
+                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
                 hover:before:left-0 "
               >
-                Pricing
+                <span>
+                  <CurrencyRupeeOutlinedIcon
+                    sx={{
+                      height: 20,
+                    }}
+                  />
+                </span>
+                <span>Pricing</span>
               </span>
             </div>
             <div className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
               <span
-                className="text-[#212121] text-sm font-normal hover:text-[#0554F2] relative flex items-center space-x-3 rounded-lg cursor-pointer 
+                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
                 hover:before:left-0 "
               >
-                Help for Bid Submission
+                <span>
+                  <HelpOutlinedIcon
+                    sx={{
+                      height: 20,
+                    }}
+                  />
+                </span>
+                <span>Help for Bid Submission</span>
               </span>
             </div>
             <div className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
               <span
-                className="text-[#212121] text-sm font-normal hover:text-[#0554F2] relative flex items-center space-x-3 rounded-lg cursor-pointer 
+                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
                 hover:before:left-0 "
               >
-                About Us
+                <span>
+                  <InfoOutlinedIcon
+                    sx={{
+                      height: 20,
+                    }}
+                  />
+                </span>
+                <span>About Us</span>
               </span>
             </div>
           </div>

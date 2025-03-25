@@ -44,7 +44,7 @@ const AppRouter = () => {
                 }
               />
               <Route
-                path="SystemConfigSuper"
+                path="Tender-Management"
                 element={
                   <ProtectedRoutes>
                     <SystemConfigSuper />

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TMGetApi } from "../../Api/TMAPI";
+import { toast } from "react-toastify";
 
 const initialState = {
   userData: null, // Should be an object, not an array
@@ -16,7 +17,10 @@ export const InsertFilterJson = createAsyncThunk(
   ) => {
     const planid = plan?.planId;
     const userid = userDetails?.id;
-
+    if (!planid || !userid) {
+      toast.warn("Please select user and plans");
+      return null;
+    }
     // Convert filterjson to a JSON string
     const filterjson = JSON.stringify(adminFilters);
 
@@ -124,6 +128,24 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(SignUpUser.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // InsertFilterJson
+      .addCase(InsertFilterJson.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(InsertFilterJson.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+        console.log(action.payload[0]);
+
+        if (action?.payload[0] === "Updated successfully") {
+          toast.success("User updated successfully!");
+        }
+      })
+      .addCase(InsertFilterJson.rejected, (state, action) => {
         state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

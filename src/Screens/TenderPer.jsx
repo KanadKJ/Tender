@@ -68,9 +68,21 @@ export default function TenderPer() {
     filtersBasedOnUsers,
   } = useSelector((s) => s.common);
   const { userData, userFilters } = useSelector((s) => s.auth);
+  const [isPlanExpired, setIsPlanExpired] = useState(false);
+  useEffect(() => {
+    if (userFilters?.ExpiryDate) {
+      const expiryDate = new Date(userFilters.ExpiryDate);
+      const currentDate = new Date();
+
+      if (expiryDate < currentDate) {
+        setIsPlanExpired(true);
+      } else {
+        setIsPlanExpired(false);
+      }
+    }
+  }, [userFilters]);
   //state
   // eslint-disable-next-line
-  const [isPlanExpired, setIsPlanExpired] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -528,12 +540,20 @@ export default function TenderPer() {
               placeholder="Search"
             />
           </div>
-          <div className="flex flex-wrap gap-8 justify-center items-center">
+          <div
+            className="flex flex-wrap gap-8 justify-center items-center"
+            style={{
+              pointerEvents: isPlanExpired ? "none" : "auto", // Disables all interactions inside this div
+              opacity: isPlanExpired ? 0.5 : 1, // Makes it look disabled (optional)
+            }}
+          >
             {/* Save filter */}
             <div>
               <Button
+                disabled={isPlanExpired}
                 style={{
                   backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
                 }}
                 aria-describedby="SavedFilters"
                 variant="contained"
@@ -603,8 +623,10 @@ export default function TenderPer() {
             {/* Keywords */}
             <div>
               <Button
+                disabled={isPlanExpired}
                 style={{
                   backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
                 }}
                 aria-describedby="Keywords"
                 variant="contained"
@@ -658,8 +680,10 @@ export default function TenderPer() {
             {/* Organization */}
             <div>
               <Button
+                disabled={isPlanExpired}
                 style={{
                   backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
                 }}
                 aria-describedby="organisations"
                 variant="contained"
@@ -688,6 +712,14 @@ export default function TenderPer() {
                 <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
                   {/* ORG */}
                   <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     multiple
                     id="organization-autocomplete"
                     limitTags={1}
@@ -736,6 +768,14 @@ export default function TenderPer() {
                   />
                   {/* DEP */}
                   <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     disabled={!filters?.organisations?.length}
                     multiple
                     getOptionDisabled={(option) =>
@@ -785,6 +825,14 @@ export default function TenderPer() {
                   />
                   {/* DIV */}
                   <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     limitTags={1}
                     disabled={!filters?.departments?.length}
                     multiple
@@ -834,6 +882,14 @@ export default function TenderPer() {
                   />
                   {/*SUB DIV */}
                   <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     limitTags={1}
                     disabled={!filters?.divisions?.length}
                     multiple
@@ -883,6 +939,14 @@ export default function TenderPer() {
                   />
                   {/*Sections */}
                   <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     limitTags={1}
                     disabled={!filters?.sub_divisions?.length}
                     multiple
@@ -932,6 +996,14 @@ export default function TenderPer() {
                   />
                   {/*Units */}
                   <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     limitTags={1}
                     disabled={!filters?.sections?.length}
                     multiple
@@ -999,8 +1071,10 @@ export default function TenderPer() {
             {/* States */}
             <div>
               <Button
+                disabled={isPlanExpired}
                 style={{
                   backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
                 }}
                 aria-describedby="states"
                 variant="contained"
@@ -1029,6 +1103,14 @@ export default function TenderPer() {
                 <div className="w-full flex justify-between items-center p-2">
                   <FormControl sx={{ m: 1, width: 400 }}>
                     <Autocomplete
+                      sx={{
+                        "& .MuiChip-root": {
+                          maxWidth: "200px", // Adjust width as needed
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        },
+                      }}
                       multiple
                       id="states-autocomplete"
                       options={statesData} // Pass states list
@@ -1093,8 +1175,10 @@ export default function TenderPer() {
             {/* Districts */}
             <div>
               <Button
+                disabled={isPlanExpired}
                 style={{
                   backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
                 }}
                 aria-describedby="districts"
                 variant="contained"
@@ -1122,6 +1206,14 @@ export default function TenderPer() {
                 <Divider />
                 <div className="w-full flex justify-between items-center p-2">
                   <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     multiple
                     id="districts-autocomplete"
                     options={districtsData}
@@ -1185,8 +1277,10 @@ export default function TenderPer() {
             {/* Tender Amount */}
             <div>
               <Button
+                disabled={isPlanExpired}
                 style={{
                   backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
                 }}
                 aria-describedby="tenderAmount"
                 variant="contained"
@@ -1214,7 +1308,15 @@ export default function TenderPer() {
                 <Divider />
                 <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
                   <Autocomplete
-                    sx={{ width: 300 }}
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                      width: 300,
+                    }}
                     options={amountOptions.filter(
                       (opt) =>
                         !filters.value_in_rs_max ||
@@ -1253,7 +1355,15 @@ export default function TenderPer() {
 
                   {/* Max Amount Autocomplete */}
                   <Autocomplete
-                    sx={{ width: 300 }}
+                    sx={{
+                      width: 300,
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
                     options={amountOptions.filter(
                       (opt) =>
                         !filters.value_in_rs_min ||
@@ -1312,8 +1422,10 @@ export default function TenderPer() {
             <div>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Button
+                  disabled={isPlanExpired}
                   style={{
                     backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
                   }}
                   aria-describedby="datePicker"
                   variant="contained"
@@ -1470,8 +1582,10 @@ export default function TenderPer() {
             <div>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Button
+                  disabled={isPlanExpired}
                   style={{
                     backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
                   }}
                   aria-describedby="datePickerclosing"
                   variant="contained"
@@ -1631,8 +1745,10 @@ export default function TenderPer() {
             {/*Sort*/}
             <div>
               <Button
+                disabled={isPlanExpired}
                 style={{
                   backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
                 }}
                 aria-describedby="sort"
                 variant="contained"

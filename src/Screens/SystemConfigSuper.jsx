@@ -2,6 +2,7 @@ import { Autocomplete, Checkbox, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  cleanUpFilterBasedOnUser,
   GetDistrictsList,
   GetDivList,
   GetDrpList,
@@ -85,9 +86,7 @@ export default function SystemConfigSuper() {
   const handleSend = () => {
     dispatch(InsertFilterJson({ adminFilters, userDetails, plan, userData }));
   };
-  const getFiltersBasedOnUserId = (id) => {
-    // dispatch(GetFiltersBasedOnUserId(id?.id));
-  };
+
   useEffect(() => {
     dispatch(GetFiltersBasedOnUserId(userDetails?.id));
   }, [userDetails]);
@@ -113,15 +112,35 @@ export default function SystemConfigSuper() {
     setPlan(
       planData?.find((plan) => plan?.planId === filtersBasedOnUsers?.planid)
     );
+    if (filtersBasedOnUsers?.filterJson?.ORGANIZATION) {
+      dispatch(GetDrpList(filtersBasedOnUsers?.filterJson?.ORGANIZATION));
+    }
+    if (filtersBasedOnUsers?.filterJson?.DEPARTMENT) {
+      dispatch(GetDivList(filtersBasedOnUsers?.filterJson?.DEPARTMENT));
+    }
+    if (filtersBasedOnUsers?.filterJson?.DIVISION) {
+      dispatch(GetSubDivList(filtersBasedOnUsers?.filterJson?.DIVISION));
+    }
+    if (filtersBasedOnUsers?.filterJson?.SUB_DIVISION) {
+      dispatch(GetSectionList(filtersBasedOnUsers?.filterJson?.SUB_DIVISION));
+    }
+    if (filtersBasedOnUsers?.filterJson?.SECTION) {
+      dispatch(GetUnitList(filtersBasedOnUsers?.filterJson?.SECTION));
+    }
   }, [filtersBasedOnUsers]);
-
+  useEffect(() => {
+    return () => {
+      dispatch(cleanUpFilterBasedOnUser());
+      console.log("Component is unmounting...");
+    };
+  }, []);
   return (
-    <div className="w-full flex flex-col gap-8 rounded-lg shadow-md bg-white p-5">
+    <div className="w-full flex flex-col gap-4 rounded-lg shadow-md bg-white p-5">
       <h1 className="w-full text-4xl font-normal text-center mb-8 text-[#212121]">
-        Manager
+        Tender Manager
       </h1>
       {/* Users */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between gap-4 md:gap-0">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Users
         </label>
@@ -164,12 +183,13 @@ export default function SystemConfigSuper() {
 
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
             value={userDetails}
             onChange={(event, newValue) => {
-              getFiltersBasedOnUserId(newValue);
+              GetFiltersBasedOnUserId(newValue);
               setUserDetails(newValue);
             }}
             inputValue={inputValue}
@@ -184,7 +204,7 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* Plans */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Plans
         </label>
@@ -226,6 +246,7 @@ export default function SystemConfigSuper() {
           /> */}
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -243,13 +264,14 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* District */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           DISTRICTS
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -292,15 +314,22 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* Organisations */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           ORGANIZATION
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
+              "& .MuiChip-root": {
+                maxWidth: "200px", // Adjust width as needed
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              },
             }}
             multiple
             id="organization-autocomplete"
@@ -343,13 +372,14 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* States */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           STATE
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -385,13 +415,14 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* Departments */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           DEPARTMENT
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -437,13 +468,14 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* DIV */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           DIVISION
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -489,13 +521,14 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/*SUB DIV */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           SUB_DIVISION
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -541,13 +574,14 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/*Sections */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           SECTION
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -593,13 +627,14 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/*Units */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           UNITs
         </label>
         <div className="w-full">
           <Autocomplete
             sx={{
+              maxWidth: "480px",
               padding: "0px",
               "& .MuiOutlinedInput-root": { padding: "5px" },
             }}
@@ -643,7 +678,7 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/*Dates */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Expiry Date
         </label>
@@ -652,6 +687,7 @@ export default function SystemConfigSuper() {
             <DatePicker
               sx={{
                 width: "100%",
+                maxWidth: "480px",
               }}
               label="Expiry Date"
               value={
@@ -670,12 +706,11 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* Tender value */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between pr-3">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Tender Value
         </label>
         <TextField
-          type="number"
           id="outlined-controlled"
           label="Tender Value"
           value={adminFilters.TenderValue || 0}
@@ -687,16 +722,16 @@ export default function SystemConfigSuper() {
           }}
           sx={{
             width: "100%",
+            maxWidth: "480px",
           }}
         />
       </div>
       {/* templates */}
-      <div className="w-full flex flex-col md:flex-row  justify-between">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between items-center pr-3">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Templates
         </label>
         <TextField
-          type="number"
           id="outlined-controlled"
           label="Templates"
           value={adminFilters?.template || 0}
@@ -708,6 +743,7 @@ export default function SystemConfigSuper() {
           }}
           sx={{
             width: "100%",
+            maxWidth: "480px",
           }}
         />
       </div>

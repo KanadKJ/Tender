@@ -31,8 +31,8 @@ const Sidebar = ({ onLinkClick }) => {
         <DriverLink src={trems} name="Terms & Conditions" to="" />
         <DriverLink
           src={trems}
-          name="SystemConfigSuper"
-          to="/dashboard/SystemConfigSuper"
+          name="Tender Management"
+          to="/dashboard/Tender-Management"
         />
 
         <Link
