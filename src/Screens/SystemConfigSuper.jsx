@@ -706,7 +706,7 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* Tender value */}
-      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between items-center  pr-3">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between items-center">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Tender Value
         </label>
@@ -729,7 +729,7 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* templates */}
-      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between items-center pr-3">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between items-center ">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Templates
         </label>
