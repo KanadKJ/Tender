@@ -109,9 +109,9 @@ export default function TenderPer() {
           return state ? state : null;
         })
         .filter(Boolean) || [],
-    districts:
+    district:
       searchParams
-        .getAll("districts")
+        .getAll("district")
         ?.map((id) => {
           const district = districtsData.find((d) => d.id === parseInt(id));
           return district ? district : null;
@@ -185,15 +185,6 @@ export default function TenderPer() {
   // hooks
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   let data = localStorage?.getItem("user")?.filterjson;
-  //   console.log(data);
-
-  //   if (data) {
-  //     setUserFilters(data);
-  //   }
-  // }, []);
-
   useEffect(() => {
     dispatch(GetDistrictsList(29));
     dispatch(GetStatesList());
@@ -209,7 +200,7 @@ export default function TenderPer() {
     const limit = searchParams.get("limit") || "";
     const keywords = searchParams.get("keywords") || "";
     const stateIDS = searchParams.getAll("states") || [];
-    const districtIds = searchParams.getAll("districts") || [];
+    const districtIds = searchParams.getAll("district") || [];
     const organisationIds = searchParams.getAll("organisations") || [];
 
     const departmentIds = searchParams.getAll("departments") || [];
@@ -273,19 +264,19 @@ export default function TenderPer() {
         return dt ? dt : null;
       })
       .filter(Boolean);
-    const districts = districtIds
+    const district = districtIds
       .map((id) => {
         const dt = districtsData.find((d) => d.id === parseInt(id));
         return dt ? dt : null;
       })
       .filter(Boolean);
-    console.log(districts, districtsData, "UE");
+    console.log(district, districtsData, "UE");
     setFilters({
       states,
       sections,
       keywords,
       ordering,
-      districts,
+      district,
       divisions,
       departments,
       sub_divisions,
@@ -299,7 +290,7 @@ export default function TenderPer() {
     });
 
     console.log("run end");
-  }, [tenderData]);
+  }, []);
 
   useEffect(() => {
     const organisationIds = searchParams.getAll("organisations") || [];
@@ -366,6 +357,7 @@ export default function TenderPer() {
       sub_divisions,
     });
   }, [subDivData]);
+
   useEffect(() => {
     const sectionsIds = searchParams.getAll("sections") || [];
     const sections = sectionsIds
@@ -514,6 +506,7 @@ export default function TenderPer() {
       <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
         <Background type="vector" lifed="up" show="no" />
         <main className="w-full flex flex-col justify-center items-center gap-6">
+          {/* TITLE */}
           <div className="mt-6 flex flex-col gap-3 w-full justify-center items-center">
             <div className="w-full flex  justify-center items-center">
               <h1 className="font-normal text-5xl text-start">TEST</h1>
@@ -522,6 +515,7 @@ export default function TenderPer() {
               <h3 className="font-normal text-xl text-start">PERFORMANCE</h3>
             </div>
           </div>
+          {/* Search Filter */}
           <div className="w-full flex  justify-center items-center ">
             <span className="relative left-8 z-0">
               <svg
@@ -540,8 +534,9 @@ export default function TenderPer() {
               placeholder="Search"
             />
           </div>
+          {/* FILTERS */}
           <div
-            className="flex flex-wrap gap-8 justify-center items-center"
+            className="flex flex-wrap gap-8 justify-start  items-center "
             style={{
               pointerEvents: isPlanExpired ? "none" : "auto", // Disables all interactions inside this div
               opacity: isPlanExpired ? 0.5 : 1, // Makes it look disabled (optional)
@@ -554,6 +549,7 @@ export default function TenderPer() {
                 style={{
                   backgroundColor: "#0554f2",
                   color: isPlanExpired ? "#fff00" : "#fff",
+                  width: "190px",
                 }}
                 aria-describedby="SavedFilters"
                 variant="contained"
@@ -627,6 +623,7 @@ export default function TenderPer() {
                 style={{
                   backgroundColor: "#0554f2",
                   color: isPlanExpired ? "#fff00" : "#fff",
+                  width: "190px",
                 }}
                 aria-describedby="Keywords"
                 variant="contained"
@@ -684,6 +681,7 @@ export default function TenderPer() {
                 style={{
                   backgroundColor: "#0554f2",
                   color: isPlanExpired ? "#fff00" : "#fff",
+                  width: "190px",
                 }}
                 aria-describedby="organisations"
                 variant="contained"
@@ -1075,6 +1073,7 @@ export default function TenderPer() {
                 style={{
                   backgroundColor: "#0554f2",
                   color: isPlanExpired ? "#fff00" : "#fff",
+                  width: "190px",
                 }}
                 aria-describedby="states"
                 variant="contained"
@@ -1179,13 +1178,14 @@ export default function TenderPer() {
                 style={{
                   backgroundColor: "#0554f2",
                   color: isPlanExpired ? "#fff00" : "#fff",
+                  width: "190px",
                 }}
                 aria-describedby="districts"
                 variant="contained"
                 onClick={(event) => handleClick(event, "districts")}
               >
                 Districts
-                <CustomBadge data={filters?.districts} />
+                <CustomBadge data={filters?.district} />
               </Button>
               <Popover
                 id="districts"
@@ -1226,12 +1226,12 @@ export default function TenderPer() {
                     }
                     getOptionLabel={(option) => option.name}
                     value={districtsData?.filter((d) =>
-                      filters?.districts?.some((dep) => dep.id === d.id)
+                      filters?.district?.some((dep) => dep.id === d.id)
                     )} // Pass the full array of selected district objects
                     onChange={(event, newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        districts: newValue, // Store the full array of selected district objects
+                        district: newValue, // Store the full array of selected district objects
                       }));
                     }}
                     renderOption={(props, option, { selected }) => {
@@ -1281,6 +1281,7 @@ export default function TenderPer() {
                 style={{
                   backgroundColor: "#0554f2",
                   color: isPlanExpired ? "#fff00" : "#fff",
+                  width: "190px",
                 }}
                 aria-describedby="tenderAmount"
                 variant="contained"
@@ -1426,6 +1427,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
                   }}
                   aria-describedby="datePicker"
                   variant="contained"
@@ -1586,6 +1588,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
                   }}
                   aria-describedby="datePickerclosing"
                   variant="contained"
@@ -1749,6 +1752,7 @@ export default function TenderPer() {
                 style={{
                   backgroundColor: "#0554f2",
                   color: isPlanExpired ? "#fff00" : "#fff",
+                  width: "190px",
                 }}
                 aria-describedby="sort"
                 variant="contained"
@@ -1902,6 +1906,7 @@ export default function TenderPer() {
               </Popover>
             </div>
           </div>
+          {/* TENDERS RENDER */}
           <div>
             {tenderIsLoading ? (
               <div className="h-[20vh]"></div>
@@ -2040,6 +2045,7 @@ export default function TenderPer() {
             )}
           </div>
         </main>
+        {/* Pagination */}
         <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
           <Pagination
             count={Math.ceil(tenderData?.count / 50) || 1}

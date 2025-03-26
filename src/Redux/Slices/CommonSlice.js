@@ -166,7 +166,7 @@ export const GetUnitList = createAsyncThunk(
     const Ids = params?.map((item) => item.id);
     const queryString = Ids?.map((id) => `section_id=${id}`).join("&");
     try {
-      const res = await ScrpApiTendersMetadata.get(`/sections/?${queryString}`);
+      const res = await ScrpApiTendersMetadata.get(`/units/?${queryString}`);
       return res.data?.results;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

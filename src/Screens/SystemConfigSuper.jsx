@@ -706,46 +706,50 @@ export default function SystemConfigSuper() {
         </div>
       </div>
       {/* Tender value */}
-      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between pr-3">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between items-center  pr-3">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Tender Value
         </label>
-        <TextField
-          id="outlined-controlled"
-          label="Tender Value"
-          value={adminFilters.TenderValue || 0}
-          onChange={(event) => {
-            setAdminFilters({
-              ...adminFilters,
-              TenderValue: event.target.value,
-            });
-          }}
-          sx={{
-            width: "100%",
-            maxWidth: "480px",
-          }}
-        />
+        <div className="w-full">
+          <TextField
+            id="outlined-controlled"
+            label="Tender Value"
+            value={adminFilters.TenderValue || 0}
+            onChange={(event) => {
+              setAdminFilters({
+                ...adminFilters,
+                TenderValue: event.target.value,
+              });
+            }}
+            sx={{
+              width: "100%",
+              maxWidth: "480px",
+            }}
+          />
+        </div>
       </div>
       {/* templates */}
       <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between items-center pr-3">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Templates
         </label>
-        <TextField
-          id="outlined-controlled"
-          label="Templates"
-          value={adminFilters?.template || 0}
-          onChange={(event) => {
-            setAdminFilters({
-              ...adminFilters,
-              template: event.target.value,
-            });
-          }}
-          sx={{
-            width: "100%",
-            maxWidth: "480px",
-          }}
-        />
+        <div className="w-full">
+          <TextField
+            id="outlined-controlled"
+            label="Templates"
+            value={adminFilters?.template || 0}
+            onChange={(event) => {
+              setAdminFilters({
+                ...adminFilters,
+                template: event.target.value,
+              });
+            }}
+            sx={{
+              width: "100%",
+              maxWidth: "480px",
+            }}
+          />
+        </div>
       </div>
 
       <div className="w-full flex justify-center items-center">
