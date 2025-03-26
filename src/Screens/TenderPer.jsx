@@ -51,6 +51,7 @@ import CustomBadge from "../Components/CustomBadge";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
+import { toast } from "react-toastify";
 export default function TenderPer() {
   // redux
   const { tenderData, tenderIsLoading } = useSelector((s) => s.tender);
@@ -413,6 +414,58 @@ export default function TenderPer() {
     }));
   };
   const handleFilterSaved = () => {
+    let errorStr = {
+      error: false,
+      list: [],
+    };
+    if (userData) {
+      if (
+        userFilters?.ORGANIZATION?.length &&
+        filters?.organisations?.length === 0
+      ) {
+        errorStr.error = true;
+        errorStr.list.push("Organization");
+      }
+      if (userFilters?.STATE?.length && filters?.states?.length === 0) {
+        errorStr.error = true;
+        errorStr.list.push("States");
+      }
+      if (userFilters?.DISTRICT?.length && filters?.district?.length === 0) {
+        errorStr.error = true;
+        errorStr.list.push("District");
+      }
+      if (
+        userFilters?.DEPARTMENT?.length &&
+        filters?.departments?.length === 0
+      ) {
+        errorStr.error = true;
+        errorStr.list.push("Departments");
+      }
+      if (userFilters?.DIVISION?.length && filters?.divisions?.length === 0) {
+        errorStr.error = true;
+        errorStr.list.push("Divisions");
+      }
+      if (
+        userFilters?.SUB_DIVISION?.length &&
+        filters?.sub_divisions?.length === 0
+      ) {
+        errorStr.error = true;
+        errorStr.list.push("Sub Divisions");
+      }
+      if (userFilters?.SECTION?.length && filters?.sections?.length === 0) {
+        errorStr.error = true;
+        errorStr.list.push("Sections");
+      }
+      if (userFilters?.UNIT?.length && filters?.units?.length === 0) {
+        errorStr.error = true;
+        errorStr.list.push("Units");
+      }
+      handleClose();
+      if (errorStr.error) {
+        toast.error(`${errorStr.list.join(",")} are/is mandatory field(s).`);
+        return;
+      }
+    }
     handleClose();
     navigate(`?${queryString}`, { replace: true });
   };
@@ -469,9 +522,7 @@ export default function TenderPer() {
 
       return;
     }
-
     const params = new URLSearchParams(searchParams).toString();
-
     setSavedFilters((prevFilters) => [
       ...prevFilters,
       { name: saveFilter, filterLink: params },

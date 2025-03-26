@@ -714,7 +714,7 @@ export default function SystemConfigSuper() {
           <TextField
             id="outlined-controlled"
             label="Tender Value"
-            value={adminFilters.TenderValue || 0}
+            value={adminFilters.TenderValue}
             onChange={(event) => {
               setAdminFilters({
                 ...adminFilters,
@@ -737,7 +737,7 @@ export default function SystemConfigSuper() {
           <TextField
             id="outlined-controlled"
             label="Templates"
-            value={adminFilters?.template || 0}
+            value={adminFilters?.template}
             onChange={(event) => {
               setAdminFilters({
                 ...adminFilters,

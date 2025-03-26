@@ -77,7 +77,7 @@ const Login = () => {
 
       navigate("/dashboard/profile");
     } catch (error) {
-      setErrors({ loginError: "*Invalid Email or Password" });
+      setErrors({ loginError: error });
     }
   };
 

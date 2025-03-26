@@ -55,7 +55,9 @@ export const GetUserDetails = createAsyncThunk(
       if (!response?.data?.value?.length) {
         return rejectWithValue("Invalid Email or Password");
       }
-
+      if (response?.data?.value[0]?.isLoggedIn) {
+        return rejectWithValue("User already logged in.");
+      }
       const user = response.data.value[0]; // Store only the user object
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -116,6 +118,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(GetUserDetails.rejected, (state, action) => {
+        console.log(action.payload);
         state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       })

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
-import logo from "../Assets/Logo.png";
+import logo from "../Assets/logoNew.png";
 import { useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useEffect, useState } from "react";
@@ -46,7 +46,7 @@ const Header = () => {
     <header className="backdrop-blur-lg z-10 h-14 md:h-16 shadow-md sm:px-1 fixed w-full  top-0 left-0 transition-shadow duration-700 bg-white/70">
       <div className="flex flex-row h-full items-center px-4">
         <div className="text-lg font-bold text-gray-800">
-          <div className="flex justify-between items-center gap-5">
+          <div className="flex justify-between items-center gap-2">
             <button className="md:hidden p-2 rounded" onClick={handleSidebar}>
               {!isSidebarOpen && (
                 <svg
@@ -62,10 +62,10 @@ const Header = () => {
             </button>
 
             <div
-              className="flex flex-col w-[40px] h-[40px] cursor-pointer"
+              className="flex flex-co8 cursor-pointer"
               onClick={() => navigate("/")}
             >
-              <img src={logo} alt="Logo" />
+              <img src={logo} alt="Logo" className=" h-[60px] md:h-[80px]" />
             </div>
           </div>
         </div>
