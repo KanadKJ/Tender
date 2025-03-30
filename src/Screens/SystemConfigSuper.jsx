@@ -140,7 +140,7 @@ export default function SystemConfigSuper() {
         Tender Manager
       </h1>
       {/* Users */}
-      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between gap-4 md:gap-0">
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between md:gap-0">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           Users
         </label>
