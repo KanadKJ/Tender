@@ -70,6 +70,7 @@ export default function TenderPer() {
   } = useSelector((s) => s.common);
   const { userData, userFilters } = useSelector((s) => s.auth);
   const [isPlanExpired, setIsPlanExpired] = useState(false);
+  const [allGood, setAllGood] = useState(true);
   useEffect(() => {
     if (userFilters?.ExpiryDate) {
       const expiryDate = new Date(userFilters.ExpiryDate);
@@ -463,9 +464,12 @@ export default function TenderPer() {
       handleClose();
       if (errorStr.error) {
         toast.error(`${errorStr.list.join(",")} are/is mandatory field(s).`);
+        setAllGood(errorStr?.error);
         return;
       }
     }
+    errorStr.error = false;
+    setAllGood(false);
     handleClose();
     navigate(`?${queryString}`, { replace: true });
   };
@@ -587,7 +591,7 @@ export default function TenderPer() {
           </div>
           {/* FILTERS */}
           <div
-            className="flex flex-wrap gap-8 justify-start  items-center "
+            className="grid md:grid-cols-3 lg:grid-cols-5 gap-8 justify-between  items-center "
             style={{
               pointerEvents: isPlanExpired ? "none" : "auto", // Disables all interactions inside this div
               opacity: isPlanExpired ? 0.5 : 1, // Makes it look disabled (optional)
@@ -2046,12 +2050,18 @@ export default function TenderPer() {
 
                         <div className="flex flex-col justify-center items-center ">
                           <span
-                            className={` rounded-md text-[${col}] text-lg font-extrabold `}
+                            style={{
+                              color: col,
+                            }}
+                            className={` rounded-md  text-lg font-extrabold `}
                           >
                             {diffDays}
                           </span>
                           <span
-                            className={`text-xs text-[${col}] rounded-md text-center font-medium`}
+                            style={{
+                              color: col,
+                            }}
+                            className={`text-xs  rounded-md text-center font-medium`}
                           >
                             Days left
                           </span>
@@ -2099,6 +2109,7 @@ export default function TenderPer() {
         {/* Pagination */}
         <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
           <Pagination
+            disabled={allGood}
             count={Math.ceil(tenderData?.count / 50) || 1}
             defaultPage={1}
             siblingCount={0}

@@ -103,85 +103,102 @@ export const dateDifferenceCalculator = (d1, d2) => {
   return { diffDays, col };
 };
 
-export const testJson = {
-  UNIT: [],
-  STATE: [
-    {
-      id: 29,
-      name: "West Bengal",
-    },
-  ],
-  Keyword: [],
-  PinCode: [],
-  SECTION: [],
-  Category: [],
-  DISTRICT: [
-    {
-      id: 558,
-      name: "24 Paraganas North",
-      state: "West Bengal",
-    },
-    {
-      id: 559,
-      name: "24 Paraganas South",
-      state: "West Bengal",
-    },
-  ],
-  DIVISION: [
-    {
-      id: 1,
-      name: "AEO - DURGAPUR",
-    },
-  ],
-  template: 0,
-  DEPARTMENT: [
-    {
-      id: 1,
-      name: "WB LIVESTOCK DEV CORP LTD",
-    },
-    {
-      id: 2,
-      name: "PASCHIM BANGA GO SAMPAD BIKASH SANSTHA",
-    },
-    {
-      id: 4,
-      name: "MOTHER DAIRY KOLKATA",
-    },
-    {
-      id: 14,
-      name: "BANGLAR DAIRY LIMITED",
-    },
-    {
-      id: 5,
-      name: "DURGAPUR",
-    },
-  ],
-  ExpiryDate: "",
-  TenderValue: 10000,
-  ORGANIZATION: [
-    {
-      id: 1,
-      name: "ANIMAL RESOURCES DEVELOPMENT DEPARTMENT",
-    },
-    {
-      id: 2,
-      name: "ASANSOL DURGAPUR DEVELOPMENT AUTHORITY",
-    },
-    {
-      id: 3,
-      name: "BIDHAN CHANDRA KRISHI VISWAVIDYALAYA",
-    },
-    {
-      id: 4,
-      name: "BISWA BANGLA MARKETING CORPORATION LIMITED",
-    },
-  ],
-  SUB_DIVISION: [
-    {
-      id: 2,
-      name: "EE - DURGAPUR",
-    },
-  ],
+export const pricingPlanData = {
+  free: {
+    title: "Free",
+    subTitle: "All West Bengal ",
+    featurs: [
+      "Unlimited Tender Search",
+      "Download Document",
+      "Email Notification",
+      "1 Year Old Tender View",
+      "Save unlimited filters & PDF exports",
+      "BOQ View on PDF",
+      "Advance Search",
+      "All Filter Access",
+    ],
+    price: "0",
+  },
+
+  basic: {
+    title: "Basic",
+    subTitle: "One Gram Panchayat",
+    featurs: [
+      "Unlimited Tender Search",
+      "Download Document",
+      "Email Notification",
+      "6 Months Old Tender View",
+      "Save Filter Limit 2 filters & PDF exports",
+      "BOQ View on PDF",
+    ],
+    price: "399",
+  },
+  delux: {
+    title: "Dulex",
+    subTitle: "Three Districts",
+    featurs: [
+      "Unlimited Tender Search",
+      "Download Document",
+      "Email Notification",
+      "1 Year Old Tender View",
+      "Save Filter Limit 10 & PDF Export",
+      "BOQ View on PDF",
+    ],
+    price: "1199",
+  },
+  advance: {
+    title: "Advance",
+    subTitle: "All West Bengal",
+    featurs: [
+      "Unlimited Tender Search",
+      "Download Document",
+      "Email Notification",
+      "1 Year Old Tender View",
+      "Save unlimited filters & PDF exports",
+      "BOQ View on PDF",
+      "Advance Search",
+      "All Filter Access",
+    ],
+    price: "1799",
+  },
+  standard: {
+    title: "Standard",
+    subTitle: "Two Block/Panchayat Samity",
+    featurs: [
+      " Unlimited Tender Search",
+      "Download Document",
+      "Email Notification",
+      "1 Year Old Tender View",
+      "Save Filter Limit 10 & PDFExport",
+      "BOQ View on PDF",
+    ],
+    price: "599",
+  },
+  professional: {
+    title: "Professional",
+    subTitle:
+      "Five Department/Origination ( AllWest Bengal) (ex- PWD, ZillaParishad, WBPDCL, etc)",
+    featurs: [
+      "Unlimited Tender Search",
+      "Download Document",
+      "Email Notification",
+      "1 Year Old Tender View",
+      "Save Filter Limit 10 & PDF Export",
+      "BOQ View on PDF",
+    ],
+    price: "899",
+  },
+  premium: {
+    title: "Premium",
+    subTitle: "5 Category /All West Bengal ( exCivil, Electrical, etc)",
+    featurs: [
+      "Unlimited Tender Search",
+      "Download Document",
+      "Email Notification",
+      "1 Year Old Tender View",
+      "Save Filter Limit 15 & PDF Export",
+      "BOQ View on PDF",
+    ],
+    price: "1399",
+  },
 };
-//uid
-// expiry date

@@ -11,6 +11,7 @@ import SystemConfigSuper from "../Screens/SystemConfigSuper";
 const HomePage = lazy(() => import("../Screens/HomePage"));
 const TendersPage = lazy(() => import("../Screens/TenderPer"));
 const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
+const PricingPage = lazy(() => import("../Screens/Pricing"));
 
 const AppRouter = () => {
   return (
@@ -22,6 +23,7 @@ const AppRouter = () => {
             <Route path="/signup" element={<Register />} />
             {/* <Route path="/tenders" element={<TendersPage />} /> */}
             <Route path="/tenders/" element={<TendersPage />} />
+            <Route path="/pricing/" element={<PricingPage />} />
             <Route index element={<HomePage />} />
 
             <Route path="/tenders/:id" element={<TenderDetails />} />
