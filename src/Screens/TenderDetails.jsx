@@ -43,8 +43,9 @@ export default function TenderDetails() {
             <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
               <LocationOnIcon fontSize="small" />
               <p className="text-sm font-extralight">
-                {tenderDetails?.district},{tenderDetails?.state},
-                {tenderDetails?.pincode}
+                {tenderDetails?.district && `${tenderDetails?.district},`}
+                {tenderDetails?.state && `${tenderDetails?.state},`}
+                {tenderDetails?.pincode && `${tenderDetails?.pincode}`}
               </p>
             </div>
             <h6 className="text-3xl">{tenderDetails?.organisation_chain}</h6>

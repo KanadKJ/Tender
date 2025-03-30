@@ -72,6 +72,7 @@ export default function TenderPer() {
   const { userData, userFilters } = useSelector((s) => s.auth);
   const [isPlanExpired, setIsPlanExpired] = useState(false);
   const [allGood, setAllGood] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     if (userFilters?.ExpiryDate) {
       const expiryDate = new Date(userFilters.ExpiryDate);
@@ -557,6 +558,17 @@ export default function TenderPer() {
       dispatch(GetUnitList(ids));
     }
   };
+  console.log(tenderData);
+
+  const filteredTenders = tenderData?.results?.filter(
+    (tender) =>
+      tender?.organisation_chain
+        ?.toLowerCase()
+        ?.includes(searchTerm?.toLowerCase()) ||
+      tender?.description?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      tender?.id?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      tender?.department?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  );
   return (
     <>
       <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
@@ -565,10 +577,14 @@ export default function TenderPer() {
           {/* TITLE */}
           <div className="mt-6 flex flex-col gap-3 w-full justify-center items-center">
             <div className="w-full flex  justify-center items-center">
-              <h1 className="font-normal text-5xl text-start">TEST</h1>
+              <h1 className="font-normal text-5xl text-start">
+                Tenders at a glance
+              </h1>
             </div>
             <div className="w-full flex  justify-center items-center">
-              <h3 className="font-normal text-xl text-start">PERFORMANCE</h3>
+              <h3 className="font-normal text-xl text-start">
+                Choose the best plan for your business.
+              </h3>
             </div>
           </div>
           {/* Search Filter */}
@@ -589,6 +605,8 @@ export default function TenderPer() {
                 type="text"
                 className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none w-full max-w-[30rem] p-2 pl-11 rounded-md"
                 placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="flex md:hidden">
@@ -2166,7 +2184,7 @@ export default function TenderPer() {
             {tenderIsLoading ? (
               <div className="h-[20vh]"></div>
             ) : (
-              tenderData?.results?.map((tender, i) => {
+              filteredTenders?.map((tender, i) => {
                 const { diffDays, col } = dateDifferenceCalculator(
                   tender?.published_date,
                   tender?.bid_submission_end_date
@@ -2194,7 +2212,9 @@ export default function TenderPer() {
                         <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
                           <LocationOnIcon fontSize="small" />
                           <p className="text-sm font-thin">
-                            {tender?.location}
+                            {tender?.district && `${tender?.district},`}
+                            {tender?.state && `${tender?.state},`}
+                            {tender?.pincode && `${tender?.pincode}`}
                           </p>
                         </div>
                         <div>
