@@ -20,10 +20,6 @@ const Header = () => {
   // redux states
   const { isSidebarOpen } = useSelector((state) => state.common);
   useEffect(() => {
-    console.log(userFilters?.ExpiryDate);
-    console.log(userFilters);
-    console.log(userData);
-
     if (localStorage.getItem("user") && !userData) {
       dispatch(setData(JSON.parse(localStorage.getItem("user"))));
     }
@@ -62,7 +58,7 @@ const Header = () => {
             </button>
 
             <div
-              className="flex flex-co8 cursor-pointer"
+              className="flex flex-col cursor-pointer"
               onClick={() => navigate("/")}
             >
               <img src={logo} alt="Logo" className=" h-[60px] md:h-[80px]" />

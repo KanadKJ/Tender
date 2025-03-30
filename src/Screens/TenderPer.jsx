@@ -11,18 +11,19 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
   Divider,
   FormControl,
   IconButton,
   MenuItem,
   Pagination,
-  Popover,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import TuneIcon from "@mui/icons-material/Tune";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
@@ -571,912 +572,339 @@ export default function TenderPer() {
             </div>
           </div>
           {/* Search Filter */}
-          <div className="w-full flex  justify-center items-center ">
-            <span className="relative left-8 z-0">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#999999"
+          <div className="flex w-full justify-evenly items-center gap-2">
+            <div className="w-full flex  justify-center items-center ">
+              <span className="relative left-8 z-0">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#999999"
+                >
+                  <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none w-full max-w-[30rem] p-2 pl-11 rounded-md"
+                placeholder="Search"
+              />
+            </div>
+            <div className="flex md:hidden">
+              <Button
+                disabled={isPlanExpired}
+                style={{
+                  backgroundColor: "#0554f2",
+                  color: isPlanExpired ? "#fff00" : "#fff",
+                }}
+                aria-describedby="mobileFilters"
+                variant="contained"
+                onClick={(event) => handleClick(event, "mobileFilters")}
               >
-                <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
-              </svg>
-            </span>
-            <input
-              type="text"
-              className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none w-full max-w-[30rem] p-2 pl-11 rounded-md"
-              placeholder="Search"
-            />
+                <TuneIcon />
+              </Button>
+            </div>
           </div>
           {/* FILTERS */}
           <div
-            className="grid md:grid-cols-3 lg:grid-cols-5 gap-8 justify-between  items-center "
+            className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 justify-between items-center "
             style={{
               pointerEvents: isPlanExpired ? "none" : "auto", // Disables all interactions inside this div
               opacity: isPlanExpired ? 0.5 : 1, // Makes it look disabled (optional)
             }}
           >
             {/* Save filter */}
-            <div>
-              <Button
-                disabled={isPlanExpired}
-                style={{
-                  backgroundColor: "#0554f2",
-                  color: isPlanExpired ? "#fff00" : "#fff",
-                  width: "190px",
-                }}
-                aria-describedby="SavedFilters"
-                variant="contained"
-                onClick={(event) => handleClick(event, "SavedFilters")}
-              >
-                Save Filters
-                <CustomBadge data={savedFilters} />
-              </Button>
-              <Popover
-                id="SavedFilters"
-                open={openPopoverId === "SavedFilters"}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              >
-                <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">Save Filter</label>
-                  <CloseBTN />
-                </div>
-                <Divider />
-                <div className="p-5 flex flex-col gap-4">
-                  <input
-                    type="text"
-                    placeholder="Filter Name"
-                    name="keywords"
-                    value={saveFilter}
-                    onChange={(e) => setSaveFilter(e.target.value)}
-                    className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
-                  />
-                  <h1>Saved Filters</h1>
-                  <div className="w-full flex flex-col max-h-36 overflow-y-auto scrollbar-hide">
-                    {savedFilters.length ? (
-                      savedFilters.map((f, i) => (
-                        <button
-                          key={i}
-                          className="w-full border shadow-md cursor-pointer p-3 my-2"
-                          onClick={() => handleSavedSeachFromTemplate(f)}
-                        >
-                          <h1>{f.name}</h1>
-                        </button>
-                      ))
-                    ) : (
-                      <p className="text-gray-500 text-center">
-                        No saved filters
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-around mb-3">
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={() => handleClose()}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={handleSaveFiltersSearched}
-                  >
-                    Save Filter
-                  </button>
-                </div>
-              </Popover>
-            </div>
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="SavedFilters"
+              variant="contained"
+              onClick={(event) => handleClick(event, "SavedFilters")}
+            >
+              Save Filters
+              <CustomBadge data={savedFilters} />
+            </Button>
+
             {/* Keywords */}
-            <div>
-              <Button
-                disabled={isPlanExpired}
-                style={{
-                  backgroundColor: "#0554f2",
-                  color: isPlanExpired ? "#fff00" : "#fff",
-                  width: "190px",
-                }}
-                aria-describedby="Keywords"
-                variant="contained"
-                onClick={(event) => handleClick(event, "Keywords")}
-              >
-                Keywords
-                {filters.keywords && (
-                  <CustomBadge data={filters.keywords ? ["1"] : null} />
-                )}
-              </Button>
-              <Popover
-                id="Keywords"
-                open={openPopoverId === "Keywords"}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              >
-                <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">Keywords</label>
-                  <CloseBTN />
-                </div>
-                <Divider />
-                <div className="p-5 flex flex-col gap-4">
-                  <input
-                    type="text"
-                    placeholder="Keywords"
-                    name="keywords"
-                    value={filters?.keywords}
-                    onChange={handleFilterSelection}
-                    className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
-                  />
-                  <div className="flex justify-around">
-                    <button
-                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                      onClick={() => handleReset("keywords")}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                      onClick={handleFilterSaved}
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              </Popover>
-            </div>
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="Keywords"
+              variant="contained"
+              onClick={(event) => handleClick(event, "Keywords")}
+            >
+              Keywords
+              {filters.keywords && (
+                <CustomBadge data={filters.keywords ? ["1"] : null} />
+              )}
+            </Button>
+
             {/* Organization */}
-            <div>
-              <Button
-                disabled={isPlanExpired}
-                style={{
-                  backgroundColor: "#0554f2",
-                  color: isPlanExpired ? "#fff00" : "#fff",
-                  width: "190px",
-                }}
-                aria-describedby="organisations"
-                variant="contained"
-                onClick={(event) => handleClick(event, "organisations")}
-              >
-                Organisations
-                <CustomBadge data={filters?.organisations} />
-              </Button>
-              <Popover
-                id="organisations"
-                open={openPopoverId === "organisations"}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "center", horizontal: "center" }}
-                PaperProps={{
-                  sx: {
-                    width: "300px", // Adjust as needed
-                  },
-                }}
-              >
-                <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">Organisations</label>
-                  <CloseBTN />
-                </div>
-                <Divider />
-                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
-                  {/* ORG */}
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    multiple
-                    id="organization-autocomplete"
-                    limitTags={1}
-                    options={orgData} // Array of objects with `id` and `name`
-                    disableCloseOnSelect
-                    getOptionDisabled={(option) =>
-                      userFilters?.ORGANIZATION.length > 0 &&
-                      !userFilters?.ORGANIZATION.some((d) => d.id === option.id)
-                    }
-                    getOptionLabel={(option) => option.name} // No optional chaining needed
-                    value={orgData.filter((d) =>
-                      filters?.organisations?.some((dep) => dep.id === d.id)
-                    )} // Ensure objects match by reference
-                    onChange={(event, newValue) => {
-                      const validData = newValue.filter((dep) =>
-                        orgData.some((d) => d.id === dep.id)
-                      );
 
-                      setFilters((prev) => ({
-                        ...prev,
-                        organisations: validData,
-                      }));
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="organisations"
+              variant="contained"
+              onClick={(event) => handleClick(event, "organisations")}
+            >
+              Organisations
+              <CustomBadge data={filters?.organisations} />
+            </Button>
 
-                      dataFetcher("organization", validData);
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 250 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select organisation"
-                        placeholder="Choose organisation"
-                      />
-                    )}
-                  />
-                  {/* DEP */}
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    disabled={!filters?.organisations?.length}
-                    multiple
-                    getOptionDisabled={(option) =>
-                      userFilters?.DEPARTMENT.length > 0 &&
-                      !userFilters?.DEPARTMENT.some((d) => d.id === option.id)
-                    }
-                    limitTags={1}
-                    id="Department-autocomplete"
-                    options={drpData} // Array of objects with `id` and `name`
-                    disableCloseOnSelect
-                    getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={drpData.filter((d) =>
-                      filters?.departments?.some((dep) => dep.id === d.id)
-                    )} // Ensure objects match by reference
-                    onChange={(event, newValue) => {
-                      const validData = newValue.filter((dep) =>
-                        drpData.some((d) => d.id === dep.id)
-                      );
-
-                      setFilters((prev) => ({
-                        ...prev,
-                        departments: validData,
-                      }));
-
-                      dataFetcher("department", validData);
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 250 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Department"
-                        placeholder="Choose Department"
-                      />
-                    )}
-                  />
-                  {/* DIV */}
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    limitTags={1}
-                    disabled={!filters?.departments?.length}
-                    multiple
-                    getOptionDisabled={(option) =>
-                      userFilters?.DIVISION.length > 0 &&
-                      !userFilters?.DIVISION.some((d) => d.id === option.id)
-                    }
-                    id="division-autocomplete"
-                    options={divData} // Array of objects with `id` and `name`
-                    disableCloseOnSelect
-                    getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={divData.filter((d) =>
-                      filters?.divisions?.some((dep) => dep.id === d.id)
-                    )} // Ensure objects match by reference
-                    onChange={(event, newValue) => {
-                      const validData = newValue.filter((dep) =>
-                        divData.some((d) => d.id === dep.id)
-                      );
-
-                      setFilters((prev) => ({
-                        ...prev,
-                        divisions: validData,
-                      }));
-
-                      dataFetcher("division", validData);
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 250 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Division"
-                        placeholder="Choose Division"
-                      />
-                    )}
-                  />
-                  {/*SUB DIV */}
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    limitTags={1}
-                    disabled={!filters?.divisions?.length}
-                    multiple
-                    getOptionDisabled={(option) =>
-                      userFilters?.SUB_DIVISION.length > 0 &&
-                      !userFilters?.SUB_DIVISION.some((d) => d.id === option.id)
-                    }
-                    id="sub_divisions-autocomplete"
-                    options={subDivData} // Array of objects with `id` and `name`
-                    disableCloseOnSelect
-                    getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={subDivData.filter((d) =>
-                      filters?.sub_divisions?.some((dep) => dep.id === d.id)
-                    )} // Ensure objects match by reference
-                    onChange={(event, newValue) => {
-                      const validData = newValue.filter((dep) =>
-                        subDivData.some((d) => d.id === dep.id)
-                      );
-
-                      setFilters((prev) => ({
-                        ...prev,
-                        sub_divisions: validData,
-                      }));
-
-                      dataFetcher("sub_divisions", validData);
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 250 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Sub Division"
-                        placeholder="Choose Sub Division"
-                      />
-                    )}
-                  />
-                  {/*Sections */}
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    limitTags={1}
-                    disabled={!filters?.sub_divisions?.length}
-                    multiple
-                    getOptionDisabled={(option) =>
-                      userFilters?.SECTION.length > 0 &&
-                      !userFilters?.SECTION.some((d) => d.id === option.id)
-                    }
-                    id="sections-autocomplete"
-                    options={sectionsData} // Array of objects with `id` and `name`
-                    disableCloseOnSelect
-                    getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={sectionsData.filter((d) =>
-                      filters?.sections?.some((dep) => dep.id === d.id)
-                    )} // Ensure objects match by reference
-                    onChange={(event, newValue) => {
-                      const validData = newValue.filter((dep) =>
-                        sectionsData.some((d) => d.id === dep.id)
-                      );
-
-                      setFilters((prev) => ({
-                        ...prev,
-                        sections: validData,
-                      }));
-
-                      dataFetcher("sections", validData);
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 250 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Section"
-                        placeholder="Choose Sections"
-                      />
-                    )}
-                  />
-                  {/*Units */}
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    limitTags={1}
-                    disabled={!filters?.sections?.length}
-                    multiple
-                    getOptionDisabled={(option) =>
-                      userFilters?.UNIT.length > 0 &&
-                      !userFilters?.UNIT.some((d) => d.id === option.id)
-                    }
-                    id="units-autocomplete"
-                    options={unitData} // Array of objects with `id` and `name`
-                    disableCloseOnSelect
-                    getOptionLabel={(option) => option?.name} // No optional chaining needed
-                    value={unitData.filter((d) =>
-                      filters?.units?.some((dep) => dep.id === d.id)
-                    )} // Ensure objects match by reference
-                    onChange={(event, newValue) => {
-                      const validData = newValue.filter((dep) =>
-                        unitData.some((d) => d.id === dep.id)
-                      );
-
-                      setFilters((prev) => ({
-                        ...prev,
-                        units: validData,
-                      }));
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 250 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select units"
-                        placeholder="Choose units"
-                      />
-                    )}
-                  />
-                </div>
-                <div className="flex justify-around pb-3">
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={() => handleReset("districts")}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={handleFilterSaved}
-                  >
-                    Apply
-                  </button>
-                </div>
-              </Popover>
-            </div>
             {/* States */}
-            <div>
-              <Button
-                disabled={isPlanExpired}
-                style={{
-                  backgroundColor: "#0554f2",
-                  color: isPlanExpired ? "#fff00" : "#fff",
-                  width: "190px",
-                }}
-                aria-describedby="states"
-                variant="contained"
-                onClick={(event) => handleClick(event, "states")}
-              >
-                State
-                <CustomBadge data={filters?.states} />
-              </Button>
-              <Popover
-                id="states"
-                open={openPopoverId === "states"}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                PaperProps={{
-                  style: {
-                    width: 450,
-                  },
-                }}
-              >
-                <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">States</label>
-                  <CloseBTN />
-                </div>
-                <Divider />
-                <div className="w-full flex justify-between items-center p-2">
-                  <FormControl sx={{ m: 1, width: 400 }}>
-                    <Autocomplete
-                      sx={{
-                        "& .MuiChip-root": {
-                          maxWidth: "200px", // Adjust width as needed
-                          overflow: "hidden",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                        },
-                      }}
-                      multiple
-                      id="states-autocomplete"
-                      options={statesData} // Pass states list
-                      disableCloseOnSelect
-                      getOptionDisabled={(option) =>
-                        userFilters?.STATE?.length > 0 &&
-                        !userFilters?.STATE?.some(
-                          (district) => district.id === option.id
-                        )
-                      }
-                      getOptionLabel={(option) => option.name} // Show state names
-                      value={statesData?.filter((d) =>
-                        filters?.states?.some((dep) => dep.id === d.id)
-                      )} // Set selected states
-                      onChange={(event, newValue) => {
-                        setFilters((prev) => ({
-                          ...prev,
-                          states: newValue, // Store only state IDs
-                        }));
-                      }}
-                      renderOption={(props, option, { selected }) => {
-                        const { key, ...optionProps } = props;
-                        return (
-                          <li key={key} {...optionProps}>
-                            <Checkbox
-                              style={{ marginRight: 8 }}
-                              checked={selected}
-                            />
-                            {option.name}
-                          </li>
-                        );
-                      }}
-                      style={{ width: 400 }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select States"
-                          placeholder="Choose states"
-                        />
-                      )}
-                    />
-                  </FormControl>
-                </div>
-                <div className="flex justify-around pb-3">
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={() => handleReset("states")}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={handleFilterSaved}
-                  >
-                    Apply
-                  </button>
-                </div>
-              </Popover>
-            </div>
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="states"
+              variant="contained"
+              onClick={(event) => handleClick(event, "states")}
+            >
+              State
+              <CustomBadge data={filters?.states} />
+            </Button>
+
             {/* Districts */}
-            <div>
-              <Button
-                disabled={isPlanExpired}
-                style={{
-                  backgroundColor: "#0554f2",
-                  color: isPlanExpired ? "#fff00" : "#fff",
-                  width: "190px",
-                }}
-                aria-describedby="districts"
-                variant="contained"
-                onClick={(event) => handleClick(event, "districts")}
-              >
-                Districts
-                <CustomBadge data={filters?.district} />
-              </Button>
-              <Popover
-                id="districts"
-                open={openPopoverId === "districts"}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                PaperProps={{
-                  style: {
-                    width: "300px",
-                  },
-                }}
-              >
-                <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">Districts</label>
-                  <CloseBTN />
-                </div>
-                <Divider />
-                <div className="w-full flex justify-between items-center p-2">
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    multiple
-                    id="districts-autocomplete"
-                    options={districtsData}
-                    disableCloseOnSelect
-                    getOptionDisabled={(option) =>
-                      userFilters?.DISTRICT.length > 0 &&
-                      !userFilters?.DISTRICT.some(
-                        (district) => district.id === option.id
-                      )
-                    }
-                    getOptionLabel={(option) => option.name}
-                    value={districtsData?.filter((d) =>
-                      filters?.district?.some((dep) => dep.id === d.id)
-                    )} // Pass the full array of selected district objects
-                    onChange={(event, newValue) => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        district: newValue, // Store the full array of selected district objects
-                      }));
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 500 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Districts"
-                        placeholder="Choose districts"
-                      />
-                    )}
-                  />
-                </div>
-                <div className="flex justify-around pb-3">
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={() => handleReset("districts")}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={handleFilterSaved}
-                  >
-                    Apply
-                  </button>
-                </div>
-              </Popover>
-            </div>
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="districts"
+              variant="contained"
+              onClick={(event) => handleClick(event, "districts")}
+            >
+              Districts
+              <CustomBadge data={filters?.district} />
+            </Button>
+
             {/* Tender Amount */}
-            <div>
-              <Button
-                disabled={isPlanExpired}
-                style={{
-                  backgroundColor: "#0554f2",
-                  color: isPlanExpired ? "#fff00" : "#fff",
-                  width: "190px",
-                }}
-                aria-describedby="tenderAmount"
-                variant="contained"
-                onClick={(event) => handleClick(event, "tenderAmount")}
-              >
-                Tender Amount
-                <CustomBadge data={filters.value_in_rs_max ? ["1"] : null} />
-              </Button>
-              <Popover
-                id="tenderAmount"
-                open={openPopoverId === "tenderAmount"}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                PaperProps={{
-                  style: {
-                    width: "400px",
-                  },
-                }}
-              >
-                <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">Tender Amount</label>
-                  <CloseBTN />
-                </div>
-                <Divider />
-                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                      width: 300,
-                    }}
-                    options={amountOptions.filter(
-                      (opt) =>
-                        !filters.value_in_rs_max ||
-                        Number(opt.value) < Number(filters.value_in_rs_max)
-                    )}
-                    getOptionLabel={(option) => option.label}
-                    value={
-                      amountOptions.find(
-                        (opt) => opt.value === filters.value_in_rs_min
-                      ) || null
-                    }
-                    onChange={(event, newValue) => {
-                      const newMinAmount = newValue ? newValue.value : "";
 
-                      // Ensure maxAmount is greater than or equal to minAmount
-                      const newMaxAmount =
-                        filters?.value_in_rs_max &&
-                        newMinAmount > filters?.value_in_rs_max
-                          ? newMinAmount // Auto-adjust maxAmount
-                          : filters?.value_in_rs_max;
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="tenderAmount"
+              variant="contained"
+              onClick={(event) => handleClick(event, "tenderAmount")}
+            >
+              Tender Amount
+              <CustomBadge data={filters.value_in_rs_max ? ["1"] : null} />
+            </Button>
 
-                      setFilters((prev) => ({
-                        ...prev,
-                        value_in_rs_min: newMinAmount,
-                        value_in_rs_max: newMaxAmount,
-                      }));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Minimum Amount"
-                        placeholder="Select min amount"
-                      />
-                    )}
-                  />
-
-                  {/* Max Amount Autocomplete */}
-                  <Autocomplete
-                    sx={{
-                      width: 300,
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    options={amountOptions.filter(
-                      (opt) =>
-                        !filters.value_in_rs_min ||
-                        Number(opt.value) > Number(filters.value_in_rs_min)
-                    )}
-                    getOptionLabel={(option) => option.label}
-                    value={
-                      amountOptions.find(
-                        (opt) => opt.value === filters.value_in_rs_max
-                      ) || null
-                    }
-                    onChange={(event, newValue) => {
-                      const newMaxAmount = newValue ? newValue.value : "";
-
-                      // Ensure minAmount is less than or equal to maxAmount
-                      const newMinAmount =
-                        filters?.value_in_rs_min &&
-                        newMaxAmount < filters?.value_in_rs_min
-                          ? newMaxAmount // Auto-adjust minAmount
-                          : filters?.value_in_rs_min;
-
-                      setFilters((prev) => ({
-                        ...prev,
-                        value_in_rs_max: newMaxAmount,
-                        value_in_rs_min: newMinAmount,
-                      }));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Maximum Amount"
-                        placeholder="Select max amount"
-                      />
-                    )}
-                  />
-                </div>
-                <div className="flex justify-around pb-3">
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={() => handleReset("districts")}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={handleFilterSaved}
-                  >
-                    Apply
-                  </button>
-                </div>
-              </Popover>
-            </div>
             {/*Published Date*/}
-            <div>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="datePicker"
+              variant="contained"
+              onClick={(event) => handleClick(event, "datePicker")}
+            >
+              Published Date
+              <CustomBadge
+                data={
+                  filters?.published_date_after ||
+                  filters?.published_date_before
+                    ? ["1"]
+                    : null
+                }
+              />
+            </Button>
+
+            {/*Closing Date*/}
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="datePickerclosing"
+              variant="contained"
+              onClick={(event) => handleClick(event, "datePickerclosing")}
+            >
+              Closing Date
+              <CustomBadge
+                data={
+                  filters?.published_date_after ||
+                  filters?.published_date_before
+                    ? ["1"]
+                    : null
+                }
+              />
+            </Button>
+
+            {/*Sort*/}
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="sort"
+              variant="contained"
+              onClick={(event) => handleClick(event, "sort")}
+            >
+              <FilterAltIcon />
+              Sort
+              <CustomBadge data={filters?.ordering} />
+            </Button>
+          </div>
+          {/* PORTALS */}
+          <div>
+            {/* Mobile size filters */}
+            <Dialog
+              id="mobileFilters"
+              open={openPopoverId === "mobileFilters"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Filters</label>
+                <CloseBTN />
+              </div>
+              <div className="grid justify-center items-center gap-4 p-4">
+                {/* Save filter */}
+
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="SavedFilters"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "SavedFilters")}
+                >
+                  Save Filters
+                  <CustomBadge data={savedFilters} />
+                </Button>
+
+                {/* Keywords */}
+
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="Keywords"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "Keywords")}
+                >
+                  Keywords
+                  {filters.keywords && (
+                    <CustomBadge data={filters.keywords ? ["1"] : null} />
+                  )}
+                </Button>
+
+                {/* Organization */}
+
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="organisations"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "organisations")}
+                >
+                  Organisations
+                  <CustomBadge data={filters?.organisations} />
+                </Button>
+
+                {/* States */}
+
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="states"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "states")}
+                >
+                  State
+                  <CustomBadge data={filters?.states} />
+                </Button>
+
+                {/* Districts */}
+
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="districts"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "districts")}
+                >
+                  Districts
+                  <CustomBadge data={filters?.district} />
+                </Button>
+
+                {/* Tender Amount */}
+
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="tenderAmount"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "tenderAmount")}
+                >
+                  Tender Amount
+                  <CustomBadge data={filters.value_in_rs_max ? ["1"] : null} />
+                </Button>
+
+                {/*Published Date*/}
+
                 <Button
                   disabled={isPlanExpired}
                   style={{
@@ -1498,146 +926,9 @@ export default function TenderPer() {
                     }
                   />
                 </Button>
-                <Popover
-                  id="datePicker"
-                  open={openPopoverId === "datePicker"}
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                  PaperProps={{
-                    style: {
-                      width: "400px",
-                    },
-                  }}
-                >
-                  <div className="w-full flex justify-between items-center p-2">
-                    <label className="pl-2">Published Date</label>
-                    <CloseBTN />
-                  </div>
-                  <Divider />
-                  <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
-                    <TextField
-                      style={{
-                        width: 300,
-                      }}
-                      select
-                      label="Date Option"
-                      value={dateOption}
-                      onChange={(e) => {
-                        const selectedOption = e.target.value;
-                        let published_date_after = "";
-                        let published_date_before = "";
 
-                        // Set published_date_after and published_date_before based on the selected option
-                        const today = new Date();
-                        switch (selectedOption) {
-                          case "today":
-                            published_date_after = today
-                              .toISOString()
-                              .split("T")[0];
-                            published_date_before = today
-                              .toISOString()
-                              .split("T")[0];
-                            break;
-                          case "7days":
-                            published_date_after = new Date(
-                              today.setDate(today.getDate() - 7)
-                            )
-                              .toISOString()
-                              .split("T")[0];
-                            published_date_before = new Date()
-                              .toISOString()
-                              .split("T")[0];
-                            break;
-                          case "15days":
-                            published_date_after = new Date(
-                              today.setDate(today.getDate() - 15)
-                            )
-                              .toISOString()
-                              .split("T")[0];
-                            published_date_before = new Date()
-                              .toISOString()
-                              .split("T")[0];
-                            break;
-                          default:
-                            break;
-                        }
+                {/*Closing Date*/}
 
-                        setFilters((prev) => ({
-                          ...prev,
-                          published_date_after,
-                          published_date_before,
-                        }));
-
-                        setDateOption(selectedOption);
-                      }}
-                    >
-                      {dateOptions?.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-
-                    {/* From Date Picker */}
-
-                    <DatePicker
-                      label="From Date"
-                      value={
-                        filters.published_date_after
-                          ? dayjs(filters.published_date_after)
-                          : null
-                      }
-                      onChange={(newValue) => {
-                        setFilters((prev) => ({
-                          ...prev,
-                          published_date_after: newValue
-                            ? dayjs(newValue).format("YYYY-MM-DD")
-                            : "",
-                        }));
-                      }}
-                    />
-                    {/* To Date Picker */}
-
-                    <DatePicker
-                      label="To Date"
-                      value={
-                        filters.published_date_before
-                          ? dayjs(filters?.published_date_before)
-                          : null
-                      }
-                      onChange={(newValue) => {
-                        setFilters((prev) => ({
-                          ...prev,
-                          published_date_before: newValue
-                            ? dayjs(newValue).format("YYYY-MM-DD")
-                            : "",
-                        }));
-                      }}
-                    />
-                  </div>
-                  <div className="flex justify-around pb-3">
-                    <button
-                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                      onClick={() => handleReset("dates")}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                      onClick={handleFilterSaved}
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </Popover>
-              </LocalizationProvider>
-            </div>
-            {/*Closing Date*/}
-            <div>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Button
                   disabled={isPlanExpired}
                   style={{
@@ -1659,288 +950,790 @@ export default function TenderPer() {
                     }
                   />
                 </Button>
-                <Popover
-                  id="datePickerclosing"
-                  open={openPopoverId === "datePickerclosing"}
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                  PaperProps={{
-                    style: {
-                      width: "400px",
+
+                {/*Sort*/}
+
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="sort"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "sort")}
+                >
+                  <FilterAltIcon />
+                  Sort
+                  <CustomBadge data={filters?.ordering} />
+                </Button>
+              </div>
+              <Divider />
+            </Dialog>
+            <Dialog
+              id="SavedFilters"
+              open={openPopoverId === "SavedFilters"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Save Filter</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="p-5 flex flex-col gap-4">
+                <input
+                  type="text"
+                  placeholder="Filter Name"
+                  name="keywords"
+                  value={saveFilter}
+                  onChange={(e) => setSaveFilter(e.target.value)}
+                  className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
+                />
+                <h1>Saved Filters</h1>
+                <div className="w-full flex flex-col max-h-36 overflow-y-auto scrollbar-hide">
+                  {savedFilters.length ? (
+                    savedFilters.map((f, i) => (
+                      <button
+                        key={i}
+                        className="w-full border shadow-md cursor-pointer p-3 my-2"
+                        onClick={() => handleSavedSeachFromTemplate(f)}
+                      >
+                        <h1>{f.name}</h1>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center">
+                      No saved filters
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-around mb-3">
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={() => handleClose()}
+                >
+                  Close
+                </button>
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={handleSaveFiltersSearched}
+                >
+                  Save Filter
+                </button>
+              </div>
+            </Dialog>
+            <Dialog
+              id="Keywords"
+              open={openPopoverId === "Keywords"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Keywords</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="p-5 flex flex-col gap-4">
+                <input
+                  type="text"
+                  placeholder="Keywords"
+                  name="keywords"
+                  value={filters?.keywords}
+                  onChange={handleFilterSelection}
+                  className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
+                />
+                <div className="flex justify-around">
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={() => handleReset("keywords")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </Dialog>
+            <Dialog
+              id="organisations"
+              open={openPopoverId === "organisations"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "center", horizontal: "center" }}
+              PaperProps={{
+                sx: {
+                  width: "300px", // Adjust as needed
+                },
+              }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Organisations</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                {/* ORG */}
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
                     },
                   }}
-                >
-                  <div className="w-full flex justify-between items-center p-2">
-                    <label className="pl-2">Closing Date</label>
-                    <CloseBTN />
-                  </div>
-                  <Divider />
-                  <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                  multiple
+                  id="organization-autocomplete"
+                  limitTags={1}
+                  options={orgData} // Array of objects with `id` and `name`
+                  disableCloseOnSelect
+                  getOptionDisabled={(option) =>
+                    userFilters?.ORGANIZATION.length > 0 &&
+                    !userFilters?.ORGANIZATION.some((d) => d.id === option.id)
+                  }
+                  getOptionLabel={(option) => option.name} // No optional chaining needed
+                  value={orgData.filter((d) =>
+                    filters?.organisations?.some((dep) => dep.id === d.id)
+                  )} // Ensure objects match by reference
+                  onChange={(event, newValue) => {
+                    const validData = newValue.filter((dep) =>
+                      orgData.some((d) => d.id === dep.id)
+                    );
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      organisations: validData,
+                    }));
+
+                    dataFetcher("organization", validData);
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 250 }}
+                  renderInput={(params) => (
                     <TextField
-                      style={{
-                        width: 300,
-                      }}
-                      select
-                      label="Date Option"
-                      value={dateOption}
-                      onChange={(e) => {
-                        const selectedOption = e.target.value;
-                        let published_date_after = "";
-                        let published_date_before = "";
-
-                        // Set published_date_after and published_date_before based on the selected option
-                        const today = new Date();
-                        switch (selectedOption) {
-                          case "today":
-                            published_date_after = today
-                              .toISOString()
-                              .split("T")[0];
-                            published_date_before = today
-                              .toISOString()
-                              .split("T")[0];
-                            break;
-                          case "7days":
-                            published_date_after = new Date(
-                              today.setDate(today.getDate() - 7)
-                            )
-                              .toISOString()
-                              .split("T")[0];
-                            published_date_before = new Date()
-                              .toISOString()
-                              .split("T")[0];
-                            break;
-                          case "15days":
-                            published_date_after = new Date(
-                              today.setDate(today.getDate() - 15)
-                            )
-                              .toISOString()
-                              .split("T")[0];
-                            published_date_before = new Date()
-                              .toISOString()
-                              .split("T")[0];
-                            break;
-                          default:
-                            break;
-                        }
-
-                        setFilters((prev) => ({
-                          ...prev,
-                          published_date_after,
-                          published_date_before,
-                        }));
-
-                        setDateOption(selectedOption);
-                      }}
-                    >
-                      {dateOptions?.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-
-                    {/* From Date Picker */}
-
-                    <DatePicker
-                      label="From Date"
-                      value={
-                        filters.published_date_after
-                          ? dayjs(filters.published_date_after)
-                          : null
-                      }
-                      onChange={(newValue) => {
-                        setFilters((prev) => ({
-                          ...prev,
-                          published_date_after: newValue
-                            ? dayjs(newValue).format("YYYY-MM-DD")
-                            : "",
-                        }));
-                      }}
+                      {...params}
+                      label="Select organisation"
+                      placeholder="Choose organisation"
                     />
-                    {/* To Date Picker */}
+                  )}
+                />
+                {/* DEP */}
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  disabled={!filters?.organisations?.length}
+                  multiple
+                  getOptionDisabled={(option) =>
+                    userFilters?.DEPARTMENT.length > 0 &&
+                    !userFilters?.DEPARTMENT.some((d) => d.id === option.id)
+                  }
+                  limitTags={1}
+                  id="Department-autocomplete"
+                  options={drpData} // Array of objects with `id` and `name`
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option?.name} // No optional chaining needed
+                  value={drpData.filter((d) =>
+                    filters?.departments?.some((dep) => dep.id === d.id)
+                  )} // Ensure objects match by reference
+                  onChange={(event, newValue) => {
+                    const validData = newValue.filter((dep) =>
+                      drpData.some((d) => d.id === dep.id)
+                    );
 
-                    <DatePicker
-                      label="To Date"
-                      value={
-                        filters.published_date_before
-                          ? dayjs(filters?.published_date_before)
-                          : null
-                      }
-                      onChange={(newValue) => {
-                        setFilters((prev) => ({
-                          ...prev,
-                          published_date_before: newValue
-                            ? dayjs(newValue).format("YYYY-MM-DD")
-                            : "",
-                        }));
-                      }}
+                    setFilters((prev) => ({
+                      ...prev,
+                      departments: validData,
+                    }));
+
+                    dataFetcher("department", validData);
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 250 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Department"
+                      placeholder="Choose Department"
                     />
-                  </div>
-                  <div className="flex justify-around pb-3">
-                    {/* hover:bg-[#fff] hover:text-[#0554F2] */}
-                    <button
-                      className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
-                     transition-all duration-300 ease-in-out "
-                      onClick={() => handleReset("dates")}
-                      disabled
-                    >
-                      Reset
-                    </button>
-                    {/* hover:bg-[#fff] hover:text-[#0554F2] */}
-                    <button
-                      className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
-                    transition-all duration-300 ease-in-out "
-                      onClick={handleFilterSaved}
-                      disabled
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </Popover>
-              </LocalizationProvider>
-            </div>
-            {/*Sort*/}
-            <div>
-              <Button
-                disabled={isPlanExpired}
-                style={{
-                  backgroundColor: "#0554f2",
-                  color: isPlanExpired ? "#fff00" : "#fff",
-                  width: "190px",
-                }}
-                aria-describedby="sort"
-                variant="contained"
-                onClick={(event) => handleClick(event, "sort")}
-              >
-                <FilterAltIcon />
-                Sort
-                <CustomBadge data={filters?.ordering} />
-              </Button>
-              <Popover
-                id="sort"
-                open={openPopoverId === "sort"}
+                  )}
+                />
+                {/* DIV */}
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  limitTags={1}
+                  disabled={!filters?.departments?.length}
+                  multiple
+                  getOptionDisabled={(option) =>
+                    userFilters?.DIVISION.length > 0 &&
+                    !userFilters?.DIVISION.some((d) => d.id === option.id)
+                  }
+                  id="division-autocomplete"
+                  options={divData} // Array of objects with `id` and `name`
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option?.name} // No optional chaining needed
+                  value={divData.filter((d) =>
+                    filters?.divisions?.some((dep) => dep.id === d.id)
+                  )} // Ensure objects match by reference
+                  onChange={(event, newValue) => {
+                    const validData = newValue.filter((dep) =>
+                      divData.some((d) => d.id === dep.id)
+                    );
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      divisions: validData,
+                    }));
+
+                    dataFetcher("division", validData);
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 250 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Division"
+                      placeholder="Choose Division"
+                    />
+                  )}
+                />
+                {/*SUB DIV */}
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  limitTags={1}
+                  disabled={!filters?.divisions?.length}
+                  multiple
+                  getOptionDisabled={(option) =>
+                    userFilters?.SUB_DIVISION.length > 0 &&
+                    !userFilters?.SUB_DIVISION.some((d) => d.id === option.id)
+                  }
+                  id="sub_divisions-autocomplete"
+                  options={subDivData} // Array of objects with `id` and `name`
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option?.name} // No optional chaining needed
+                  value={subDivData.filter((d) =>
+                    filters?.sub_divisions?.some((dep) => dep.id === d.id)
+                  )} // Ensure objects match by reference
+                  onChange={(event, newValue) => {
+                    const validData = newValue.filter((dep) =>
+                      subDivData.some((d) => d.id === dep.id)
+                    );
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      sub_divisions: validData,
+                    }));
+
+                    dataFetcher("sub_divisions", validData);
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 250 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Sub Division"
+                      placeholder="Choose Sub Division"
+                    />
+                  )}
+                />
+                {/*Sections */}
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  limitTags={1}
+                  disabled={!filters?.sub_divisions?.length}
+                  multiple
+                  getOptionDisabled={(option) =>
+                    userFilters?.SECTION.length > 0 &&
+                    !userFilters?.SECTION.some((d) => d.id === option.id)
+                  }
+                  id="sections-autocomplete"
+                  options={sectionsData} // Array of objects with `id` and `name`
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option?.name} // No optional chaining needed
+                  value={sectionsData.filter((d) =>
+                    filters?.sections?.some((dep) => dep.id === d.id)
+                  )} // Ensure objects match by reference
+                  onChange={(event, newValue) => {
+                    const validData = newValue.filter((dep) =>
+                      sectionsData.some((d) => d.id === dep.id)
+                    );
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      sections: validData,
+                    }));
+
+                    dataFetcher("sections", validData);
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 250 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Section"
+                      placeholder="Choose Sections"
+                    />
+                  )}
+                />
+                {/*Units */}
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  limitTags={1}
+                  disabled={!filters?.sections?.length}
+                  multiple
+                  getOptionDisabled={(option) =>
+                    userFilters?.UNIT.length > 0 &&
+                    !userFilters?.UNIT.some((d) => d.id === option.id)
+                  }
+                  id="units-autocomplete"
+                  options={unitData} // Array of objects with `id` and `name`
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option?.name} // No optional chaining needed
+                  value={unitData.filter((d) =>
+                    filters?.units?.some((dep) => dep.id === d.id)
+                  )} // Ensure objects match by reference
+                  onChange={(event, newValue) => {
+                    const validData = newValue.filter((dep) =>
+                      unitData.some((d) => d.id === dep.id)
+                    );
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      units: validData,
+                    }));
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 250 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select units"
+                      placeholder="Choose units"
+                    />
+                  )}
+                />
+              </div>
+              <div className="flex justify-around pb-3">
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={() => handleReset("districts")}
+                >
+                  Reset
+                </button>
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={handleFilterSaved}
+                >
+                  Apply
+                </button>
+              </div>
+            </Dialog>
+            <Dialog
+              id="states"
+              open={openPopoverId === "states"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              PaperProps={{
+                style: {
+                  width: 450,
+                },
+              }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">States</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="w-full flex justify-between items-center p-2">
+                <FormControl sx={{ m: 1, width: 400 }}>
+                  <Autocomplete
+                    sx={{
+                      "& .MuiChip-root": {
+                        maxWidth: "200px", // Adjust width as needed
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
+                    multiple
+                    id="states-autocomplete"
+                    options={statesData} // Pass states list
+                    disableCloseOnSelect
+                    getOptionDisabled={(option) =>
+                      userFilters?.STATE?.length > 0 &&
+                      !userFilters?.STATE?.some(
+                        (district) => district.id === option.id
+                      )
+                    }
+                    getOptionLabel={(option) => option.name} // Show state names
+                    value={statesData?.filter((d) =>
+                      filters?.states?.some((dep) => dep.id === d.id)
+                    )} // Set selected states
+                    onChange={(event, newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        states: newValue, // Store only state IDs
+                      }));
+                    }}
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 400 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select States"
+                        placeholder="Choose states"
+                      />
+                    )}
+                  />
+                </FormControl>
+              </div>
+              <div className="flex justify-around pb-3">
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={() => handleReset("states")}
+                >
+                  Reset
+                </button>
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={handleFilterSaved}
+                >
+                  Apply
+                </button>
+              </div>
+            </Dialog>
+            <Dialog
+              id="districts"
+              open={openPopoverId === "districts"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              PaperProps={{
+                style: {
+                  width: "300px",
+                },
+              }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Districts</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="w-full flex justify-between items-center p-2">
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  multiple
+                  id="districts-autocomplete"
+                  options={districtsData}
+                  disableCloseOnSelect
+                  getOptionDisabled={(option) =>
+                    userFilters?.DISTRICT.length > 0 &&
+                    !userFilters?.DISTRICT.some(
+                      (district) => district.id === option.id
+                    )
+                  }
+                  getOptionLabel={(option) => option.name}
+                  value={districtsData?.filter((d) =>
+                    filters?.district?.some((dep) => dep.id === d.id)
+                  )} // Pass the full array of selected district objects
+                  onChange={(event, newValue) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      district: newValue, // Store the full array of selected district objects
+                    }));
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 500 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Districts"
+                      placeholder="Choose districts"
+                    />
+                  )}
+                />
+              </div>
+              <div className="flex justify-around pb-3">
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={() => handleReset("districts")}
+                >
+                  Reset
+                </button>
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={handleFilterSaved}
+                >
+                  Apply
+                </button>
+              </div>
+            </Dialog>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Dialog
+                id="datePicker"
+                open={openPopoverId === "datePicker"}
                 anchorEl={anchorEl}
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 PaperProps={{
                   style: {
-                    width: "550px",
+                    width: "400px",
                   },
                 }}
               >
                 <div className="w-full flex justify-between items-center p-2">
-                  <label className="pl-2">Sort</label>
+                  <label className="pl-2">Published Date</label>
                   <CloseBTN />
                 </div>
                 <Divider />
-                <div className="w-full flex flex-col gap-4 justify-between items-center px-4 py-2">
-                  {/* Published Date */}
-                  <div className="w-full flex gap-6 justify-between items-center">
-                    <h1 className="w-1/3 text-base font-medium text-start">
-                      Published Date
-                    </h1>
-                    <ToggleButtonGroup
-                      color="primary"
-                      value={
-                        filters.ordering.find((o) =>
-                          o.includes("published_date")
-                        ) || null
+                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                  <TextField
+                    style={{
+                      width: 300,
+                    }}
+                    select
+                    label="Date Option"
+                    value={dateOption}
+                    onChange={(e) => {
+                      const selectedOption = e.target.value;
+                      let published_date_after = "";
+                      let published_date_before = "";
+
+                      // Set published_date_after and published_date_before based on the selected option
+                      const today = new Date();
+                      switch (selectedOption) {
+                        case "today":
+                          published_date_after = today
+                            .toISOString()
+                            .split("T")[0];
+                          published_date_before = today
+                            .toISOString()
+                            .split("T")[0];
+                          break;
+                        case "7days":
+                          published_date_after = new Date(
+                            today.setDate(today.getDate() - 7)
+                          )
+                            .toISOString()
+                            .split("T")[0];
+                          published_date_before = new Date()
+                            .toISOString()
+                            .split("T")[0];
+                          break;
+                        case "15days":
+                          published_date_after = new Date(
+                            today.setDate(today.getDate() - 15)
+                          )
+                            .toISOString()
+                            .split("T")[0];
+                          published_date_before = new Date()
+                            .toISOString()
+                            .split("T")[0];
+                          break;
+                        default:
+                          break;
                       }
-                      exclusive
-                      onChange={handleOrderingChange}
-                      aria-label="Platform"
-                      sx={{ width: "100%" }}
-                    >
-                      <ToggleButton
-                        sx={{ width: "100%" }}
-                        value="published_date"
-                      >
-                        Ascending
-                      </ToggleButton>
-                      <ToggleButton
-                        sx={{ width: "100%" }}
-                        value="-published_date"
-                      >
-                        Descending
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </div>
-                  {/* Closing Date */}
-                  <div className="w-full flex gap-6 justify-between items-center">
-                    <h1 className="w-1/3 text-base font-medium text-start">
-                      Closing Date
-                    </h1>
-                    <ToggleButtonGroup
-                      color="primary"
-                      // value={
-                      //   filters.ordering.find((o) =>
-                      //     o.includes("published_date")
-                      //   ) || null
-                      // }
-                      exclusive
-                      // onChange={handleOrderingChange}
-                      aria-label="Platform"
-                      sx={{ width: "100%" }}
-                    >
-                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                        Ascending
-                      </ToggleButton>
-                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                        Descending
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </div>
-                  {/*   Tender Amount */}
-                  <div className="w-full flex gap-6 justify-between items-center">
-                    <h1 className="w-1/3 text-base font-medium text-start">
-                      Tender Amount
-                    </h1>
-                    <ToggleButtonGroup
-                      color="primary"
-                      value={
-                        filters.ordering.find((o) =>
-                          o.includes("value_in_rs")
-                        ) || null
-                      }
-                      exclusive
-                      onChange={handleOrderingChange}
-                      aria-label="Platform"
-                      sx={{ width: "100%" }}
-                    >
-                      <ToggleButton sx={{ width: "100%" }} value="value_in_rs">
-                        Low to High
-                      </ToggleButton>
-                      <ToggleButton sx={{ width: "100%" }} value="-value_in_rs">
-                        High to Low
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </div>
-                  {/* Awarded Date */}
-                  <div className="w-full flex gap-6 justify-between items-center">
-                    <h1 className="w-1/3 text-base font-medium text-start">
-                      Awarded Date
-                    </h1>
-                    <ToggleButtonGroup
-                      color="primary"
-                      // value={
-                      //   filters.ordering.find((o) =>
-                      //     o.includes("published_date")
-                      //   ) || null
-                      // }
-                      exclusive
-                      // onChange={handleOrderingChange}
-                      aria-label="Platform"
-                      sx={{ width: "100%" }}
-                    >
-                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                        Ascending
-                      </ToggleButton>
-                      <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                        Descending
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </div>
+
+                      setFilters((prev) => ({
+                        ...prev,
+                        published_date_after,
+                        published_date_before,
+                      }));
+
+                      setDateOption(selectedOption);
+                    }}
+                  >
+                    {dateOptions?.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+
+                  {/* From Date Picker */}
+
+                  <DatePicker
+                    label="From Date"
+                    value={
+                      filters.published_date_after
+                        ? dayjs(filters.published_date_after)
+                        : null
+                    }
+                    onChange={(newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        published_date_after: newValue
+                          ? dayjs(newValue).format("YYYY-MM-DD")
+                          : "",
+                      }));
+                    }}
+                  />
+                  {/* To Date Picker */}
+
+                  <DatePicker
+                    label="To Date"
+                    value={
+                      filters.published_date_before
+                        ? dayjs(filters?.published_date_before)
+                        : null
+                    }
+                    onChange={(newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        published_date_before: newValue
+                          ? dayjs(newValue).format("YYYY-MM-DD")
+                          : "",
+                      }));
+                    }}
+                  />
                 </div>
                 <div className="flex justify-around pb-3">
                   <button
@@ -1958,8 +1751,415 @@ export default function TenderPer() {
                     Apply
                   </button>
                 </div>
-              </Popover>
-            </div>
+              </Dialog>
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Dialog
+                id="datePickerclosing"
+                open={openPopoverId === "datePickerclosing"}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                PaperProps={{
+                  style: {
+                    width: "400px",
+                  },
+                }}
+              >
+                <div className="w-full flex justify-between items-center p-2">
+                  <label className="pl-2">Closing Date</label>
+                  <CloseBTN />
+                </div>
+                <Divider />
+                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                  <TextField
+                    style={{
+                      width: 300,
+                    }}
+                    select
+                    label="Date Option"
+                    value={dateOption}
+                    onChange={(e) => {
+                      const selectedOption = e.target.value;
+                      let published_date_after = "";
+                      let published_date_before = "";
+
+                      // Set published_date_after and published_date_before based on the selected option
+                      const today = new Date();
+                      switch (selectedOption) {
+                        case "today":
+                          published_date_after = today
+                            .toISOString()
+                            .split("T")[0];
+                          published_date_before = today
+                            .toISOString()
+                            .split("T")[0];
+                          break;
+                        case "7days":
+                          published_date_after = new Date(
+                            today.setDate(today.getDate() - 7)
+                          )
+                            .toISOString()
+                            .split("T")[0];
+                          published_date_before = new Date()
+                            .toISOString()
+                            .split("T")[0];
+                          break;
+                        case "15days":
+                          published_date_after = new Date(
+                            today.setDate(today.getDate() - 15)
+                          )
+                            .toISOString()
+                            .split("T")[0];
+                          published_date_before = new Date()
+                            .toISOString()
+                            .split("T")[0];
+                          break;
+                        default:
+                          break;
+                      }
+
+                      setFilters((prev) => ({
+                        ...prev,
+                        published_date_after,
+                        published_date_before,
+                      }));
+
+                      setDateOption(selectedOption);
+                    }}
+                  >
+                    {dateOptions?.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+
+                  {/* From Date Picker */}
+
+                  <DatePicker
+                    label="From Date"
+                    value={
+                      filters.published_date_after
+                        ? dayjs(filters.published_date_after)
+                        : null
+                    }
+                    onChange={(newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        published_date_after: newValue
+                          ? dayjs(newValue).format("YYYY-MM-DD")
+                          : "",
+                      }));
+                    }}
+                  />
+                  {/* To Date Picker */}
+
+                  <DatePicker
+                    label="To Date"
+                    value={
+                      filters.published_date_before
+                        ? dayjs(filters?.published_date_before)
+                        : null
+                    }
+                    onChange={(newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        published_date_before: newValue
+                          ? dayjs(newValue).format("YYYY-MM-DD")
+                          : "",
+                      }));
+                    }}
+                  />
+                </div>
+                <div className="flex justify-around pb-3">
+                  {/* hover:bg-[#fff] hover:text-[#0554F2] */}
+                  <button
+                    className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                     transition-all duration-300 ease-in-out "
+                    onClick={() => handleReset("dates")}
+                    disabled
+                  >
+                    Reset
+                  </button>
+                  {/* hover:bg-[#fff] hover:text-[#0554F2] */}
+                  <button
+                    className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                    transition-all duration-300 ease-in-out "
+                    onClick={handleFilterSaved}
+                    disabled
+                  >
+                    Apply
+                  </button>
+                </div>
+              </Dialog>
+            </LocalizationProvider>
+            <Dialog
+              id="sort"
+              open={openPopoverId === "sort"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              PaperProps={{
+                style: {
+                  width: "550px",
+                },
+              }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Sort</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="w-full flex flex-col gap-4 justify-between items-center px-4 py-2">
+                {/* Published Date */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Published Date
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={
+                      filters.ordering.find((o) =>
+                        o.includes("published_date")
+                      ) || null
+                    }
+                    exclusive
+                    onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="published_date">
+                      Ascending
+                    </ToggleButton>
+                    <ToggleButton
+                      sx={{ width: "100%" }}
+                      value="-published_date"
+                    >
+                      Descending
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                {/* Closing Date */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Closing Date
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    // value={
+                    //   filters.ordering.find((o) =>
+                    //     o.includes("published_date")
+                    //   ) || null
+                    // }
+                    exclusive
+                    // onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Ascending
+                    </ToggleButton>
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Descending
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                {/*   Tender Amount */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Tender Amount
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={
+                      filters.ordering.find((o) => o.includes("value_in_rs")) ||
+                      null
+                    }
+                    exclusive
+                    onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="value_in_rs">
+                      Low to High
+                    </ToggleButton>
+                    <ToggleButton sx={{ width: "100%" }} value="-value_in_rs">
+                      High to Low
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                {/* Awarded Date */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Awarded Date
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    // value={
+                    //   filters.ordering.find((o) =>
+                    //     o.includes("published_date")
+                    //   ) || null
+                    // }
+                    exclusive
+                    // onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Ascending
+                    </ToggleButton>
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Descending
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+              </div>
+              <div className="flex justify-around pb-3">
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={() => handleReset("dates")}
+                >
+                  Reset
+                </button>
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={handleFilterSaved}
+                >
+                  Apply
+                </button>
+              </div>
+            </Dialog>
+            <Dialog
+              id="tenderAmount"
+              open={openPopoverId === "tenderAmount"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              PaperProps={{
+                style: {
+                  width: "400px",
+                },
+              }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Tender Amount</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                <Autocomplete
+                  sx={{
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                    width: 300,
+                  }}
+                  options={amountOptions.filter(
+                    (opt) =>
+                      !filters.value_in_rs_max ||
+                      Number(opt.value) < Number(filters.value_in_rs_max)
+                  )}
+                  getOptionLabel={(option) => option.label}
+                  value={
+                    amountOptions.find(
+                      (opt) => opt.value === filters.value_in_rs_min
+                    ) || null
+                  }
+                  onChange={(event, newValue) => {
+                    const newMinAmount = newValue ? newValue.value : "";
+
+                    // Ensure maxAmount is greater than or equal to minAmount
+                    const newMaxAmount =
+                      filters?.value_in_rs_max &&
+                      newMinAmount > filters?.value_in_rs_max
+                        ? newMinAmount // Auto-adjust maxAmount
+                        : filters?.value_in_rs_max;
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      value_in_rs_min: newMinAmount,
+                      value_in_rs_max: newMaxAmount,
+                    }));
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Minimum Amount"
+                      placeholder="Select min amount"
+                    />
+                  )}
+                />
+
+                {/* Max Amount Autocomplete */}
+                <Autocomplete
+                  sx={{
+                    width: 300,
+                    "& .MuiChip-root": {
+                      maxWidth: "200px", // Adjust width as needed
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  options={amountOptions.filter(
+                    (opt) =>
+                      !filters.value_in_rs_min ||
+                      Number(opt.value) > Number(filters.value_in_rs_min)
+                  )}
+                  getOptionLabel={(option) => option.label}
+                  value={
+                    amountOptions.find(
+                      (opt) => opt.value === filters.value_in_rs_max
+                    ) || null
+                  }
+                  onChange={(event, newValue) => {
+                    const newMaxAmount = newValue ? newValue.value : "";
+
+                    // Ensure minAmount is less than or equal to maxAmount
+                    const newMinAmount =
+                      filters?.value_in_rs_min &&
+                      newMaxAmount < filters?.value_in_rs_min
+                        ? newMaxAmount // Auto-adjust minAmount
+                        : filters?.value_in_rs_min;
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      value_in_rs_max: newMaxAmount,
+                      value_in_rs_min: newMinAmount,
+                    }));
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Maximum Amount"
+                      placeholder="Select max amount"
+                    />
+                  )}
+                />
+              </div>
+              <div className="flex justify-around pb-3">
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={() => handleReset("districts")}
+                >
+                  Reset
+                </button>
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={handleFilterSaved}
+                >
+                  Apply
+                </button>
+              </div>
+            </Dialog>
           </div>
           {/* TENDERS RENDER */}
           <div>

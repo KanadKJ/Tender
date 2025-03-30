@@ -1,6 +1,6 @@
 // src/components/Sidebar/Sidebar.js
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import profile from "../Assets/profile.svg";
 import download from "../Assets/download.svg";
 import Enquiries from "../Assets/Enquiries.svg";
@@ -14,13 +14,78 @@ import howdoesitworks from "../Assets/howdoesitworks.svg";
 import DriverLink from "./DriverLink";
 import { useDispatch } from "react-redux";
 import { logout } from "../Redux/Slices/AuthSlice";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined";
+import { Divider } from "@mui/material";
+import logo from "../Assets/logoNew.png";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 const Sidebar = ({ onLinkClick }) => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
-    <nav className="flex justify-center items-start max-w-[250px] w-full  rounded-md sticky">
-      <ul className="w-full flex flex-col gap-2">
-        <DriverLink src={profile} name="Profile" to="profile" />
+    <nav className="flex flex-col justify-start items-start max-w-[250px] w-full  rounded-md sticky">
+      <ul
+        className="w-full flex flex-col gap-2 md:hidden"
+        onClick={() => dispatch(sibebarHandler(false))}
+      >
+        <div className="flex justify-between items-center">
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            <img src={logo} alt="Logo" className=" h-[60px] w-[120px]" />
+          </div>
+          <button>
+            <CancelOutlinedIcon />
+          </button>
+        </div>
+        <Divider variant="fullWidth" />
+        <DriverLink
+          comp={
+            <HomeOutlinedIcon
+              sx={{
+                color: "#b2b2b3",
+              }}
+            />
+          }
+          name="Home"
+          to=""
+        />
+        <DriverLink
+          comp={
+            <DescriptionOutlinedIcon
+              sx={{
+                color: "#b2b2b3",
+              }}
+            />
+          }
+          name="Tenders"
+          to="tenders"
+        />
+        <DriverLink
+          comp={
+            <CurrencyRupeeOutlinedIcon
+              sx={{
+                color: "#b2b2b3",
+              }}
+            />
+          }
+          name="Pricing"
+          to="pricing"
+        />
+        <Divider variant="fullWidth" />
+      </ul>
+      <ul
+        className="w-full flex flex-col gap-2"
+        onClick={() => dispatch(sibebarHandler(false))}
+      >
+        <DriverLink src={profile} name="Profile" to="dashboard/profile" />
         <DriverLink src={rupee} name="Active Plan" to="" />
         <DriverLink src={Enquiries} name="Enquiries" to="" />
         <DriverLink src={viewed} name="Viewed Tenders" to="" />
@@ -30,9 +95,15 @@ const Sidebar = ({ onLinkClick }) => {
         <DriverLink src={locked} name="Privacy Policy" to="" />
         <DriverLink src={trems} name="Terms & Conditions" to="" />
         <DriverLink
-          src={trems}
+          comp={
+            <ManageAccountsIcon
+              sx={{
+                color: "#b2b2b3",
+              }}
+            />
+          }
           name="Tender Management"
-          to="/dashboard/Tender-Management"
+          to="dashboard/TenderManagement"
         />
 
         <Link
