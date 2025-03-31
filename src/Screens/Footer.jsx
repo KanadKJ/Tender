@@ -19,14 +19,14 @@ export default function Footer() {
       }}
       className="min-h-52 bg-slate-500 relative bottom-0 text-white"
     >
-      <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40 flex flex-col md:flex-row justify-center items-center">
+      <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40 flex flex-col md:flex-row justify-center items-center gap-4">
         <div className="w-full flex flex-col gap-8">
           <h1 className="text-4xl">Menoka Enterprise</h1>
           <p className="text-sm">
             Tender Sourcing Platform for Contractors in West Bengal
           </p>
         </div>
-        <div className="w-full flex flex-col justify-center items-center gap-2">
+        <div className="w-full flex md:flex-col justify-between md:justify-center items-center gap-2">
           <p className="cursor-pointer" onClick={() => navigate("/")}>
             Home
           </p>

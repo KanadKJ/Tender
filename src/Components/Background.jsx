@@ -14,19 +14,28 @@ export default function Background({ type, lifed, show, isHome }) {
   return (
     <div className="absolute top-0 left-0 h-full w-full -z-10 ">
       {isHome === "yes" && (
-        <div className="w-full flex h-auto justify-between absolute top-12">
-          <div>
+        <>
+          <div className="w-full hidden md:flex h-auto justify-between absolute top-12">
+            <div>
+              <img
+                src={illLeft}
+                alt="illLeft"
+                className="h-80 md:h-90 lg:h-96 relative -left-28 md:-left-36 lg:-left-40"
+              />
+            </div>
+
+            <div>
+              <img src={char} alt="char" className="h-72 mt-12" />
+            </div>
+          </div>
+          <div className="w-full flex justify-center items-center absolute top-[512px]">
             <img
-              src={illLeft}
+              src={char}
               alt="illLeft"
-              className="h-80 md:h-90 lg:h-96 relative -left-28 md:-left-36 lg:-left-40"
+              className="h-60 md:h-90 lg:h-96 flex md:hidden"
             />
           </div>
-
-          <div>
-            <img src={char} alt="char" className="h-72 mt-12" />
-          </div>
-        </div>
+        </>
       )}
       <img
         className={

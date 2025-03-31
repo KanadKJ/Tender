@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { useSelector } from "react-redux";
 import Background from "../Components/Background";
 import {
   Accordion,
@@ -7,7 +6,6 @@ import {
   AccordionSummary,
   Autocomplete,
   TextField,
-  Typography,
 } from "@mui/material";
 import gradiant from "../Assets/GradientSection.png";
 import Carousel from "react-multi-carousel";
@@ -37,9 +35,8 @@ import i7 from "../Assets/i7.png";
 import ExplorGrid from "../Components/ExplorGrid";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 export default function HomePage() {
-  const { userData } = useSelector((s) => s.auth);
   const carouselRef = useRef(null);
-  const CustomButtonGroup = ({ next, previous }) => (
+  const CustomButtonGroup = () => (
     <div className="hidden absolute top-1/2 w-full md:flex justify-between px-8 md:px-12 lg:px-16 -translate-y-1/2 mt-8">
       <button
         onClick={() => carouselRef.current?.previous()}
@@ -61,26 +58,27 @@ export default function HomePage() {
       <div className="flex justify-center items-center px-6 md:px-12 lg:px-24 xl:px-32 ">
         <div className="flex flex-col justify-center items-center gap-4">
           <div className="w-3/4">
-            <h1 className="font-extrabold text-5xl flex-1 text-center text-wrap">
+            <h1 className="font-extrabold text-2xl md:text-5xl flex-1 text-center text-wrap">
               <span className="text-[#0554F2]">Tender</span> Sourcing Platform
               for Contractors in<span> </span>
               <span className="text-[#0554F2]">West Bengal</span>
             </h1>
           </div>
-          <div className="text-2xl text-[#565656] flex-1 text-center text-wrap">
+          <div className="text-sm md:text-2xl text-[#565656] flex-1 text-center text-wrap">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna ali
             </p>
           </div>
-          <div className="w-3/4 flex  mt-4  justify-center items-center flex-col md:flex-row">
-            <div className="w-full flex justify-center items-center ">
-              <span className="relative left-9 z-0">
+          <div className="w-full flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4 mt-4 px-2">
+            {/* Search Input */}
+            <div className="flex  w-full max-w-[30rem] items-center relative">
+              <span className="absolute left-3 z-10">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="24px"
-                  viewBox="0 -960 960 960"
                   width="24px"
+                  viewBox="0 -960 960 960"
                   fill="#999999"
                 >
                   <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
@@ -88,31 +86,33 @@ export default function HomePage() {
               </span>
               <input
                 type="text"
-                className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none w-full max-w-[30rem] px-2 py-3.5 pl-11 rounded-md"
+                className="border-2 shadow-md border-gray-400 focus:border-blue-500 focus:outline-none w-full px-3 py-3.5 pl-10 rounded-md"
                 placeholder="Search"
               />
             </div>
-            <div>
+
+            {/* Autocomplete Dropdown */}
+            <div className="w-full max-w-[15rem]">
               <Autocomplete
                 disablePortal
                 loading
                 sx={{
-                  width: 200,
+                  width: "100%",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "10px",
-                    padding: "0.4rem", // Padding inside the input field
+                    padding: "0.4rem",
                     "& fieldset": {
-                      borderColor: "#276BF2", // Default border color
+                      borderColor: "#276BF2",
                     },
                     "&:hover fieldset": {
-                      borderColor: "#276BF2", // Border color on hover
+                      borderColor: "#276BF2",
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "#276BF2", // Border color when focused
+                      borderColor: "#276BF2",
                     },
                   },
                   "& .MuiInputBase-input": {
-                    color: "#276BF2", // Text color
+                    color: "#276BF2",
                   },
                 }}
                 renderInput={(params) => (
@@ -121,27 +121,27 @@ export default function HomePage() {
                     label="Indian Tenders"
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        color: "#276BF2", // Input text color
+                        color: "#276BF2",
                         fontWeight: 500,
                         "& fieldset": {
-                          borderColor: "#276BF2", // Default border color
+                          borderColor: "#276BF2",
                         },
                         "&:hover fieldset": {
-                          borderColor: "#276BF2", // Border color on hover
+                          borderColor: "#276BF2",
                         },
                         "&.Mui-focused fieldset": {
-                          borderColor: "#276BF2", // Border color when focused
+                          borderColor: "#276BF2",
                         },
                       },
                       "& .MuiInputBase-input": {
-                        color: "#276BF2", // Text color inside input
+                        color: "#276BF2",
                         fontWeight: 500,
                       },
                       "& .MuiInputLabel-root": {
-                        color: "#276BF2", // Label color
+                        color: "#276BF2",
                       },
                       "& .MuiInputLabel-root.Mui-focused": {
-                        color: "#276BF2", // Label color when focused
+                        color: "#276BF2",
                       },
                     }}
                   />
@@ -151,8 +151,8 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      <div className="w-full lg:mt-64 flex justify-center items-center flex-col gap-1 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-10">
-        <div className="flex justify-center items-center gap-2">
+      <div className="w-full lg:mt-64 flex justify-center items-center flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-60 md:mt-10">
+        <div className="flex justify-center items-center gap-2 mt-4">
           <PlayCircleFilledWhiteOutlinedIcon />
           <span className="text-2xl font-normal text-[#565656]">
             See how it works
@@ -243,13 +243,16 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
             </div>
           </div>
         </div>
-        <div className="w-full flex flex-col md:flex-row justify-center items-center gap-6">
-          <div className="w-full ">
+        <div className="w-full flex flex-col md:flex-row justify-center items-center gap-6 mt-16 md:mt-0">
+          <div className="w-full flex flex-col gap-4">
             <h1 className="text-4xl font-semibold w-full flex flex-col gap-3 md:gap-6">
               <span>Take a demo & get a </span>
               <span>guided walkthrough with a </span>
               <span>platform expert</span>
             </h1>
+            <button className="py-2 px-3 rounded-lg bg-white text-[#0554F2] max-w-36">
+              Request Demo
+            </button>
           </div>
           <div className="w-full flex flex-col gap-8 my-16">
             <div className="relative pb-4 flex justify-center md:justify-end items-center gap-1">
@@ -273,7 +276,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
           </div>
         </div>
       </div>
-      <div className="w-full  grid grid-cols-2 md:grid-cols-4  gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-32">
+      <div className="w-full  grid grid-cols-1 md:grid-cols-4  gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-32">
         <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
           <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
             <ArticleOutlinedIcon
@@ -469,7 +472,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
         <h1 className="w-full text-center text-4xl font-normal text-black">
           Guaranteed Value for Money Plans
         </h1>
-        <div className="flex flex-col md:flex-row justify-between mt-4">
+        <div className="flex flex-col md:flex-row justify-between mt-4 gap-4">
           <div className="text-green-500 flex justify-center items-center gap-2">
             <CheckCircleOutlineOutlinedIcon />
             <h1 className="text-[#212121] text-xl font-normal">
@@ -575,7 +578,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
             <span>Frequently Asked</span> <span>Questions </span>
           </h1>
         </div>
-        <div className="w-full">
+        <div className="w-full flex flex-col justify-start items-center">
           <div className="p-3 border-t border-gray-300">
             <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
               <AccordionSummary

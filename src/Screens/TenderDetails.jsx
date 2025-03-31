@@ -16,17 +16,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-function createData(name, calories, fat) {
-  return { name, calories, fat };
-}
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0),
-  createData("Ice cream sandwich", 237, 9.0),
-  createData("Eclair", 262, 16.0),
-  createData("Cupcake", 305, 3.7),
-  createData("Gingerbread", 356, 16.0),
-];
 export default function TenderDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -80,7 +70,7 @@ export default function TenderDetails() {
               </p>
               <h1 className="text-base font-semibold">Description</h1>
               <Divider />
-              <p className="text-sm text-[#565656] font-normal">
+              <p className="text-sm text-[#565656] font-normal max-w-[514px] break-words">
                 {tenderDetails?.description}
               </p>
             </div>
@@ -154,6 +144,7 @@ export default function TenderDetails() {
                   className="text-[#0554F2] font-normal text-sm flex gap-4"
                   href={`${tenderDetails?.website}`}
                   target="_blank"
+                  rel="noreferrer"
                 >
                   {tenderDetails?.website}
                 </a>

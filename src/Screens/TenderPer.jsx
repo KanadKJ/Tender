@@ -1,16 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  GetTenderList,
-  GetTenderListWithFilters,
-} from "../Redux/Slices/TenderSlice";
+import { GetTenderListWithFilters } from "../Redux/Slices/TenderSlice";
 import {
   Autocomplete,
-  Backdrop,
   Button,
   Checkbox,
-  CircularProgress,
   Dialog,
   Divider,
   FormControl,
@@ -31,7 +26,6 @@ import {
   dateOptions,
   formatDateTime,
   formatIndianCurrency,
-  testJson,
 } from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
@@ -58,7 +52,6 @@ export default function TenderPer() {
   const { tenderData, tenderIsLoading } = useSelector((s) => s.tender);
 
   const {
-    isDistrictCallLoading,
     districtsData,
     statesData,
     orgData,
@@ -67,7 +60,6 @@ export default function TenderPer() {
     subDivData,
     sectionsData,
     unitData,
-    filtersBasedOnUsers,
   } = useSelector((s) => s.common);
   const { userData, userFilters } = useSelector((s) => s.auth);
   const [isPlanExpired, setIsPlanExpired] = useState(false);
@@ -87,7 +79,6 @@ export default function TenderPer() {
   }, [userFilters]);
   //state
   // eslint-disable-next-line
-
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [savedFilters, setSavedFilters] = useState([
@@ -185,7 +176,7 @@ export default function TenderPer() {
   const queryString = useQueryParams(filters);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);
-  const [page, setPage] = useState(1);
+
   // hooks
   const dispatch = useDispatch();
 
@@ -571,18 +562,18 @@ export default function TenderPer() {
   );
   return (
     <>
-      <div className="mt-14 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
+      <div className="mt-14 px-2 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
         <Background type="vector" lifed="up" show="no" />
         <main className="w-full flex flex-col justify-center items-center gap-6">
           {/* TITLE */}
           <div className="mt-6 flex flex-col gap-3 w-full justify-center items-center">
             <div className="w-full flex  justify-center items-center">
-              <h1 className="font-normal text-5xl text-start">
+              <h1 className="font-normal text-2xl md:text-5xl text-start">
                 Tenders at a glance
               </h1>
             </div>
             <div className="w-full flex  justify-center items-center">
-              <h3 className="font-normal text-xl text-start">
+              <h3 className="font-normal text-xs md:text-xl text-start">
                 Choose the best plan for your business.
               </h3>
             </div>
@@ -2180,7 +2171,7 @@ export default function TenderPer() {
             </Dialog>
           </div>
           {/* TENDERS RENDER */}
-          <div>
+          <div className="w-full flex flex-col justify-center items-center">
             {tenderIsLoading ? (
               <div className="h-[20vh]"></div>
             ) : (
@@ -2200,7 +2191,7 @@ export default function TenderPer() {
                     key={tender?.uid}
                     className={`flex flex-col md:flex-row  justify-between ${
                       i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
-                    } py-6  pl-4 rounded-md gap-4 min-h-56 max-w-xs sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg`}
+                    } py-6 px-2 rounded-md gap-4 min-h-56 max-w-sm sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg w-full`}
                   >
                     <div className="w-full flex flex-col gap-5">
                       <div className="flex gap-4 flex-col ">
@@ -2223,8 +2214,8 @@ export default function TenderPer() {
                           </span>
                         </div>
                       </div>
-                      <div className="overflow-hidden text-ellipsis line-clamp-2 text-base">
-                        <p>{tender?.description}</p>
+                      <div className="break-words text-base max-w-[514px]">
+                        <p className="">{tender?.description}</p>
                       </div>
 
                       <div className="flex justify-start items-center gap-4">
@@ -2258,7 +2249,7 @@ export default function TenderPer() {
                             Corrigendum : NIT{" "}
                           </h1>
                           {corrigendum?.diffDays ? (
-                            <h1 className="text-[#C9B00F] text-center text-sm">
+                            <h1 className="text-[#C9B00F] text-center text-sm font-semibold">
                               {corrigendum?.diffDays} days ago
                             </h1>
                           ) : (
@@ -2268,7 +2259,7 @@ export default function TenderPer() {
                           )}
                         </div>
 
-                        <div className="flex flex-col justify-center items-center ">
+                        <div className="flex gap-2 md:gap-0 md:flex-col justify-center items-center ">
                           <span
                             style={{
                               color: col,
@@ -2287,32 +2278,32 @@ export default function TenderPer() {
                           </span>
                         </div>
                       </div>
-                      <div className="w-full flex flex-col md:flex-row gap-4 justify-center items-center">
-                        <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                          <h6 className="text-sm font-normal text-[#565656]">
+                      <div className="w-full flex flex-row gap-2 md:gap-4 justify-center items-center">
+                        <div className="px-2 md:px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24 max-w-28 md:max-w-36 w-full">
+                          <h6 className="text-[10px] md:text-sm font-normal text-[#565656]">
                             Published Date
                           </h6>
-                          <p className="text-[#212121] text-base font-medium">
+                          <p className="text-[#212121] text-sm md:text-base font-medium">
                             {formatDateTime(tender?.published_date)[0]} <br />
                             {formatDateTime(tender?.published_date)[1]}
                           </p>
                         </div>
-                        <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                          <h6 className="text-sm font-normal text-[#565656]">
+                        <div className="px-2 md:px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24 max-w-28 md:max-w-36 w-full">
+                          <h6 className="text-[10px] md:text-sm font-normal text-[#565656]">
                             Closing Date
                           </h6>
 
-                          <p className="text-[#212121] text-base font-medium">
+                          <p className="text-[#212121] text-sm md:text-base font-medium">
                             {formatDateTime(tender?.bid_submission_end_date)[0]}{" "}
                             <br />
                             {formatDateTime(tender?.bid_submission_end_date)[1]}
                           </p>
                         </div>
-                        <div className="px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24">
-                          <h6 className="text-sm font-normal text-[#565656]">
+                        <div className="px-2 md:px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24 max-w-28 md:max-w-36 w-full">
+                          <h6 className="text-[10px] md:text-sm font-normal text-[#565656]">
                             Tender Amount
                           </h6>
-                          <p className="text-[#212121] text-base font-medium">
+                          <p className="text-[#212121] text-sm md:text-base font-medium">
                             {tender?.value_in_rs
                               ? formatIndianCurrency(tender?.value_in_rs)
                               : "Refer Document"}
