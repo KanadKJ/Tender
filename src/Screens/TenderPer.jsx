@@ -515,6 +515,8 @@ export default function TenderPer() {
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  console.log(userFilters);
+
   const handleSaveFiltersSearched = () => {
     if (!saveFilter.trim()) {
       handleClose();
@@ -526,18 +528,37 @@ export default function TenderPer() {
       toast.error("Please sign in to continue");
       return;
     }
+    if (
+      userSaverTemplates.some(
+        (template) => template.templateName === saveFilter
+      )
+    ) {
+      toast.error("Template name already exists");
+      return;
+    }
 
+    if (userFilters?.template < userSaverTemplates?.length) {
+      toast.error("Please upgrade your plan to save more templates");
+      return;
+    }
     dispatch(
       InsertTemplate({
         userId: userData?.id,
         url: params,
         templateName: saveFilter,
       })
-    );
+    )
+      .unwrap()
+      .then(() => {
+        dispatch(GetTemplateDetails(userData?.id));
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error("Something went wrong.");
+      });
 
     setSaveFilter("");
     handleClose();
-    dispatch(GetTemplateDetails(userData?.id));
   };
   const handleSavedSeachFromTemplate = (obj) => {
     navigate(`?${obj?.url}`, { replace: true });
