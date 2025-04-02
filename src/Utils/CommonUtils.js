@@ -131,7 +131,7 @@ export const pricingPlanData = {
       "Save Filter Limit 2 filters & PDF exports",
       "BOQ View on PDF",
     ],
-    price: "1",
+    price: "399",
   },
   delux: {
     title: "Dulex",
