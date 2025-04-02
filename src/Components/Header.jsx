@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useEffect, useState } from "react";
 import { Avatar, Popover } from "@mui/material";
-import { logout, setData } from "../Redux/Slices/AuthSlice";
+import { logout, LogoutUser, setData } from "../Redux/Slices/AuthSlice";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
@@ -236,7 +236,7 @@ const Header = () => {
                   <button
                     className="p-1 mt-5 text-[#565656] flex gap-2"
                     onClick={() => {
-                      dispatch(logout());
+                      dispatch(LogoutUser(userData?.id));
                       navigate("/login");
                     }}
                   >

@@ -131,7 +131,7 @@ export const pricingPlanData = {
       "Save Filter Limit 2 filters & PDF exports",
       "BOQ View on PDF",
     ],
-    price: "399",
+    price: "1",
   },
   delux: {
     title: "Dulex",
@@ -202,3 +202,9 @@ export const pricingPlanData = {
     price: "1399",
   },
 };
+
+/**
+ key_id: rzp_live_hG8SfOdRr9wzIf,
+ 
+ key_secret: Ui4ytSpCTpD5HUnhlu2H8Mlr
+*/

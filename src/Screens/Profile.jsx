@@ -7,7 +7,6 @@ import Sidebar from "../Components/SideBar";
 export default function Profile() {
   const { userData } = useSelector((s) => s.auth);
 
-
   // hooks
   //local states
 

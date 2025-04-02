@@ -1,5 +1,5 @@
 // src/components/Sidebar/Sidebar.js
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import profile from "../Assets/profile.svg";
 import download from "../Assets/download.svg";
@@ -12,8 +12,8 @@ import trems from "../Assets/trems.svg";
 import viewed from "../Assets/viewed.svg";
 import howdoesitworks from "../Assets/howdoesitworks.svg";
 import DriverLink from "./DriverLink";
-import { useDispatch } from "react-redux";
-import { logout } from "../Redux/Slices/AuthSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, LogoutUser, setData } from "../Redux/Slices/AuthSlice";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
@@ -23,9 +23,15 @@ import logo from "../Assets/logoNew.png";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 const Sidebar = ({ onLinkClick }) => {
+  const { userData } = useSelector((s) => s.auth);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("user") && !userData) {
+      dispatch(setData(JSON.parse(localStorage.getItem("user"))));
+    }
+  }, [userData]);
   return (
     <nav className="flex flex-col justify-start items-start max-w-[250px] w-full  rounded-md sticky">
       <ul
@@ -107,7 +113,7 @@ const Sidebar = ({ onLinkClick }) => {
         />
 
         <Link
-          onClick={() => dispatch(logout())}
+          onClick={() => dispatch(LogoutUser(userData?.id))}
           className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md"
         >
           <span>

@@ -55,9 +55,9 @@ export const GetUserDetails = createAsyncThunk(
       if (!response?.data?.value?.length) {
         return rejectWithValue("Invalid Email or Password");
       }
-      if (response?.data?.value[0]?.isLoggedIn) {
-        return rejectWithValue("User already logged in.");
-      }
+      // if (response?.data?.value[0]?.isLoggedIn) {
+      //   return rejectWithValue("User already logged in.");
+      // }
       const user = response.data.value[0]; // Store only the user object
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -90,7 +90,20 @@ export const SignUpUser = createAsyncThunk(
     }
   }
 );
-
+export const LogoutUser = createAsyncThunk(
+  "auth/LogoutUser",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await TMGetApi.post(`LogoutUser?userid=${data}`);
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Please fill valid data or try again later"
+      );
+    }
+  }
+);
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -149,6 +162,27 @@ const authSlice = createSlice({
         }
       })
       .addCase(InsertFilterJson.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // LogoutUser
+      .addCase(LogoutUser.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(LogoutUser.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+        console.log(action.payload);
+
+        if (action?.payload?.message === "User logged out successfully") {
+          state.userData = null;
+          localStorage.removeItem("user");
+          state.userFilters = null;
+          toast.success("Logged out successfully!");
+        }
+      })
+      .addCase(LogoutUser.rejected, (state, action) => {
         state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

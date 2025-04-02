@@ -4,8 +4,10 @@ import Background from "../Components/Background";
 import PriceContainer from "../Components/PriceContainer";
 import { pricingPlanData } from "../Utils/CommonUtils";
 import pg from "../Assets/PricingGradient.png";
+
 export default function Pricing() {
   const [show, setShow] = useState(false);
+
   return (
     <div className="mt-20 ">
       <Background type={"default"} show="no" />

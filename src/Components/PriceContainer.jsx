@@ -1,8 +1,92 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import { Divider } from "@mui/material";
-
+import logo from "../Assets/logoNew.png";
+import axios from "axios";
+import { setData } from "../Redux/Slices/AuthSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { TMAPI_BASE_URL } from "../Utils/CommonUtils";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 export default function PriceContainer({ data }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userData } = useSelector((s) => s.auth);
+  useEffect(() => {
+    if (localStorage.getItem("user") && !userData) {
+      dispatch(setData(JSON.parse(localStorage.getItem("user"))));
+    }
+  }, [userData]);
+  function loadScript(src) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+  const displayRazorpay = async (price, title) => {
+    if (!userData) {
+      navigate("/login");
+      return;
+    }
+
+    if (title === "Free" || price === "0") return;
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+    const result = await axios.post(`${TMAPI_BASE_URL}/createOrder`, {
+      amount: price,
+    });
+    console.log(result);
+
+    if (!result) {
+      alert("Server error. Are you online?");
+      return;
+    }
+    const { amount, id } = result.data;
+    const options = {
+      key: "rzp_live_hG8SfOdRr9wzIf",
+      amount: amount.toString(),
+      currency: "INR",
+      name: "eTenderMitra",
+      description: `Purchasing ${title} plan`,
+      image: logo,
+      order_id: id,
+      handler: async function (response) {
+        console.log("Razorpay handler response", response);
+
+        const data = {
+          paymentId: response.razorpay_payment_id,
+          amount: amount.toString(),
+        };
+        const result = await axios.post(`${TMAPI_BASE_URL}/capture`, data);
+        if (result?.data?.success) {
+          toast.success("Payment completed successfully..!");
+        }
+      },
+      prefill: {
+        name: userData?.firstName,
+        email: userData?.email,
+        contact: userData?.mobileNo,
+      },
+
+      theme: {
+        color: "#0554f2",
+      },
+    };
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  };
   return (
     <div className="max-h-[452px] border border-[#212121] rounded-3xl max-w-60 p-4 flex flex-col gap-1 bg-white">
       <h6 className="text-lg font-semibold text-[#212121]">{data?.title}</h6>
@@ -14,7 +98,7 @@ export default function PriceContainer({ data }) {
       </div>
       <p className="text-[#565656] text-sm font-normal">{data?.subTitle}</p>
       <button
-        onClick={() => console.log(data?.title)}
+        onClick={() => displayRazorpay(data?.price, data?.title)}
         className={`gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-base font-normal text-[#0554F2] 
             hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out ${
               data?.title === "Standard" ? "mt-16 mb-6" : "my-6"
