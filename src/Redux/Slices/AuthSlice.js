@@ -93,6 +93,7 @@ export const SignUpUser = createAsyncThunk(
 export const LogoutUser = createAsyncThunk(
   "auth/LogoutUser",
   async (data, { rejectWithValue }) => {
+    toast.success("Logged out successfully!");
     try {
       const response = await TMGetApi.post(`LogoutUser?userid=${data}`);
       return response?.data;
@@ -167,7 +168,7 @@ const authSlice = createSlice({
       })
       // LogoutUser
       .addCase(LogoutUser.pending, (state) => {
-        state.authIsLoading = true;
+        // state.authIsLoading = true;
         state.error = null;
       })
       .addCase(LogoutUser.fulfilled, (state, action) => {
@@ -179,7 +180,6 @@ const authSlice = createSlice({
           state.userData = null;
           localStorage.removeItem("user");
           state.userFilters = null;
-          toast.success("Logged out successfully!");
         }
       })
       .addCase(LogoutUser.rejected, (state, action) => {

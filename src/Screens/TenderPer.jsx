@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
 import { useDispatch, useSelector } from "react-redux";
-import { GetTenderListWithFilters } from "../Redux/Slices/TenderSlice";
+import {
+  GetTemplateDetails,
+  GetTenderListWithFilters,
+  InsertTemplate,
+} from "../Redux/Slices/TenderSlice";
 import {
   Autocomplete,
   Button,
@@ -49,7 +53,9 @@ import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutl
 import { toast } from "react-toastify";
 export default function TenderPer() {
   // redux
-  const { tenderData, tenderIsLoading } = useSelector((s) => s.tender);
+  const { tenderData, tenderIsLoading, userSaverTemplates } = useSelector(
+    (s) => s.tender
+  );
 
   const {
     districtsData,
@@ -81,17 +87,7 @@ export default function TenderPer() {
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [savedFilters, setSavedFilters] = useState([
-    {
-      name: "Saved 3",
-      filterLink: "keywords=LED&value_in_rs_min=10000&value_in_rs_max=10000000",
-    },
-    {
-      name: "Saved 1",
-      filterLink:
-        "ordering=-value_in_rs&organisations=1&value_in_rs_min=100000&value_in_rs_max=500000000&published_date_after=2025-03-07&published_date_before=2025-03-22",
-    },
-  ]);
+  // const [savedFilters, setSavedFilters] = useState([]);
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
@@ -185,6 +181,12 @@ export default function TenderPer() {
     dispatch(GetStatesList());
     dispatch(GetOrgList());
   }, []);
+  useEffect(() => {
+    if (userData) {
+      dispatch(GetTemplateDetails(userData?.id));
+    }
+  }, [userData]);
+
   useEffect(() => {
     const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
     const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
@@ -516,20 +518,29 @@ export default function TenderPer() {
   const handleSaveFiltersSearched = () => {
     if (!saveFilter.trim()) {
       handleClose();
-
+      toast.error("Please provide valid data.");
       return;
     }
     const params = new URLSearchParams(searchParams).toString();
-    setSavedFilters((prevFilters) => [
-      ...prevFilters,
-      { name: saveFilter, filterLink: params },
-    ]);
+    if (!userData) {
+      toast.error("Please sign in to continue");
+      return;
+    }
+
+    dispatch(
+      InsertTemplate({
+        userId: userData?.id,
+        url: params,
+        templateName: saveFilter,
+      })
+    );
 
     setSaveFilter("");
     handleClose();
+    dispatch(GetTemplateDetails(userData?.id));
   };
   const handleSavedSeachFromTemplate = (obj) => {
-    navigate(`?${obj?.filterLink}`, { replace: true });
+    navigate(`?${obj?.url}`, { replace: true });
     handleClose();
   };
   const dataFetcher = (type, ids) => {
@@ -637,7 +648,7 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "SavedFilters")}
             >
               Save Filters
-              <CustomBadge data={savedFilters} />
+              <CustomBadge data={userSaverTemplates} />
             </Button>
 
             {/* Keywords */}
@@ -822,7 +833,7 @@ export default function TenderPer() {
                   onClick={(event) => handleClick(event, "SavedFilters")}
                 >
                   Save Filters
-                  <CustomBadge data={savedFilters} />
+                  <CustomBadge data={userSaverTemplates} />
                 </Button>
 
                 {/* Keywords */}
@@ -1003,14 +1014,14 @@ export default function TenderPer() {
                 />
                 <h1>Saved Filters</h1>
                 <div className="w-full flex flex-col max-h-36 overflow-y-auto scrollbar-hide">
-                  {savedFilters.length ? (
-                    savedFilters.map((f, i) => (
+                  {userSaverTemplates.length ? (
+                    userSaverTemplates.map((f, i) => (
                       <button
                         key={i}
                         className="w-full border shadow-md cursor-pointer p-3 my-2"
                         onClick={() => handleSavedSeachFromTemplate(f)}
                       >
-                        <h1>{f.name}</h1>
+                        <h1>{f.templateName}</h1>
                       </button>
                     ))
                   ) : (

@@ -107,6 +107,7 @@ export const pricingPlanData = {
   free: {
     title: "Free",
     subTitle: "All West Bengal ",
+    id: 1,
     featurs: [
       "Unlimited Tender Search",
       "Download Document",
@@ -123,6 +124,7 @@ export const pricingPlanData = {
   basic: {
     title: "Basic",
     subTitle: "One Gram Panchayat",
+    id: 2,
     featurs: [
       "Unlimited Tender Search",
       "Download Document",
@@ -136,6 +138,7 @@ export const pricingPlanData = {
   delux: {
     title: "Dulex",
     subTitle: "Three Districts",
+    id: 3,
     featurs: [
       "Unlimited Tender Search",
       "Download Document",
@@ -149,6 +152,7 @@ export const pricingPlanData = {
   advance: {
     title: "Advance",
     subTitle: "All West Bengal",
+    id: 4,
     featurs: [
       "Unlimited Tender Search",
       "Download Document",
@@ -164,6 +168,7 @@ export const pricingPlanData = {
   standard: {
     title: "Standard",
     subTitle: "Two Block/Panchayat Samity",
+    id: 5,
     featurs: [
       " Unlimited Tender Search",
       "Download Document",
@@ -178,6 +183,7 @@ export const pricingPlanData = {
     title: "Professional",
     subTitle:
       "Five Department/Origination ( AllWest Bengal) (ex- PWD, ZillaParishad, WBPDCL, etc)",
+    id: 6,
     featurs: [
       "Unlimited Tender Search",
       "Download Document",
@@ -191,6 +197,7 @@ export const pricingPlanData = {
   premium: {
     title: "Premium",
     subTitle: "5 Category /All West Bengal ( exCivil, Electrical, etc)",
+    id: 7,
     featurs: [
       "Unlimited Tender Search",
       "Download Document",

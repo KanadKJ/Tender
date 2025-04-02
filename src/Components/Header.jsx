@@ -12,6 +12,7 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined";
 import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { cleanUpUserFilters } from "../Redux/Slices/TenderSlice";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { userData, userFilters } = useSelector((s) => s.auth);
@@ -237,6 +238,7 @@ const Header = () => {
                     className="p-1 mt-5 text-[#565656] flex gap-2"
                     onClick={() => {
                       dispatch(LogoutUser(userData?.id));
+                      dispatch(cleanUpUserFilters());
                       navigate("/login");
                     }}
                   >

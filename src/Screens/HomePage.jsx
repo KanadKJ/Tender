@@ -34,7 +34,9 @@ import i6 from "../Assets/i6.png";
 import i7 from "../Assets/i7.png";
 import ExplorGrid from "../Components/ExplorGrid";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
+import { useNavigate } from "react-router-dom";
 export default function HomePage() {
+  const navigate = useNavigate();
   const carouselRef = useRef(null);
   const CustomButtonGroup = () => (
     <div className="hidden absolute top-1/2 w-full md:flex justify-between px-8 md:px-12 lg:px-16 -translate-y-1/2 mt-8">
@@ -160,6 +162,7 @@ export default function HomePage() {
         </div>
         <div>
           <button
+            onClick={() => navigate("/signup")}
             className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                                 hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
           >
@@ -494,6 +497,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
         </div>
         <div className="w-full flex justify-center items-center">
           <button
+            onClick={() => navigate("/pricing")}
             className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                 hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
                 group"

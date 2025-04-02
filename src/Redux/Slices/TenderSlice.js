@@ -1,10 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ScrpApiTenders } from "../../Api/SCPAPI";
+import { toast } from "react-toastify";
+import { TMGetApi } from "../../Api/TMAPI";
 
 const initialState = {
   tenderData: [],
   tenderIsLoading: false,
   tenderDetails: [],
+  userSaverTemplates: [],
   error: "",
 };
 export const GetTenderList = createAsyncThunk(
@@ -43,10 +46,36 @@ export const GetTenderDetails = createAsyncThunk(
     }
   }
 );
+export const InsertTemplate = createAsyncThunk(
+  "tender/InsertTemplate",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.post(`/InsertTemplate`, data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetTemplateDetails = createAsyncThunk(
+  "tender/GetTemplateDetails",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(`/GetTemplateDetails?userid=${21}`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 const tenderSlice = createSlice({
   name: "tender",
   initialState,
-
+  reducers: {
+    cleanUpUserFilters: (state) => {
+      state.userSaverTemplates = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(GetTenderList.pending, (state) => {
@@ -88,9 +117,39 @@ const tenderSlice = createSlice({
       .addCase(GetTenderDetails.rejected, (state, action) => {
         state.tenderIsLoading = false;
         state.error = action.payload || "Something went wrong";
+      })
+      // InsertTemplate
+      .addCase(InsertTemplate.pending, (state) => {
+        state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(InsertTemplate.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+        if (action.payload.message === "Template inserted successfully") {
+          toast.success("Template inserted successfully");
+        }
+      })
+      .addCase(InsertTemplate.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetTemplateDetails
+      .addCase(GetTemplateDetails.pending, (state) => {
+        state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetTemplateDetails.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+        state.userSaverTemplates = action.payload?.value;
+      })
+      .addCase(GetTemplateDetails.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
       });
   },
 });
 
-// export const { userData } = authSlice.actions;
+export const { cleanUpUserFilters } = tenderSlice.actions;
 export default tenderSlice.reducer;

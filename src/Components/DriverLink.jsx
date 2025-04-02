@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+
 export default function DriverLink({ src, name, to, comp }) {
   return (
     <Link

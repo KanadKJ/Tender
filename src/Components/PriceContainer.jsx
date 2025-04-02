@@ -30,7 +30,7 @@ export default function PriceContainer({ data }) {
       document.body.appendChild(script);
     });
   }
-  const displayRazorpay = async (price, title) => {
+  const displayRazorpay = async (price, title, planID) => {
     if (!userData) {
       navigate("/login");
       return;
@@ -68,6 +68,10 @@ export default function PriceContainer({ data }) {
         const data = {
           paymentId: response.razorpay_payment_id,
           amount: amount.toString(),
+          orderId: response.razorpay_order_id,
+          userId: userData?.id,
+          planId: planID,
+          paymentStatus: "success",
         };
         const result = await axios.post(`${TMAPI_BASE_URL}/capture`, data);
         if (result?.data?.success) {
@@ -98,7 +102,7 @@ export default function PriceContainer({ data }) {
       </div>
       <p className="text-[#565656] text-sm font-normal">{data?.subTitle}</p>
       <button
-        onClick={() => displayRazorpay(data?.price, data?.title)}
+        onClick={() => displayRazorpay(data?.price, data?.title, data?.id)}
         className={`gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-base font-normal text-[#0554F2] 
             hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out ${
               data?.title === "Standard" ? "mt-16 mb-6" : "my-6"
