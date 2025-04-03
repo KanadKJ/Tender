@@ -110,18 +110,19 @@ const Sidebar = ({ onLinkClick }) => {
             Terms & Conditions
           </span>
         </button>
-
-        <DriverLink
-          comp={
-            <ManageAccountsIcon
-              sx={{
-                color: "#b2b2b3",
-              }}
-            />
-          }
-          name="Tender Management"
-          to="dashboard/TenderManagement"
-        />
+        {userData?.userType === 1 && (
+          <DriverLink
+            comp={
+              <ManageAccountsIcon
+                sx={{
+                  color: "#b2b2b3",
+                }}
+              />
+            }
+            name="Tender Management"
+            to="dashboard/TenderManagement"
+          />
+        )}
 
         <Link
           onClick={() => {
