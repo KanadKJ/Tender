@@ -12,6 +12,10 @@ const HomePage = lazy(() => import("../Screens/HomePage"));
 const TendersPage = lazy(() => import("../Screens/TenderPer"));
 const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
 const PricingPage = lazy(() => import("../Screens/Pricing"));
+const AboutUsPage = lazy(() => import("../Screens/AboutUs"));
+const TermsAndConditionsPage = lazy(() =>
+  import("../Screens/TermsAndConditions")
+);
 
 const AppRouter = () => {
   return (
@@ -26,6 +30,8 @@ const AppRouter = () => {
             <Route path="/pricing/" element={<PricingPage />} />
             <Route index element={<HomePage />} />
 
+            <Route path="/T&C" element={<TermsAndConditionsPage />} />
+            <Route path="/About-Us" element={<AboutUsPage />} />
             <Route path="/tenders/:id" element={<TenderDetails />} />
             <Route path="*" element={<HomePage />} />
             <Route path="/dashboard" element={<Dashboard />}>

@@ -28,21 +28,13 @@ const Sidebar = ({ onLinkClick }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
-  const [type, setType] = useState(null);
+
   useEffect(() => {
     if (localStorage.getItem("user") && !userData) {
       dispatch(setData(JSON.parse(localStorage.getItem("user"))));
     }
   }, [userData]);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const openDialog = (t) => {
-    setType(t);
-    setOpen(true);
-  };
   return (
     <nav className="flex flex-col justify-start items-start max-w-[250px] w-full  rounded-md sticky">
       <ul
@@ -103,23 +95,12 @@ const Sidebar = ({ onLinkClick }) => {
         onClick={() => dispatch(sibebarHandler(false))}
       >
         <DriverLink src={profile} name="Profile" to="dashboard/profile" />
-        <DriverLink src={rupee} name="Active Plan" to="" />
+        <DriverLink src={rupee} name="Payment History" to="" />
 
         <DriverLink src={saved} name="Followed Tenders" to="" />
 
         <button
-          onClick={() => openDialog("PP")}
-          className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md"
-        >
-          <span>
-            <img src={locked} />
-          </span>
-          <span className="text-[#565656] font-normal text-base">
-            Privacy Policy
-          </span>
-        </button>
-        <button
-          onClick={() => openDialog("TC")}
+          onClick={() => navigate("/T&C")}
           className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md"
         >
           <span>
@@ -155,42 +136,6 @@ const Sidebar = ({ onLinkClick }) => {
           <span className="text-[#565656] font-normal text-base">Logout</span>
         </Link>
       </ul>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        {type === "TC" ? (
-          <div>
-            <DialogTitle id="alert-dialog-title">
-              Terms & Conditions
-            </DialogTitle>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate
-              iste totam natus aperiam ipsum dolor eos facilis quia sint fuga,
-              quo eum eligendi sed veniam! Eligendi, iure perspiciatis officia
-              autem ea consectetur eius quaerat provident voluptatibus doloribus
-              voluptates nesciunt dicta, labore nisi expedita officiis similique
-              illo fuga! Voluptate distinctio nam, similique commodi libero
-              architecto obcaecati.
-            </p>
-          </div>
-        ) : (
-          <div>
-            <DialogTitle id="alert-dialog-title">Privacy Policy</DialogTitle>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate
-              iste totam natus aperiam ipsum dolor eos facilis quia sint fuga,
-              quo eum eligendi sed veniam! Eligendi, iure perspiciatis officia
-              autem ea consectetur eius quaerat provident voluptatibus doloribus
-              voluptates nesciunt dicta, labore nisi expedita officiis similique
-              illo fuga! Voluptate distinctio nam, similique commodi libero
-              architecto obcaecati.
-            </p>
-          </div>
-        )}
-      </Dialog>
     </nav>
   );
 };

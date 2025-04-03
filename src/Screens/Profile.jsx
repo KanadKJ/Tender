@@ -4,9 +4,31 @@ import editSvg from "../Assets/Edit.svg";
 
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../Components/SideBar";
+import {
+  GetAddressDetails,
+  GetCompanyDetails,
+  InsertUpdateAddressData,
+  InsertUpdateCompany,
+  setData,
+} from "../Redux/Slices/AuthSlice";
+import { toast } from "react-toastify";
 export default function Profile() {
-  const { userData } = useSelector((s) => s.auth);
+  const dispatch = useDispatch();
+  const { userData, companyDetailsData, addressDetailsData } = useSelector(
+    (s) => s.auth
+  );
+  useEffect(() => {
+    if (localStorage.getItem("user") && !userData) {
+      dispatch(setData(JSON.parse(localStorage.getItem("user"))));
+    }
+  }, [userData]);
 
+  useEffect(() => {
+    if (userData) {
+      dispatch(GetCompanyDetails(userData?.id));
+      dispatch(GetAddressDetails(userData?.id));
+    }
+  }, [userData]);
   // hooks
   //local states
 
@@ -14,15 +36,41 @@ export default function Profile() {
     first_name: userData?.firstName || "",
     email: userData?.email || "",
     mobile_no: userData?.mobileNo || "",
-    companyName: "",
-    gstin: "",
-    yearOfEstablishment: "",
-    website: "",
-    state: "",
-    city: "",
-    village: "",
-    pinCode: "",
+    companyName: companyDetailsData?.companyName || "",
+    gstin: companyDetailsData?.gstin || "",
+    yearOfEstablishment: companyDetailsData?.yearOfEstablishment || "",
+    website: companyDetailsData?.website || "",
+    state: addressDetailsData?.state || "",
+    city: addressDetailsData?.city || "",
+    village: addressDetailsData?.village || "",
+    pinCode: addressDetailsData?.village || "",
+    companyId: companyDetailsData?.id || null,
+    addressId: addressDetailsData?.id || null,
   });
+
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      state: addressDetailsData?.state || "",
+      city: addressDetailsData?.city || "",
+      village: addressDetailsData?.village || "",
+      pinCode: addressDetailsData?.pinCode || "",
+      addressId: addressDetailsData?.id || null,
+    });
+  }, [addressDetailsData]);
+
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      companyName: companyDetailsData?.companyName || "",
+      gstin: companyDetailsData?.gstin || "",
+      yearOfEstablishment: companyDetailsData?.yearOfEstablishment || "",
+      website: companyDetailsData?.website || "",
+      companyId: companyDetailsData?.id || null,
+    });
+  }, [companyDetailsData]);
+  console.log(addressDetailsData);
+
   const [editSections, setEditSections] = useState({
     personal: false,
     company: false,
@@ -32,7 +80,6 @@ export default function Profile() {
   const [errors, setErrors] = useState({});
   //hooks
 
-  const dispatch = useDispatch();
   // redux state
 
   const validateEmail = (email) => {
@@ -46,9 +93,8 @@ export default function Profile() {
   };
 
   const validateGSTIN = (gstin) => {
-    const re = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-    // return re.test(String(gstin));
-    return true;
+    const re = /^[0-3][0-9][A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    return re.test(String(gstin));
   };
 
   const validatePinCode = (pinCode) => {
@@ -63,7 +109,7 @@ export default function Profile() {
       [name]: value,
     });
   };
-
+  console.log(formData);
   const handleSubmit = (section) => {
     const newErrors = {};
 
@@ -82,33 +128,75 @@ export default function Profile() {
     }
 
     if (section === "company") {
-      if (!formData.companyName)
-        newErrors.companyName = "Company name is required";
-      if (!formData.gstin) {
-        newErrors.gstin = "GSTIN is required";
-      } else if (!validateGSTIN(formData.gstin)) {
-        newErrors.gstin = "Invalid GSTIN";
+      if (formData.gstin) {
+        if (!validateGSTIN(formData.gstin)) {
+          newErrors.gstin = "Invalid GSTIN";
+        }
       }
-      if (!formData.yearOfEstablishment)
-        newErrors.yearOfEstablishment = "Year of establishment is required";
+      if (formData.yearOfEstablishment)
+        if (
+          formData?.yearOfEstablishment > 2099 ||
+          formData?.yearOfEstablishment < 1900
+        )
+          newErrors.yearOfEstablishment =
+            "Please provide valid Year Of Establishment";
       //   if (!formData.website) newErrors.website = "Website is required";
     }
 
     if (section === "address") {
-      if (!formData.state) newErrors.state = "State is required";
-      if (!formData.city) newErrors.city = "City is required";
-      if (!formData.village) newErrors.village = "Village is required";
-      if (!formData.pinCode) {
-        newErrors.pinCode = "Pin code is required";
-      } else if (!validatePinCode(formData.pinCode)) {
-        newErrors.pinCode = "Invalid pin code";
+      if (formData.pinCode) {
+        if (!validatePinCode(formData.pinCode)) {
+          newErrors.pinCode = "Invalid pin code";
+        }
       }
     }
 
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      alert(`Changes saved for ${section} section`);
+      // alert(`Changes saved for ${section} section`);
+      console.log(section);
+      if (section === "company") {
+        dispatch(
+          InsertUpdateCompany({
+            id: formData?.companyId,
+            userId: userData?.id,
+            companyName: formData?.companyName,
+            yearOfEstablishment: formData?.yearOfEstablishment || 0,
+            website: formData?.website,
+            gstin: formData?.gstin,
+          })
+        )
+          .unwrap()
+          .then(() => {
+            dispatch(GetCompanyDetails(userData?.id));
+          })
+          .catch((e) => {
+            toast.error(e);
+          });
+      }
+      if (section === "address") {
+        console.log(formData);
+
+        dispatch(
+          InsertUpdateAddressData({
+            id: formData?.addressId,
+            userId: userData?.id,
+            state: formData?.state,
+            city: formData?.city,
+            village: formData?.village,
+            pinCode: formData?.pinCode,
+          })
+        )
+          .unwrap()
+          .then(() => {
+            dispatch(GetAddressDetails(userData?.id));
+          })
+          .catch((e) => {
+            toast.error(e);
+          });
+      }
+
       // Here you can add logic to save changes to the backend
       setEditSections((prev) => ({ ...prev, [section]: !prev[section] }));
     }
@@ -126,7 +214,7 @@ export default function Profile() {
               <h1 className="text-lg text-[#212121] font-medium">
                 PERSONAL DETAILS
               </h1>
-              <div>
+              {/* <div>
                 {editSections.personal ? (
                   <button
                     className="text-[#0554F2]"
@@ -139,7 +227,7 @@ export default function Profile() {
                     <img src={editSvg} />
                   </button>
                 )}
-              </div>
+              </div> */}
             </div>
             <div className="w-full flex flex-col md:flex-row  justify-between">
               <label className="w-2/3 text-base text-[#565656] font-medium">
@@ -262,9 +350,12 @@ export default function Profile() {
                   value={formData.yearOfEstablishment}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="01/01/2000"
+                  placeholder="1999"
                   disabled={!editSections.company}
-                  type="date"
+                  type="number"
+                  min="1900"
+                  max="2099"
+                  step="1"
                 />
                 {errors.yearOfEstablishment && (
                   <span className="text-red-500">

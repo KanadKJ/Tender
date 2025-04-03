@@ -212,9 +212,20 @@ const Register = () => {
                   className="w-4 h-4"
                 />
                 <label htmlFor="termsAccepted" className="text-sm">
-                  I agree to Company’s{" "}
-                  <a className="text-blue-500">Terms of Service </a>and
-                  <a className="text-blue-500"> Privacy Policy</a>
+                  I agree to Company’s
+                  <a
+                    className="text-blue-500 px-1"
+                    onClick={() => navigate("/T&C")}
+                  >
+                    Terms of Service{" "}
+                  </a>
+                  and
+                  <a
+                    className="text-blue-500 px-1"
+                    onClick={() => navigate("/T&C")}
+                  >
+                    Privacy Policy
+                  </a>
                 </label>
               </div>
               {errors.termsAccepted && (
@@ -233,7 +244,10 @@ const Register = () => {
             <div className="w-full flex justify-center items-center mt-2">
               <span className="mt-2">
                 Already have an Account?
-                <a className="text-blue-500" onClick={() => navigate("/login")}>
+                <a
+                  className="text-blue-500 px-1 cursor-pointer"
+                  onClick={() => navigate("/login")}
+                >
                   Login
                 </a>
               </span>

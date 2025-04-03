@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  DeleteTemplate,
+  GetOrInsertTenderWishlist,
   GetTemplateDetails,
   GetTenderListWithFilters,
   InsertTemplate,
@@ -23,6 +25,7 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import TuneIcon from "@mui/icons-material/Tune";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
@@ -515,7 +518,14 @@ export default function TenderPer() {
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  console.log(userFilters);
+  const handleWishList = (id) => {
+    let data = {
+      id: 0,
+      userId: userData?.id,
+      tenderId: id,
+    };
+    dispatch(GetOrInsertTenderWishlist(data));
+  };
 
   const handleSaveFiltersSearched = () => {
     if (!saveFilter.trim()) {
@@ -559,6 +569,17 @@ export default function TenderPer() {
 
     setSaveFilter("");
     handleClose();
+  };
+  const handleDeleteSavedFiltersbyUsers = (id) => {
+    dispatch(DeleteTemplate(id))
+      .unwrap()
+      .then(() => {
+        dispatch(GetTemplateDetails(userData?.id));
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error("Something went wrong.");
+      });
   };
   const handleSavedSeachFromTemplate = (obj) => {
     navigate(`?${obj?.url}`, { replace: true });
@@ -1039,10 +1060,17 @@ export default function TenderPer() {
                     userSaverTemplates.map((f, i) => (
                       <button
                         key={i}
-                        className="w-full border shadow-md cursor-pointer p-3 my-2"
+                        className="w-full flex justify-between items-center border shadow-md cursor-pointer p-3 my-2"
                         onClick={() => handleSavedSeachFromTemplate(f)}
                       >
                         <h1>{f.templateName}</h1>
+                        <button
+                          onClick={() => {
+                            handleDeleteSavedFiltersbyUsers(f.id);
+                          }}
+                        >
+                          <DeleteOutlineOutlinedIcon fontSize="sm" />
+                        </button>
                       </button>
                     ))
                   ) : (
@@ -2263,6 +2291,9 @@ export default function TenderPer() {
                           </span>
                         </button>
                         <button
+                          onClick={() => {
+                            handleWishList(tender?.id);
+                          }}
                           className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                       hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                         >

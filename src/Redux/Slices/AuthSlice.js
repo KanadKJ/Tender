@@ -7,6 +7,8 @@ const initialState = {
   authIsLoading: false,
   error: null, // Consistent with rejection
   userFilters: null,
+  companyDetailsData: null,
+  addressDetailsData: null,
 };
 // InsertFilterJson
 export const InsertFilterJson = createAsyncThunk(
@@ -86,6 +88,61 @@ export const SignUpUser = createAsyncThunk(
       return rejectWithValue(
         error.response?.data?.message ||
           "Please fill valid data or try again later"
+      );
+    }
+  }
+);
+export const InsertUpdateCompany = createAsyncThunk(
+  "auth/InsertUpdateCompany",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await TMGetApi.post(`/insertupdatecompany`, data);
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Please fill valid data or try again later"
+      );
+    }
+  }
+);
+export const InsertUpdateAddressData = createAsyncThunk(
+  "auth/InsertUpdateAddressData",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await TMGetApi.post(`/insertupdateaddressData`, data);
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Please fill valid data or try again later"
+      );
+    }
+  }
+);
+export const GetCompanyDetails = createAsyncThunk(
+  "auth/GetCompanyDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await TMGetApi.get(`/GetCompanyDetails?userId=${id}`);
+      return response?.data?.value;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Something went wrong"
+      );
+    }
+  }
+);
+
+export const GetAddressDetails = createAsyncThunk(
+  "auth/GetAddressDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await TMGetApi.get(`/GetAddressDetails?userId=${id}`);
+      return response?.data?.value;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Something went wrong"
       );
     }
   }
@@ -183,6 +240,72 @@ const authSlice = createSlice({
         }
       })
       .addCase(LogoutUser.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      //InsertUpdateCompany
+      .addCase(InsertUpdateCompany.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(InsertUpdateCompany.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+
+        if (
+          action?.payload?.message === "Company details saved successfully."
+        ) {
+          toast.success("Company details saved successfully.");
+        }
+      })
+      .addCase(InsertUpdateCompany.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      //InsertUpdateAddressData
+      .addCase(InsertUpdateAddressData.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(InsertUpdateAddressData.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+
+        if (
+          action?.payload?.message === "Address details saved successfully."
+        ) {
+          toast.success("Address details saved successfully.");
+        }
+      })
+      .addCase(InsertUpdateAddressData.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetCompanyDetails
+      .addCase(GetCompanyDetails.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetCompanyDetails.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+        state.companyDetailsData = action.payload[0];
+      })
+      .addCase(GetCompanyDetails.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetAddressDetails
+      .addCase(GetAddressDetails.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetAddressDetails.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+        state.addressDetailsData = action.payload[0];
+      })
+      .addCase(GetAddressDetails.rejected, (state, action) => {
         state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

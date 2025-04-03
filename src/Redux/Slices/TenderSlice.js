@@ -68,6 +68,30 @@ export const GetTemplateDetails = createAsyncThunk(
     }
   }
 );
+export const GetOrInsertTenderWishlist = createAsyncThunk(
+  "tender/GetOrInsertTenderWishlist",
+  async ({ id, userId, tenderId }, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(
+        `/GetOrInsertTenderWishlist?id=${id}&userId=${userId}&tenderId=${tenderId}`
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const DeleteTemplate = createAsyncThunk(
+  "tender/DeleteTemplate",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.post(`/DeleteTemplate/${id}`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 const tenderSlice = createSlice({
   name: "tender",
   initialState,
@@ -145,6 +169,35 @@ const tenderSlice = createSlice({
         state.userSaverTemplates = action.payload?.value;
       })
       .addCase(GetTemplateDetails.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetOrInsertTenderWishlist
+      .addCase(GetOrInsertTenderWishlist.pending, (state) => {
+        // state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetOrInsertTenderWishlist.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+      })
+      .addCase(GetOrInsertTenderWishlist.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // DeleteTemplate
+      .addCase(DeleteTemplate.pending, (state) => {
+        // state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(DeleteTemplate.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+        if (action.payload.message === "Template deleted successfully") {
+          toast.success("Template deleted successfully");
+        }
+      })
+      .addCase(DeleteTemplate.rejected, (state, action) => {
         state.tenderIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

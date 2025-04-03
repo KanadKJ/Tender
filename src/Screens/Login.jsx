@@ -165,7 +165,7 @@ const Login = () => {
               <span className="mt-2">
                 Don’t have an account?
                 <a
-                  className="text-blue-500"
+                  className="text-blue-500 px-1 cursor-pointer"
                   onClick={() => navigate("/signup")}
                 >
                   Register
