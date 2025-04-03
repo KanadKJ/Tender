@@ -7,6 +7,7 @@ import Profile from "../Screens/Profile";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../Screens/Dashboard";
 import SystemConfigSuper from "../Screens/SystemConfigSuper";
+import PaymentDetails from "../Screens/PaymentDetails";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
 const TendersPage = lazy(() => import("../Screens/TenderPer"));
@@ -48,6 +49,14 @@ const AppRouter = () => {
                 element={
                   <ProtectedRoutes>
                     <Profile />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="payment-history"
+                element={
+                  <ProtectedRoutes>
+                    <PaymentDetails />
                   </ProtectedRoutes>
                 }
               />

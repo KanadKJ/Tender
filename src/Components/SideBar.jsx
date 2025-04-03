@@ -95,7 +95,11 @@ const Sidebar = ({ onLinkClick }) => {
         onClick={() => dispatch(sibebarHandler(false))}
       >
         <DriverLink src={profile} name="Profile" to="dashboard/profile" />
-        <DriverLink src={rupee} name="Payment History" to="" />
+        <DriverLink
+          src={rupee}
+          name="Payment History"
+          to="dashboard/payment-history"
+        />
 
         <DriverLink src={saved} name="Followed Tenders" to="" />
 

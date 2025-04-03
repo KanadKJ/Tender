@@ -239,7 +239,7 @@ export default function Profile() {
                   value={formData.first_name}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="Cameron Williamson"
+                  placeholder="Full name"
                   disabled={!editSections.personal}
                 />
                 {errors.first_name && (
@@ -257,7 +257,7 @@ export default function Profile() {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="cameron_williamson@example.com"
+                  placeholder="Email"
                   disabled={!editSections.personal}
                 />
                 {errors.email && (
@@ -275,7 +275,7 @@ export default function Profile() {
                   value={formData.mobile_no}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="+91 9874563210"
+                  placeholder="Phone number"
                   disabled={!editSections.personal}
                 />
                 {errors.mobile_no && (
@@ -314,7 +314,7 @@ export default function Profile() {
                   value={formData.companyName}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="MENOKA"
+                  placeholder="Enter company name"
                   disabled={!editSections.company}
                 />
                 {errors.companyName && (
@@ -332,7 +332,7 @@ export default function Profile() {
                   value={formData.gstin}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="00XXXXX0000X0X0"
+                  placeholder="Enter GSTIN code"
                   disabled={!editSections.company}
                 />
                 {errors.gstin && (
@@ -350,7 +350,7 @@ export default function Profile() {
                   value={formData.yearOfEstablishment}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="1999"
+                  placeholder="Enter year of establishment"
                   disabled={!editSections.company}
                   type="number"
                   min="1900"
@@ -374,7 +374,7 @@ export default function Profile() {
                   value={formData.website}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="menoka.com"
+                  placeholder="Website"
                   disabled={!editSections.company}
                 />
                 {errors.website && (
@@ -411,7 +411,7 @@ export default function Profile() {
                   value={formData.state}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="West Bengal"
+                  placeholder="Enter state name"
                   disabled={!editSections.address}
                 />
                 {errors.state && (
@@ -429,7 +429,7 @@ export default function Profile() {
                   value={formData.city}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="Kolkata"
+                  placeholder="Enter city name"
                   disabled={!editSections.address}
                 />
                 {errors.city && (
@@ -447,7 +447,7 @@ export default function Profile() {
                   value={formData.village}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="Kalikata"
+                  placeholder="Enter village name"
                   disabled={!editSections.address}
                 />
                 {errors.village && (
@@ -465,7 +465,7 @@ export default function Profile() {
                   value={formData.pinCode}
                   onChange={handleChange}
                   className="w-full border-gray-400 rounded-md p-2 border bg-white"
-                  placeholder="700001"
+                  placeholder="Enter pincode"
                   disabled={!editSections.address}
                 />
                 {errors.pinCode && (
