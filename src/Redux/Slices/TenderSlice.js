@@ -9,8 +9,20 @@ const initialState = {
   tenderDetails: [],
   userSaverTemplates: [],
   paymentDetails: [],
+  documentURL: "",
   error: "",
 };
+export const GetDocumentURL = createAsyncThunk(
+  "tender/GetDocumentURL",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await ScrpApiTenders.get(`/tenders/document_url/${id}/`);
+      return res.data?.url;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 export const GetTenderList = createAsyncThunk(
   "tender/GetTenderList",
   async (_, { rejectWithValue }) => {
@@ -224,6 +236,20 @@ const tenderSlice = createSlice({
         state.paymentDetails = action.payload;
       })
       .addCase(GetPaymentDetails.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetDocumentURL
+      .addCase(GetDocumentURL.pending, (state) => {
+        state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetDocumentURL.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+        state.documentURL = action.payload;
+      })
+      .addCase(GetDocumentURL.rejected, (state, action) => {
         state.tenderIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

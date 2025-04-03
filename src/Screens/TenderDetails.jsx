@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Background from "../Components/Background";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { GetTenderDetails } from "../Redux/Slices/TenderSlice";
+import { GetDocumentURL, GetTenderDetails } from "../Redux/Slices/TenderSlice";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { formatDateTime, formatIndianCurrency } from "../Utils/CommonUtils";
@@ -16,14 +16,47 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import axios from "axios";
 
 export default function TenderDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { tenderDetails } = useSelector((s) => s.tender);
+  const { tenderDetails, documentURL } = useSelector((s) => s.tender);
   useEffect(() => {
     dispatch(GetTenderDetails(id));
   }, []);
+
+  // useEffect(() => {
+  //   handleDownload(documentURL);
+  // }, [documentURL]);
+
+  const handleDownload = async (fileUrl) => {
+    try {
+      const response = await axios.get(fileUrl, {
+        responseType: "blob", // Ensures it's treated as a file
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "file.pdf"); // Set filename
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error downloading the PDF:", error);
+    }
+  };
+
+  const handleDocumentDownload = (id) => {
+    dispatch(GetDocumentURL(id))
+      .unwrap()
+      .then((fileUrl) => {
+        handleDownload(fileUrl);
+      })
+      .catch((e) => console.log(e));
+  };
+
   return (
     <div className="mt-32 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40 w-full">
       <Background type="vector" lifed="up" show="no" />
@@ -289,6 +322,7 @@ export default function TenderDetails() {
                     </p>
                     <p>
                       <button
+                        onClick={() => handleDocumentDownload(d?.id)}
                         className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                                          hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                       >

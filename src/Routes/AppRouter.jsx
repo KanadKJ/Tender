@@ -33,7 +33,14 @@ const AppRouter = () => {
 
             <Route path="/T&C" element={<TermsAndConditionsPage />} />
             <Route path="/About-Us" element={<AboutUsPage />} />
-            <Route path="/tenders/:id" element={<TenderDetails />} />
+            <Route
+              path="/tenders/:id"
+              element={
+                <ProtectedRoutes>
+                  <TenderDetails />
+                </ProtectedRoutes>
+              }
+            />
             <Route path="*" element={<HomePage />} />
             <Route path="/dashboard" element={<Dashboard />}>
               <Route

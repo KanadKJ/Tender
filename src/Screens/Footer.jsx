@@ -36,7 +36,7 @@ export default function Footer() {
           <p className="cursor-pointer" onClick={() => navigate("/pricing")}>
             Pricing
           </p>
-          <p className="cursor-pointer" onClick={() => navigate("/")}>
+          <p className="cursor-pointer" onClick={() => navigate("/About-Us")}>
             About Us
           </p>
         </div>

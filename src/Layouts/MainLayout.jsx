@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 import Footer from "../Screens/Footer";
 import { Backdrop, CircularProgress } from "@mui/material";
+import ScrollToTop from "../Components/ScrollToTop";
 const MainLayout = () => {
   const dispatch = useDispatch();
   const { tenderIsLoading } = useSelector((s) => s.tender);
@@ -57,6 +58,7 @@ const MainLayout = () => {
         </main>
       </div>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };
