@@ -8,6 +8,7 @@ const initialState = {
   tenderIsLoading: false,
   tenderDetails: [],
   userSaverTemplates: [],
+  paymentDetails: [],
   error: "",
 };
 export const GetTenderList = createAsyncThunk(
@@ -76,6 +77,17 @@ export const GetOrInsertTenderWishlist = createAsyncThunk(
         `/GetOrInsertTenderWishlist?id=${id}&userId=${userId}&tenderId=${tenderId}`
       );
       return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetPaymentDetails = createAsyncThunk(
+  "tender/GetPaymentDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(`/GetPaymentDetails?userId=${id}`);
+      return res.data?.value;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
@@ -198,6 +210,20 @@ const tenderSlice = createSlice({
         }
       })
       .addCase(DeleteTemplate.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetPaymentDetails
+      .addCase(GetPaymentDetails.pending, (state) => {
+        state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetPaymentDetails.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+        state.paymentDetails = action.payload;
+      })
+      .addCase(GetPaymentDetails.rejected, (state, action) => {
         state.tenderIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });
