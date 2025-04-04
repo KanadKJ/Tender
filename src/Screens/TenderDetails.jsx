@@ -5,7 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetDocumentURL, GetTenderDetails } from "../Redux/Slices/TenderSlice";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { formatDateTime, formatIndianCurrency } from "../Utils/CommonUtils";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import {
+  formatDateTime,
+  formatIndianCurrency,
+  handleDownload,
+} from "../Utils/CommonUtils";
 import {
   Divider,
   Paper,
@@ -17,6 +22,7 @@ import {
   TableRow,
 } from "@mui/material";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function TenderDetails() {
   const { id } = useParams();
@@ -30,33 +36,18 @@ export default function TenderDetails() {
   //   handleDownload(documentURL);
   // }, [documentURL]);
 
-  const handleDownload = async (fileUrl) => {
-    try {
-      const response = await axios.get(fileUrl, {
-        responseType: "blob", // Ensures it's treated as a file
-      });
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "file.pdf"); // Set filename
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error("Error downloading the PDF:", error);
-    }
-  };
-
-  const handleDocumentDownload = (id) => {
-    dispatch(GetDocumentURL(id))
+  const handleDocumentDownload = (id, t) => {
+    dispatch(GetDocumentURL({ id, t }))
       .unwrap()
       .then((fileUrl) => {
-        handleDownload(fileUrl);
+        handleDownload(fileUrl, t);
       })
       .catch((e) => console.log(e));
   };
-
+  const extensionType = (filename) => {
+    const x = filename?.split(".");
+    return x[x?.length - 1];
+  };
   return (
     <div className="mt-32 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40 w-full">
       <Background type="vector" lifed="up" show="no" />
@@ -304,13 +295,13 @@ export default function TenderDetails() {
             <div className="p-4 border rounded-md flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <h1 className="text-base font-medium">Tender Documents</h1>
-                <button
+                {/* <button
                   className="gap-2 flex p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                 hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                 >
                   <span className="text-center">Download All</span>
                   <FileDownloadOutlinedIcon />
-                </button>
+                </button> */}
               </div>
               <Divider />
               <div className="flex flex-col gap-4">
@@ -320,15 +311,31 @@ export default function TenderDetails() {
                       <span>{d?.name}</span>
                       <span>{d?.size}</span>
                     </p>
-                    <p>
+                    <div className="flex gap-4">
                       <button
-                        onClick={() => handleDocumentDownload(d?.id)}
+                        onClick={() =>
+                          handleDocumentDownload(d?.id, extensionType(d?.name))
+                        }
                         className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                                          hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                       >
                         <FileDownloadOutlinedIcon />
                       </button>
-                    </p>
+                      {extensionType(d?.name) === "xls" && (
+                        <button
+                          onClick={() =>
+                            handleDocumentDownload(
+                              d?.id,
+                              extensionType(d?.name)
+                            )
+                          }
+                          className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+                                         hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+                        >
+                          <PictureAsPdfIcon />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

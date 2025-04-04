@@ -14,9 +14,14 @@ const initialState = {
 };
 export const GetDocumentURL = createAsyncThunk(
   "tender/GetDocumentURL",
-  async (id, { rejectWithValue }) => {
+  async ({ id, t }, { rejectWithValue }) => {
+    let url;
+
+    if (t === "pdf" || t === "PDF") url = `/tenders/document_url/${id}/`;
+    if (t === "xls" || t === "XLS") url = `/tenders/document_pdf_url/${id}/`;
+    if (t === "3") url = `/tenders/export/?${id}`;
     try {
-      const res = await ScrpApiTenders.get(`/tenders/document_url/${id}/`);
+      const res = await ScrpApiTenders.get(`${url}`);
       return res.data?.url;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

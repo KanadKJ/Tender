@@ -1,3 +1,6 @@
+import axios from "axios";
+import { toast } from "react-toastify";
+
 export const TMAPI_BASE_URL =
   "https://smp1jsf6ce.execute-api.ap-south-1.amazonaws.com/Prod/TMApi";
 
@@ -215,3 +218,21 @@ export const pricingPlanData = {
  
  key_secret: Ui4ytSpCTpD5HUnhlu2H8Mlr
 */
+
+export const handleDownload = async (fileUrl, t) => {
+  try {
+    const response = await axios.get(fileUrl, {
+      responseType: "blob", // Ensures it's treated as a file
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `file.${t}`); // Set filename
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    toast.error("Error downloading the PDF:", error);
+  }
+};

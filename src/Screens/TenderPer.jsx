@@ -3,6 +3,7 @@ import Background from "../Components/Background";
 import { useDispatch, useSelector } from "react-redux";
 import {
   DeleteTemplate,
+  GetDocumentURL,
   GetOrInsertTenderWishlist,
   GetTemplateDetails,
   GetTenderListWithFilters,
@@ -26,6 +27,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import TuneIcon from "@mui/icons-material/Tune";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
@@ -33,6 +35,7 @@ import {
   dateOptions,
   formatDateTime,
   formatIndianCurrency,
+  handleDownload,
 } from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
@@ -103,9 +106,9 @@ export default function TenderPer() {
           return state ? state : null;
         })
         .filter(Boolean) || [],
-    district:
+    districts:
       searchParams
-        .getAll("district")
+        .getAll("districts")
         ?.map((id) => {
           const district = districtsData.find((d) => d.id === parseInt(id));
           return district ? district : null;
@@ -166,6 +169,8 @@ export default function TenderPer() {
     ordering: searchParams.getAll("ordering") || [],
     limit: searchParams.get("limit") || [],
     offset: searchParams.get("offset") || [],
+    pincode: searchParams.get("pincode") || "",
+    bidding_status: searchParams.get("bidding_status") || "",
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
@@ -199,8 +204,10 @@ export default function TenderPer() {
     const offset = searchParams.get("offset") || "";
     const limit = searchParams.get("limit") || "";
     const keywords = searchParams.get("keywords") || "";
+    const pincode = searchParams.get("pincode") || "";
+    const bidding_status = searchParams.get("bidding_status") || "";
     const stateIDS = searchParams.getAll("states") || [];
-    const districtIds = searchParams.getAll("district") || [];
+    const districtIds = searchParams.getAll("districts") || [];
     const organisationIds = searchParams.getAll("organisations") || [];
 
     const departmentIds = searchParams.getAll("departments") || [];
@@ -264,19 +271,22 @@ export default function TenderPer() {
         return dt ? dt : null;
       })
       .filter(Boolean);
-    const district = districtIds
+
+    console.log(states);
+
+    const districts = districtIds
       .map((id) => {
         const dt = districtsData.find((d) => d.id === parseInt(id));
         return dt ? dt : null;
       })
       .filter(Boolean);
-    console.log(district, districtsData, "UE");
+
     setFilters({
       states,
       sections,
       keywords,
       ordering,
-      district,
+      districts,
       divisions,
       departments,
       sub_divisions,
@@ -287,6 +297,8 @@ export default function TenderPer() {
       published_date_before,
       limit,
       offset,
+      pincode,
+      bidding_status,
     });
 
     console.log("run end");
@@ -503,7 +515,7 @@ export default function TenderPer() {
   };
   const handleChangePages = (event, value) => {
     const params = new URLSearchParams(searchParams);
-    const newOffset = (value - 1) * 50; // Corrected calculation
+    const newOffset = (value - 1) * 50;
     if (!newOffset) {
       params.set("offset", "");
       navigate(`?${params.toString()}`, { replace: true });
@@ -602,8 +614,6 @@ export default function TenderPer() {
       dispatch(GetUnitList(ids));
     }
   };
-  console.log(tenderData);
-
   const filteredTenders = tenderData?.results?.filter(
     (tender) =>
       tender?.organisation_chain
@@ -613,6 +623,20 @@ export default function TenderPer() {
       tender?.id?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
       tender?.department?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
+  const handleDocumentDownload = () => {
+    console.log("called handleDocumentDownload");
+
+    const id = new URLSearchParams(searchParams).toString();
+    const t = "3";
+    dispatch(GetDocumentURL({ id, t }))
+      .unwrap()
+      .then((fileUrl) => {
+        handleDownload(fileUrl, "xls");
+      })
+      .catch((e) => console.log(e));
+  };
+  console.log(filters);
+
   return (
     <>
       <div className="mt-14 px-2 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
@@ -760,7 +784,7 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "districts")}
             >
               Districts
-              <CustomBadge data={filters?.district} />
+              <CustomBadge data={filters?.districts} />
             </Button>
 
             {/* Tender Amount */}
@@ -828,8 +852,39 @@ export default function TenderPer() {
               />
             </Button>
 
-            {/*Sort*/}
+            {/*Pincode*/}
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="pincode"
+              variant="contained"
+              onClick={(event) => handleClick(event, "pincode")}
+            >
+              Pincode
+              <CustomBadge data={filters.pincode ? ["1"] : null} />
+            </Button>
 
+            {/*bidding_status*/}
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="bidding_status"
+              variant="contained"
+              onClick={(event) => handleClick(event, "bidding_status")}
+            >
+              Bidding status
+              <CustomBadge data={filters.bidding_status ? ["1"] : null} />
+            </Button>
+
+            {/*Sort*/}
             <Button
               disabled={isPlanExpired}
               style={{
@@ -844,6 +899,24 @@ export default function TenderPer() {
               <FilterAltIcon />
               Sort
               <CustomBadge data={filters?.ordering} />
+            </Button>
+            {/*Export*/}
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+              }}
+              aria-describedby="export"
+              variant="contained"
+              onClick={handleDocumentDownload}
+            >
+              <SystemUpdateAltIcon />
+              Export
             </Button>
           </div>
           {/* PORTALS */}
@@ -945,7 +1018,7 @@ export default function TenderPer() {
                   onClick={(event) => handleClick(event, "districts")}
                 >
                   Districts
-                  <CustomBadge data={filters?.district} />
+                  <CustomBadge data={filters?.districts} />
                 </Button>
 
                 {/* Tender Amount */}
@@ -1012,6 +1085,37 @@ export default function TenderPer() {
                     }
                   />
                 </Button>
+                {/*Pincode*/}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="pincode"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "pincode")}
+                >
+                  Pincode
+                  <CustomBadge data={filters.pincode ? ["1"] : null} />
+                </Button>
+
+                {/*bidding_status*/}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="bidding_status"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "bidding_status")}
+                >
+                  Bidding status
+                  <CustomBadge data={filters.bidding_status ? ["1"] : null} />
+                </Button>
 
                 {/*Sort*/}
 
@@ -1030,9 +1134,29 @@ export default function TenderPer() {
                   Sort
                   <CustomBadge data={filters?.ordering} />
                 </Button>
+
+                {/*Export*/}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                  aria-describedby="export"
+                  variant="contained"
+                  onClick={handleDocumentDownload}
+                >
+                  <SystemUpdateAltIcon />
+                  Export
+                </Button>
               </div>
               <Divider />
             </Dialog>
+            {/* SavedFilters */}
             <Dialog
               id="SavedFilters"
               open={openPopoverId === "SavedFilters"}
@@ -1097,6 +1221,7 @@ export default function TenderPer() {
                 </button>
               </div>
             </Dialog>
+            {/* Keywords */}
             <Dialog
               id="Keywords"
               open={openPopoverId === "Keywords"}
@@ -1136,6 +1261,7 @@ export default function TenderPer() {
                 </div>
               </div>
             </Dialog>
+            {/* organisations */}
             <Dialog
               id="organisations"
               open={openPopoverId === "organisations"}
@@ -1511,6 +1637,7 @@ export default function TenderPer() {
                 </button>
               </div>
             </Dialog>
+            {/* states */}
             <Dialog
               id="states"
               open={openPopoverId === "states"}
@@ -1599,6 +1726,7 @@ export default function TenderPer() {
                 </button>
               </div>
             </Dialog>
+            {/* districts */}
             <Dialog
               id="districts"
               open={openPopoverId === "districts"}
@@ -1638,12 +1766,12 @@ export default function TenderPer() {
                   }
                   getOptionLabel={(option) => option.name}
                   value={districtsData?.filter((d) =>
-                    filters?.district?.some((dep) => dep.id === d.id)
+                    filters?.districts?.some((dep) => dep.id === d.id)
                   )} // Pass the full array of selected district objects
                   onChange={(event, newValue) => {
                     setFilters((prev) => ({
                       ...prev,
-                      district: newValue, // Store the full array of selected district objects
+                      districts: newValue, // Store the full array of selected district objects
                     }));
                   }}
                   renderOption={(props, option, { selected }) => {
@@ -1685,6 +1813,7 @@ export default function TenderPer() {
                 </button>
               </div>
             </Dialog>
+            {/* Published Date */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Dialog
                 id="datePicker"
@@ -1822,6 +1951,7 @@ export default function TenderPer() {
                 </div>
               </Dialog>
             </LocalizationProvider>
+            {/* Closing Date */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Dialog
                 id="datePickerclosing"
@@ -1963,9 +2093,90 @@ export default function TenderPer() {
                 </div>
               </Dialog>
             </LocalizationProvider>
+            {/* pincode */}
             <Dialog
-              id="sort"
-              open={openPopoverId === "sort"}
+              id="pincode"
+              open={openPopoverId === "pincode"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Pincode</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="p-5 flex flex-col gap-4">
+                <input
+                  type="number"
+                  placeholder="Pincode"
+                  name="pincode"
+                  value={filters?.pincode}
+                  onChange={handleFilterSelection}
+                  className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
+                />
+                <div className="flex justify-around">
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={() => handleReset("pincode")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </Dialog>
+            {/* pincode */}
+            <Dialog
+              id="pincode"
+              open={openPopoverId === "pincode"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Pincode</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="p-5 flex flex-col gap-4">
+                <input
+                  type="number"
+                  placeholder="Pincode"
+                  name="pincode"
+                  value={filters?.pincode}
+                  onChange={handleFilterSelection}
+                  className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
+                />
+                <div className="flex justify-around">
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={() => handleReset("pincode")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </Dialog>
+            {/* bidding_status */}
+            <Dialog
+              id="bidding_status"
+              open={openPopoverId === "bidding_status"}
               anchorEl={anchorEl}
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
@@ -1976,7 +2187,7 @@ export default function TenderPer() {
               }}
             >
               <div className="w-full flex justify-between items-center p-2">
-                <label className="pl-2">Sort</label>
+                <label className="pl-2">Bidding Status</label>
                 <CloseBTN />
               </div>
               <Divider />
@@ -1984,102 +2195,26 @@ export default function TenderPer() {
                 {/* Published Date */}
                 <div className="w-full flex gap-6 justify-between items-center">
                   <h1 className="w-1/3 text-base font-medium text-start">
-                    Published Date
+                    Bidding status
                   </h1>
                   <ToggleButtonGroup
                     color="primary"
-                    value={
-                      filters.ordering.find((o) =>
-                        o.includes("published_date")
-                      ) || null
-                    }
+                    value={filters?.bidding_status}
                     exclusive
-                    onChange={handleOrderingChange}
+                    onChange={(event, newValue) => {
+                      setFilters({
+                        ...filters,
+                        bidding_status: newValue,
+                      });
+                    }}
                     aria-label="Platform"
                     sx={{ width: "100%" }}
                   >
-                    <ToggleButton sx={{ width: "100%" }} value="published_date">
-                      Ascending
+                    <ToggleButton sx={{ width: "100%" }} value="active">
+                      Active
                     </ToggleButton>
-                    <ToggleButton
-                      sx={{ width: "100%" }}
-                      value="-published_date"
-                    >
-                      Descending
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </div>
-                {/* Closing Date */}
-                <div className="w-full flex gap-6 justify-between items-center">
-                  <h1 className="w-1/3 text-base font-medium text-start">
-                    Closing Date
-                  </h1>
-                  <ToggleButtonGroup
-                    color="primary"
-                    // value={
-                    //   filters.ordering.find((o) =>
-                    //     o.includes("published_date")
-                    //   ) || null
-                    // }
-                    exclusive
-                    // onChange={handleOrderingChange}
-                    aria-label="Platform"
-                    sx={{ width: "100%" }}
-                  >
-                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                      Ascending
-                    </ToggleButton>
-                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                      Descending
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </div>
-                {/*   Tender Amount */}
-                <div className="w-full flex gap-6 justify-between items-center">
-                  <h1 className="w-1/3 text-base font-medium text-start">
-                    Tender Amount
-                  </h1>
-                  <ToggleButtonGroup
-                    color="primary"
-                    value={
-                      filters.ordering.find((o) => o.includes("value_in_rs")) ||
-                      null
-                    }
-                    exclusive
-                    onChange={handleOrderingChange}
-                    aria-label="Platform"
-                    sx={{ width: "100%" }}
-                  >
-                    <ToggleButton sx={{ width: "100%" }} value="value_in_rs">
-                      Low to High
-                    </ToggleButton>
-                    <ToggleButton sx={{ width: "100%" }} value="-value_in_rs">
-                      High to Low
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </div>
-                {/* Awarded Date */}
-                <div className="w-full flex gap-6 justify-between items-center">
-                  <h1 className="w-1/3 text-base font-medium text-start">
-                    Awarded Date
-                  </h1>
-                  <ToggleButtonGroup
-                    color="primary"
-                    // value={
-                    //   filters.ordering.find((o) =>
-                    //     o.includes("published_date")
-                    //   ) || null
-                    // }
-                    exclusive
-                    // onChange={handleOrderingChange}
-                    aria-label="Platform"
-                    sx={{ width: "100%" }}
-                  >
-                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                      Ascending
-                    </ToggleButton>
-                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
-                      Descending
+                    <ToggleButton sx={{ width: "100%" }} value="closed">
+                      Closed
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </div>
@@ -2088,7 +2223,7 @@ export default function TenderPer() {
                 <button
                   className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={() => handleReset("dates")}
+                  onClick={() => handleReset("bidding_status")}
                 >
                   Reset
                 </button>
