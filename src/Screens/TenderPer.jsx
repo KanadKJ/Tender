@@ -631,11 +631,10 @@ export default function TenderPer() {
     dispatch(GetDocumentURL({ id, t }))
       .unwrap()
       .then((fileUrl) => {
-        handleDownload(fileUrl, "xls");
+        handleDownload(fileUrl, "xls", "export");
       })
       .catch((e) => console.log(e));
   };
-  console.log(filters);
 
   return (
     <>
@@ -716,7 +715,21 @@ export default function TenderPer() {
               Save Filters
               <CustomBadge data={userSaverTemplates} />
             </Button>
-
+            {/*bidding_status*/}
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="bidding_status"
+              variant="contained"
+              onClick={(event) => handleClick(event, "bidding_status")}
+            >
+              Bidding status
+              <CustomBadge data={filters.bidding_status ? ["1"] : null} />
+            </Button>
             {/* Keywords */}
 
             <Button
@@ -868,22 +881,6 @@ export default function TenderPer() {
               <CustomBadge data={filters.pincode ? ["1"] : null} />
             </Button>
 
-            {/*bidding_status*/}
-            <Button
-              disabled={isPlanExpired}
-              style={{
-                backgroundColor: "#0554f2",
-                color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
-              }}
-              aria-describedby="bidding_status"
-              variant="contained"
-              onClick={(event) => handleClick(event, "bidding_status")}
-            >
-              Bidding status
-              <CustomBadge data={filters.bidding_status ? ["1"] : null} />
-            </Button>
-
             {/*Sort*/}
             <Button
               disabled={isPlanExpired}
@@ -901,7 +898,7 @@ export default function TenderPer() {
               <CustomBadge data={filters?.ordering} />
             </Button>
             {/*Export*/}
-            <Button
+            {/* <Button
               disabled={isPlanExpired}
               style={{
                 backgroundColor: "#0554f2",
@@ -917,7 +914,7 @@ export default function TenderPer() {
             >
               <SystemUpdateAltIcon />
               Export
-            </Button>
+            </Button> */}
           </div>
           {/* PORTALS */}
           <div>
@@ -950,7 +947,21 @@ export default function TenderPer() {
                   Save Filters
                   <CustomBadge data={userSaverTemplates} />
                 </Button>
-
+                {/*bidding_status*/}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="bidding_status"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "bidding_status")}
+                >
+                  Bidding status
+                  <CustomBadge data={filters.bidding_status ? ["1"] : null} />
+                </Button>
                 {/* Keywords */}
 
                 <Button
@@ -1101,22 +1112,6 @@ export default function TenderPer() {
                   <CustomBadge data={filters.pincode ? ["1"] : null} />
                 </Button>
 
-                {/*bidding_status*/}
-                <Button
-                  disabled={isPlanExpired}
-                  style={{
-                    backgroundColor: "#0554f2",
-                    color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
-                  }}
-                  aria-describedby="bidding_status"
-                  variant="contained"
-                  onClick={(event) => handleClick(event, "bidding_status")}
-                >
-                  Bidding status
-                  <CustomBadge data={filters.bidding_status ? ["1"] : null} />
-                </Button>
-
                 {/*Sort*/}
 
                 <Button
@@ -1133,25 +1128,6 @@ export default function TenderPer() {
                   <FilterAltIcon />
                   Sort
                   <CustomBadge data={filters?.ordering} />
-                </Button>
-
-                {/*Export*/}
-                <Button
-                  disabled={isPlanExpired}
-                  style={{
-                    backgroundColor: "#0554f2",
-                    color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
-                    display: "flex",
-                    gap: 10,
-                    alignItems: "center",
-                  }}
-                  aria-describedby="export"
-                  variant="contained"
-                  onClick={handleDocumentDownload}
-                >
-                  <SystemUpdateAltIcon />
-                  Export
                 </Button>
               </div>
               <Divider />
@@ -2365,6 +2341,28 @@ export default function TenderPer() {
               </div>
             </Dialog>
           </div>
+
+          <div className="w-full p-2 flex justify-end items-center">
+            {/*Export*/}
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#10793F",
+                color: isPlanExpired ? "#fff00" : "#fff",
+
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+              }}
+              aria-describedby="export"
+              variant="contained"
+              onClick={handleDocumentDownload}
+            >
+              <SystemUpdateAltIcon />
+              Export Results
+            </Button>
+          </div>
+
           {/* TENDERS RENDER */}
           <div className="w-full flex flex-col justify-center items-center">
             {tenderIsLoading ? (

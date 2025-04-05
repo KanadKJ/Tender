@@ -7,6 +7,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import {
+  extensionType,
   formatDateTime,
   formatIndianCurrency,
   handleDownload,
@@ -36,18 +37,15 @@ export default function TenderDetails() {
   //   handleDownload(documentURL);
   // }, [documentURL]);
 
-  const handleDocumentDownload = (id, t) => {
-    dispatch(GetDocumentURL({ id, t }))
+  const handleDocumentDownload = (id, t, c) => {
+    dispatch(GetDocumentURL({ id, t, c }))
       .unwrap()
       .then((fileUrl) => {
         handleDownload(fileUrl, t);
       })
       .catch((e) => console.log(e));
   };
-  const extensionType = (filename) => {
-    const x = filename?.split(".");
-    return x[x?.length - 1];
-  };
+
   return (
     <div className="mt-32 px-6 md:px-12 lg:px-24 xl:px-32 mb-10 z-40 w-full">
       <Background type="vector" lifed="up" show="no" />
@@ -314,7 +312,11 @@ export default function TenderDetails() {
                     <div className="flex gap-4">
                       <button
                         onClick={() =>
-                          handleDocumentDownload(d?.id, extensionType(d?.name))
+                          handleDocumentDownload(
+                            d?.id,
+                            extensionType(d?.name),
+                            "default"
+                          )
                         }
                         className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                                          hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
@@ -326,13 +328,14 @@ export default function TenderDetails() {
                           onClick={() =>
                             handleDocumentDownload(
                               d?.id,
-                              extensionType(d?.name)
+                              extensionType(d?.name),
+                              "converted"
                             )
                           }
-                          className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                                         hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+                          className="gap-2 p-2 border rounded-md border-[#e60c0c] bg-white text-sm font-medium text-[#e60c0c] 
+                                          hover:bg-[#e60c0c] hover:text-white transition-all duration-300 ease-in-out"
                         >
-                          <PictureAsPdfIcon />
+                          <PictureAsPdfIcon color="#e60c0c" />
                         </button>
                       )}
                     </div>

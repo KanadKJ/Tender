@@ -14,11 +14,19 @@ const initialState = {
 };
 export const GetDocumentURL = createAsyncThunk(
   "tender/GetDocumentURL",
-  async ({ id, t }, { rejectWithValue }) => {
+  async ({ id, t, c }, { rejectWithValue }) => {
     let url;
+    console.log(id, t, c);
 
-    if (t === "pdf" || t === "PDF") url = `/tenders/document_url/${id}/`;
-    if (t === "xls" || t === "XLS") url = `/tenders/document_pdf_url/${id}/`;
+    if (
+      (t?.toLowerCase() === "pdf" ||
+        t?.toLowerCase() === "xls" ||
+        t?.toLowerCase() === "html") &&
+      c === "default"
+    )
+      url = `/tenders/document_url/${id}/`;
+    if (t?.toLowerCase() === "xls" && c === "converted")
+      url = `/tenders/document_pdf_url/${id}/`;
     if (t === "3") url = `/tenders/export/?${id}`;
     try {
       const res = await ScrpApiTenders.get(`${url}`);
@@ -77,9 +85,9 @@ export const InsertTemplate = createAsyncThunk(
 );
 export const GetTemplateDetails = createAsyncThunk(
   "tender/GetTemplateDetails",
-  async (data, { rejectWithValue }) => {
+  async (id, { rejectWithValue }) => {
     try {
-      const res = await TMGetApi.get(`/GetTemplateDetails?userid=${21}`);
+      const res = await TMGetApi.get(`/GetTemplateDetails?userid=${id}`);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

@@ -219,7 +219,14 @@ export const pricingPlanData = {
  key_secret: Ui4ytSpCTpD5HUnhlu2H8Mlr
 */
 
-export const handleDownload = async (fileUrl, t) => {
+export const handleDownload = async (fileUrl, t, e) => {
+  let name = fileUrl.split("/");
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, "0");
+  const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const year = now.getFullYear();
+  const expName = `${day}-${month}-${year}_MENOKA_eTENDERS`;
+  let ext = e === "export" ? `${expName}.xls` : name[name?.length - 1];
   try {
     const response = await axios.get(fileUrl, {
       responseType: "blob", // Ensures it's treated as a file
@@ -228,11 +235,16 @@ export const handleDownload = async (fileUrl, t) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `file.${t}`); // Set filename
+    link.setAttribute("download", `${ext}`); // Set filename
     document.body.appendChild(link);
     link.click();
     link.remove();
   } catch (error) {
     toast.error("Error downloading the PDF:", error);
   }
+};
+
+export const extensionType = (filename) => {
+  const x = filename?.split(".");
+  return x[x?.length - 1];
 };
