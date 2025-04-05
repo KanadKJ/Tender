@@ -216,7 +216,14 @@ export default function TenderPer() {
     const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
     const sectionsIds = searchParams.getAll("sections") || [];
     const ordering = searchParams.getAll("ordering") || [];
+    const unitIds = searchParams.getAll("units") || [];
 
+    const units = unitIds
+      .map((id) => {
+        const dt = unitData.find((d) => d.id === parseInt(id));
+        return dt ? dt : null;
+      })
+      .filter(Boolean);
     const organisations = organisationIds
       .map((id) => {
         const dt = orgData.find((d) => d.id === parseInt(id));
@@ -299,10 +306,40 @@ export default function TenderPer() {
       offset,
       pincode,
       bidding_status,
+      units,
     });
 
     console.log("run end");
   }, []);
+
+  useEffect(() => {
+    const stateIDS = searchParams.getAll("states") || [];
+    const states = stateIDS
+      .map((id) => {
+        const dt = statesData.find((d) => d.id === parseInt(id));
+        return dt ? dt : null;
+      })
+      .filter(Boolean);
+
+    setFilters({
+      ...filters,
+      states,
+    });
+  }, [statesData]);
+  useEffect(() => {
+    const districtIds = searchParams.getAll("districts") || [];
+    const districts = districtIds
+      .map((id) => {
+        const dt = districtsData.find((d) => d.id === parseInt(id));
+        return dt ? dt : null;
+      })
+      .filter(Boolean);
+
+    setFilters({
+      ...filters,
+      districts,
+    });
+  }, [districtsData]);
 
   useEffect(() => {
     const organisationIds = searchParams.getAll("organisations") || [];
@@ -386,6 +423,20 @@ export default function TenderPer() {
       sections,
     });
   }, [sectionsData]);
+  useEffect(() => {
+    const unitIds = searchParams.getAll("units") || [];
+    const units = unitIds
+      .map((id) => {
+        const dt = unitData?.find((d) => d.id === parseInt(id));
+        return dt ? dt : null;
+      })
+      .filter(Boolean);
+
+    setFilters({
+      ...filters,
+      units,
+    });
+  }, [unitData]);
 
   useEffect(() => {
     dispatch(GetTenderListWithFilters(searchParams.toString()));
@@ -471,12 +522,18 @@ export default function TenderPer() {
         errorStr.error = true;
         errorStr.list.push("Units");
       }
+
       handleClose();
       if (errorStr.error) {
         toast.error(`${errorStr.list.join(",")} are/is mandatory field(s).`);
         setAllGood(errorStr?.error);
         return;
       }
+    }
+    if (!filters?.states?.length) {
+      toast.error("States are mandatory for adding districts");
+      handleClose();
+      return;
     }
     errorStr.error = false;
     setAllGood(false);
@@ -763,7 +820,7 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "organisations")}
             >
               Organisations
-              <CustomBadge data={filters?.organisations} />
+              <CustomBadge data={filters?.organisations ? ["1"] : null} />
             </Button>
 
             {/* States */}
@@ -2341,6 +2398,7 @@ export default function TenderPer() {
                 </button>
               </div>
             </Dialog>
+            {/* SORT */}
             <Dialog
               id="sort"
               open={openPopoverId === "sort"}

@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { formatIndianCurrency } from "../Utils/CommonUtils";
 
 export default function PaymentDetails() {
   const dispatch = useDispatch();
@@ -24,31 +25,7 @@ export default function PaymentDetails() {
   useEffect(() => {
     if (userData) dispatch(GetPaymentDetails(userData?.id));
   }, []);
-  const obj = [
-    {
-      firstName: "One User",
-      mobileNo: "9874563211",
-      email: "oneuser@gmail.com",
-      planName: "Basic",
-      amount: 399,
-      capturedAt: "2025-04-03T18:00:06.727Z",
-      paymentStatus: "Success",
-      paymentId: "ABCD",
-      orderId: "ID_001",
-    },
-    {
-      paymentId: "ABCD",
-      amount: 399,
-      orderId: "ID_001",
-      paymentStatus: "Success",
-      capturedAt: "2025-04-03T18:00:06.727Z",
-      planName: "Basic",
-      firstName: "One User",
-      email: "oneuser@gmail.com",
-      mobileNo: "9874563211",
-      createdOn: "2025-04-03T18:00:06.727Z",
-    },
-  ];
+  
   function formatDateTime(isoString) {
     const date = new Date(isoString);
 
@@ -106,7 +83,7 @@ export default function PaymentDetails() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {obj?.map((row) => (
+              {paymentDetails?.map((row) => (
                 <TableRow
                   key={row.paymentId}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -124,7 +101,7 @@ export default function PaymentDetails() {
                     {row.planName}
                   </TableCell>
                   <TableCell sx={{ fontSize: 12 }} align="center  ">
-                    {row.amount}
+                    {formatIndianCurrency(row.amount / 100)}
                   </TableCell>
                   <TableCell sx={{ fontSize: 12 }} align="center  ">
                     {formatDateTime(row.capturedAt)}
