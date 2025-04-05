@@ -800,6 +800,22 @@ export default function TenderPer() {
               <CustomBadge data={filters?.districts} />
             </Button>
 
+            {/*Pincode*/}
+
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#0554f2",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "190px",
+              }}
+              aria-describedby="pincode"
+              variant="contained"
+              onClick={(event) => handleClick(event, "pincode")}
+            >
+              Pincode
+              <CustomBadge data={filters.pincode ? ["1"] : null} />
+            </Button>
             {/* Tender Amount */}
 
             <Button
@@ -863,22 +879,6 @@ export default function TenderPer() {
                     : null
                 }
               />
-            </Button>
-
-            {/*Pincode*/}
-            <Button
-              disabled={isPlanExpired}
-              style={{
-                backgroundColor: "#0554f2",
-                color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
-              }}
-              aria-describedby="pincode"
-              variant="contained"
-              onClick={(event) => handleClick(event, "pincode")}
-            >
-              Pincode
-              <CustomBadge data={filters.pincode ? ["1"] : null} />
             </Button>
 
             {/*Sort*/}
@@ -1032,6 +1032,22 @@ export default function TenderPer() {
                   <CustomBadge data={filters?.districts} />
                 </Button>
 
+                {/*Pincode*/}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#0554f2",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "190px",
+                  }}
+                  aria-describedby="pincode"
+                  variant="contained"
+                  onClick={(event) => handleClick(event, "pincode")}
+                >
+                  Pincode
+                  <CustomBadge data={filters.pincode ? ["1"] : null} />
+                </Button>
+
                 {/* Tender Amount */}
 
                 <Button
@@ -1095,21 +1111,6 @@ export default function TenderPer() {
                         : null
                     }
                   />
-                </Button>
-                {/*Pincode*/}
-                <Button
-                  disabled={isPlanExpired}
-                  style={{
-                    backgroundColor: "#0554f2",
-                    color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
-                  }}
-                  aria-describedby="pincode"
-                  variant="contained"
-                  onClick={(event) => handleClick(event, "pincode")}
-                >
-                  Pincode
-                  <CustomBadge data={filters.pincode ? ["1"] : null} />
                 </Button>
 
                 {/*Sort*/}
