@@ -441,7 +441,7 @@ export default function TenderPer() {
         errorStr.error = true;
         errorStr.list.push("States");
       }
-      if (userFilters?.DISTRICT?.length && filters?.district?.length === 0) {
+      if (userFilters?.DISTRICT?.length && filters?.districts?.length === 0) {
         errorStr.error = true;
         errorStr.list.push("District");
       }
@@ -2329,6 +2329,144 @@ export default function TenderPer() {
                   className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleReset("districts")}
+                >
+                  Reset
+                </button>
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={handleFilterSaved}
+                >
+                  Apply
+                </button>
+              </div>
+            </Dialog>
+            <Dialog
+              id="sort"
+              open={openPopoverId === "sort"}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              PaperProps={{
+                style: {
+                  width: "550px",
+                },
+              }}
+            >
+              <div className="w-full flex justify-between items-center p-2">
+                <label className="pl-2">Sort</label>
+                <CloseBTN />
+              </div>
+              <Divider />
+              <div className="w-full flex flex-col gap-4 justify-between items-center px-4 py-2">
+                {/* Published Date */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Published Date
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={
+                      filters.ordering.find((o) =>
+                        o.includes("published_date")
+                      ) || null
+                    }
+                    exclusive
+                    onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="published_date">
+                      Ascending
+                    </ToggleButton>
+                    <ToggleButton
+                      sx={{ width: "100%" }}
+                      value="-published_date"
+                    >
+                      Descending
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                {/* Closing Date */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Closing Date
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    // value={
+                    //   filters.ordering.find((o) =>
+                    //     o.includes("published_date")
+                    //   ) || null
+                    // }
+                    exclusive
+                    // onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Ascending
+                    </ToggleButton>
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Descending
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                {/*   Tender Amount */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Tender Amount
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={
+                      filters.ordering.find((o) => o.includes("value_in_rs")) ||
+                      null
+                    }
+                    exclusive
+                    onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="value_in_rs">
+                      Low to High
+                    </ToggleButton>
+                    <ToggleButton sx={{ width: "100%" }} value="-value_in_rs">
+                      High to Low
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                {/* Awarded Date */}
+                <div className="w-full flex gap-6 justify-between items-center">
+                  <h1 className="w-1/3 text-base font-medium text-start">
+                    Awarded Date
+                  </h1>
+                  <ToggleButtonGroup
+                    color="primary"
+                    // value={
+                    //   filters.ordering.find((o) =>
+                    //     o.includes("published_date")
+                    //   ) || null
+                    // }
+                    exclusive
+                    // onChange={handleOrderingChange}
+                    aria-label="Platform"
+                    sx={{ width: "100%" }}
+                  >
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Ascending
+                    </ToggleButton>
+                    <ToggleButton sx={{ width: "100%" }} value="" disabled>
+                      Descending
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+              </div>
+              <div className="flex justify-around pb-3">
+                <button
+                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                  onClick={() => handleReset("dates")}
                 >
                   Reset
                 </button>
