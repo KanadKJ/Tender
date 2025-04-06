@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
 import { useDispatch, useSelector } from "react-redux";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import RestoreIcon from "@mui/icons-material/Restore"; // Import reset icon
+import Select from "react-select/creatable";
 import {
   DeleteTemplate,
   GetDocumentURL,
@@ -28,11 +31,10 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import TuneIcon from "@mui/icons-material/Tune";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
@@ -41,6 +43,7 @@ import {
   formatDateTime,
   formatIndianCurrency,
   handleDownload,
+  keywordOptions,
 } from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
@@ -62,7 +65,6 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
 import { toast } from "react-toastify";
-import ex from "../Assets/excelpng.png";
 export default function TenderPer() {
   // redux
   const { tenderData, tenderIsLoading, userSaverTemplates } = useSelector(
@@ -95,15 +97,20 @@ export default function TenderPer() {
       }
     }
   }, [userFilters]);
+
   //state
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   // const [savedFilters, setSavedFilters] = useState([]);
+  const handlePdfDownload = () => {
+    // Implement your PDF download logic here
+    console.log("PDF download triggered");
+  };
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
-    keywords: searchParams.get("keywords") || "",
+    keywords: searchParams.getAll("keywords") || [],
     states:
       searchParams
         .getAll("states")
@@ -317,7 +324,7 @@ export default function TenderPer() {
     });
 
     console.log("run end");
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     const stateIDS = searchParams.getAll("states") || [];
@@ -475,12 +482,24 @@ export default function TenderPer() {
       }));
     }
   };
-  const handleFilterSelection = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: Array.isArray(value) ? value : [value],
-    }));
+  const handleFilterSelection = (input) => {
+    // Case 1: From react-select (array of options)
+    if (Array.isArray(input)) {
+      const selectedValues = input.map((option) => option.value);
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        keywords: selectedValues,
+      }));
+    }
+
+    // Case 2: From <input> element (e.g., pincode)
+    else if (input?.target) {
+      const { name, value } = input.target;
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        [name]: value,
+      }));
+    }
   };
   const handleFilterSaved = () => {
     let errorStr = {
@@ -653,6 +672,7 @@ export default function TenderPer() {
         dispatch(GetTemplateDetails(userData?.id));
       })
       .catch((e) => {
+        console.log(e);
         toast.error("Something went wrong.");
       });
   };
@@ -713,8 +733,26 @@ export default function TenderPer() {
     handleCloseDialog();
     handleClose();
   };
+  const handleResetAll = () => {
+    // Reset all the filter states to their default values
+    setFilters({
+      bidding_status: null,
+      keywords: null,
+      organisations: null,
+      states: null,
+      districts: null,
+      pincode: null,
+      value_in_rs_max: null,
+      published_date_after: null,
+      published_date_before: null,
+      ordering: null,
+    });
+
+    navigate(`?${queryString}`, { replace: true });
+  };
   return (
     <>
+      <div id="page-top" className="h-1" />
       <div className="mt-14 px-2 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
         <Background type="vector" lifed="up" show="no" />
         <main className="w-full flex flex-col justify-center items-center gap-6">
@@ -852,9 +890,7 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "organisations")}
             >
               Organisations
-              <CustomBadge
-                data={filters?.organisations?.length ? ["1"] : null}
-              />
+              <CustomBadge data={filters?.organisations ? ["1"] : null} />
             </Button>
 
             {/* States */}
@@ -1009,16 +1045,35 @@ export default function TenderPer() {
               Sort
               <CustomBadge data={filters?.ordering} />
             </Button>
+
+            {/* Reset All Button */}
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#5bc0de", // Lighter blue color
+                color: isPlanExpired ? "#fff00" : "#fff",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+              }}
+              aria-describedby="resetAll"
+              variant="contained"
+              onClick={handleResetAll}
+            >
+              <RestoreIcon /> {/* Icon for reset */}
+              Reset All
+            </Button>
             {/*Export*/}
             {/* <Button
               disabled={isPlanExpired}
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-               width: "150px",
-                height: "28px",
-                fontSize: "0.65rem", // Smaller text
-                fontWeight: "400", 
+                width: "150px",
                 display: "flex",
                 gap: 10,
                 alignItems: "center",
@@ -1054,9 +1109,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="SavedFilters"
                   variant="contained"
@@ -1072,9 +1124,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="bidding_status"
                   variant="contained"
@@ -1091,9 +1140,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="Keywords"
                   variant="contained"
@@ -1113,18 +1159,13 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="organisations"
                   variant="contained"
                   onClick={(event) => handleClick(event, "organisations")}
                 >
                   Organisations
-                  <CustomBadge
-                    data={filters?.organisations?.length ? ["1"] : null}
-                  />
+                  <CustomBadge data={filters?.organisations} />
                 </Button>
 
                 {/* States */}
@@ -1135,9 +1176,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="states"
                   variant="contained"
@@ -1155,9 +1193,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="districts"
                   variant="contained"
@@ -1174,9 +1209,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="pincode"
                   variant="contained"
@@ -1194,9 +1226,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="tenderAmount"
                   variant="contained"
@@ -1214,9 +1243,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="datePicker"
                   variant="contained"
@@ -1241,9 +1267,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="datePickerclosing"
                   variant="contained"
@@ -1268,9 +1291,6 @@ export default function TenderPer() {
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
                     width: "150px",
-                    height: "28px",
-                    fontSize: "0.65rem", // Smaller text
-                    fontWeight: "400",
                   }}
                   aria-describedby="sort"
                   variant="contained"
@@ -1283,9 +1303,7 @@ export default function TenderPer() {
               </div>
               <Divider />
             </Dialog>
-
-            {/* DIALOGS */}
-            {/* Delete confirmation pop-up */}
+            {/* SavedFilters */}
             <Dialog open={open} onClose={handleCloseDialog}>
               <DialogTitle>Confirm Deletion</DialogTitle>
               <DialogContent>
@@ -1300,8 +1318,6 @@ export default function TenderPer() {
                 </Button>
               </DialogActions>
             </Dialog>
-
-            {/* SavedFilters */}
             <Dialog
               id="SavedFilters"
               open={openPopoverId === "SavedFilters"}
@@ -1350,16 +1366,16 @@ export default function TenderPer() {
                   )}
                 </div>
               </div>
-              <div className="flex justify-around mb-3">
+              <div className="flex justify-around gap-4 p-4">
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleClose()}
                 >
                   Close
                 </button>
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={handleSaveFiltersSearched}
                 >
@@ -1367,6 +1383,7 @@ export default function TenderPer() {
                 </button>
               </div>
             </Dialog>
+
             {/* Keywords */}
             <Dialog
               id="Keywords"
@@ -1381,24 +1398,56 @@ export default function TenderPer() {
               </div>
               <Divider />
               <div className="p-5 flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="Keywords"
+                {/* Multi-select input with ability to add custom keywords */}
+                <Select
+                  isMulti
                   name="keywords"
-                  value={filters?.keywords}
-                  onChange={handleFilterSelection}
-                  className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
+                  options={keywordOptions} // Predefined options for keywords
+                  value={(Array.isArray(filters?.keywords)
+                    ? filters.keywords
+                    : []
+                  ).map((keyword) => ({
+                    value: keyword,
+                    label:
+                      keywordOptions?.find(
+                        (option) => option?.value === keyword
+                      )?.label || keyword,
+                  }))}
+                  onChange={handleFilterSelection} // Handle the selected options directly
+                  className="w-full"
+                  classNamePrefix="react-select"
+                  placeholder="Select or add keywords"
+                  isClearable // Allow clearing selections
+                  closeMenuOnSelect={false} // Keeps the menu open when multiple options are selected
+                  isCreatable // Allows user to type custom values and create new options
+                  createOptionPosition="first" // Adds custom options at the top
+                  getNewOptionData={(inputValue) => ({
+                    label: inputValue,
+                    value: inputValue,
+                  })} // Allows users to add their custom keywords
+                  menuPortalTarget={document.body} // Ensures the dropdown is displayed outside of the parent container
+                  styles={{
+                    menuPortal: (base) => ({
+                      ...base,
+                      zIndex: 9999, // Ensure the dropdown is on top
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      maxHeight: 300, // Set a max height for the dropdown
+                      overflowY: "auto", // Enable scrolling
+                    }),
+                  }}
                 />
-                <div className="flex justify-around">
+                <div className="flex justify-between mt-4 gap-x-4">
                   <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                     onClick={() => handleReset("keywords")}
                   >
                     Reset
                   </button>
                   <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                     onClick={handleFilterSaved}
                   >
@@ -1407,6 +1456,7 @@ export default function TenderPer() {
                 </div>
               </div>
             </Dialog>
+
             {/* organisations */}
             <Dialog
               id="organisations"
@@ -1766,16 +1816,16 @@ export default function TenderPer() {
                   )}
                 />
               </div>
-              <div className="flex justify-around pb-3">
+              <div className="flex justify-around gap-4 p-4">
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleReset("districts")}
                 >
                   Reset
                 </button>
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={handleFilterSaved}
                 >
@@ -1855,16 +1905,16 @@ export default function TenderPer() {
                   />
                 </FormControl>
               </div>
-              <div className="flex justify-around pb-3">
+              <div className="flex justify-around gap-4 p-4">
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleReset("states")}
                 >
                   Reset
                 </button>
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={handleFilterSaved}
                 >
@@ -1942,16 +1992,16 @@ export default function TenderPer() {
                   )}
                 />
               </div>
-              <div className="flex justify-around pb-3">
+              <div className="flex justify-around gap-4 p-4">
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleReset("districts")}
                 >
                   Reset
                 </button>
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={handleFilterSaved}
                 >
@@ -2079,16 +2129,16 @@ export default function TenderPer() {
                     }}
                   />
                 </div>
-                <div className="flex justify-around pb-3">
+                <div className="flex justify-around gap-4 p-4">
                   <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                     onClick={() => handleReset("dates")}
                   >
                     Reset
                   </button>
                   <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                     onClick={handleFilterSaved}
                   >
@@ -2217,10 +2267,10 @@ export default function TenderPer() {
                     }}
                   />
                 </div>
-                <div className="flex justify-around pb-3">
+                <div className="flex justify-around gap-4 p-4">
                   {/* hover:bg-[#fff] hover:text-[#0554F2] */}
                   <button
-                    className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
                      transition-all duration-300 ease-in-out "
                     onClick={() => handleReset("dates")}
                     disabled
@@ -2229,7 +2279,7 @@ export default function TenderPer() {
                   </button>
                   {/* hover:bg-[#fff] hover:text-[#0554F2] */}
                   <button
-                    className="flex gap-4 p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
                     transition-all duration-300 ease-in-out "
                     onClick={handleFilterSaved}
                     disabled
@@ -2239,6 +2289,7 @@ export default function TenderPer() {
                 </div>
               </Dialog>
             </LocalizationProvider>
+
             {/* pincode */}
             <Dialog
               id="pincode"
@@ -2261,56 +2312,16 @@ export default function TenderPer() {
                   onChange={handleFilterSelection}
                   className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
                 />
-                <div className="flex justify-around">
+                <div className="flex justify-around  gap-4 p-1 ">
                   <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                     onClick={() => handleReset("pincode")}
                   >
                     Reset
                   </button>
                   <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={handleFilterSaved}
-                  >
-                    Apply
-                  </button>
-                </div>
-              </div>
-            </Dialog>
-            {/* pincode */}
-            <Dialog
-              id="pincode"
-              open={openPopoverId === "pincode"}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            >
-              <div className="w-full flex justify-between items-center p-2">
-                <label className="pl-2">Pincode</label>
-                <CloseBTN />
-              </div>
-              <Divider />
-              <div className="p-5 flex flex-col gap-4">
-                <input
-                  type="number"
-                  placeholder="Pincode"
-                  name="pincode"
-                  value={filters?.pincode}
-                  onChange={handleFilterSelection}
-                  className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
-                />
-                <div className="flex justify-around">
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={() => handleReset("pincode")}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                     onClick={handleFilterSaved}
                   >
@@ -2365,16 +2376,16 @@ export default function TenderPer() {
                   </ToggleButtonGroup>
                 </div>
               </div>
-              <div className="flex justify-around pb-3">
+              <div className="flex justify-around gap-4 p-4">
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleReset("bidding_status")}
                 >
                   Reset
                 </button>
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={handleFilterSaved}
                 >
@@ -2382,6 +2393,7 @@ export default function TenderPer() {
                 </button>
               </div>
             </Dialog>
+            {/* tender amount */}
             <Dialog
               id="tenderAmount"
               open={openPopoverId === "tenderAmount"}
@@ -2493,16 +2505,16 @@ export default function TenderPer() {
                   )}
                 />
               </div>
-              <div className="flex justify-around pb-3">
+              <div className="flex justify-around gap-4 p-4">
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleReset("districts")}
                 >
                   Reset
                 </button>
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={handleFilterSaved}
                 >
@@ -2537,8 +2549,8 @@ export default function TenderPer() {
                   <ToggleButtonGroup
                     color="primary"
                     value={
-                      filters.ordering.find((o) =>
-                        o.includes("published_date")
+                      filters?.ordering?.find((o) =>
+                        o?.includes("published_date")
                       ) || null
                     }
                     exclusive
@@ -2590,8 +2602,9 @@ export default function TenderPer() {
                   <ToggleButtonGroup
                     color="primary"
                     value={
-                      filters.ordering.find((o) => o.includes("value_in_rs")) ||
-                      null
+                      filters?.ordering?.find((o) =>
+                        o?.includes("value_in_rs")
+                      ) || null
                     }
                     exclusive
                     onChange={handleOrderingChange}
@@ -2632,16 +2645,16 @@ export default function TenderPer() {
                   </ToggleButtonGroup>
                 </div>
               </div>
-              <div className="flex justify-around pb-3">
+              <div className="flex justify-around gap-4 p-4 ">
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={() => handleReset("dates")}
                 >
                   Reset
                 </button>
                 <button
-                  className="flex gap-4 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
                   onClick={handleFilterSaved}
                 >
@@ -2650,43 +2663,46 @@ export default function TenderPer() {
               </div>
             </Dialog>
           </div>
-
-          <div className="w-full p-2 flex justify-end items-center gap-4">
-            {/*Export*/}
-            <Button
-              disabled={isPlanExpired}
-              style={{
-                backgroundColor: "#B00020",
-                color: isPlanExpired ? "#fff00" : "#fff",
-                padding: "6px 12px",
-                minWidth: "unset",
-                whiteSpace: "nowrap",
-              }}
-              variant="contained"
-              // onClick={handlePdfDownload}
-            >
-              <PictureAsPdfIcon fontSize="small" />
-            </Button>
-
-            {/* Excel Button */}
-            <Button
-              disabled={isPlanExpired}
-              style={{
-                backgroundColor: "#10793F",
-                color: isPlanExpired ? "#fff00" : "#fff",
-                padding: "6px 12px",
-                minWidth: "unset",
-                whiteSpace: "nowrap",
-              }}
-              variant="contained"
-              onClick={handleDocumentDownload}
-            >
-              <SystemUpdateAltIcon fontSize="small" />
-            </Button>
-          </div>
-
           {/* TENDERS RENDER */}
-          <div className="w-full flex flex-col justify-center items-center">
+          <div className="w-full flex flex-col justify-center items-center overflow-x-hidden box-border">
+            {/* Top Button Section */}
+            <div className="w-full flex justify-center">
+              <div className="w-full max-w-screen-lg flex justify-end gap-2 mt-4 mb-2 px-3 md:px-0">
+                {/* PDF Button */}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#B00020",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    padding: "6px 12px",
+                    minWidth: "unset",
+                    whiteSpace: "nowrap",
+                  }}
+                  variant="contained"
+                  onClick={handlePdfDownload}
+                >
+                  <PictureAsPdfIcon fontSize="small" />
+                </Button>
+
+                {/* Excel Button */}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#10793F",
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    padding: "6px 12px",
+                    minWidth: "unset",
+                    whiteSpace: "nowrap",
+                  }}
+                  variant="contained"
+                  onClick={handleDocumentDownload}
+                >
+                  <SystemUpdateAltIcon fontSize="small" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Tender List */}
             {tenderIsLoading ? (
               <div className="h-[20vh]"></div>
             ) : (
@@ -2701,11 +2717,13 @@ export default function TenderPer() {
                   new Date().toISOString().slice(0, 19)
                 );
 
+                const isAlternate = i % 2 !== 0;
+
                 return (
                   <div
                     key={tender?.uid}
                     className={`flex flex-col md:flex-row justify-between border border-gray-300 ${
-                      i % 2 !== 0
+                      isAlternate
                         ? "bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-blue-400 shadow-sm"
                         : "bg-white"
                     } py-4 px-3 rounded-md gap-4 w-full max-w-screen-lg mb-4 box-border`}
@@ -2836,6 +2854,58 @@ export default function TenderPer() {
               })
             )}
           </div>
+          {/* Scroll Down Button */}
+          {/* Scroll to Bottom Button */}
+          <button
+            onClick={() => {
+              const bottom = document.getElementById("page-bottom");
+              bottom?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="fixed bottom-4 right-4 z-50 flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full shadow-xl hover:scale-110 transition-all duration-300 ease-in-out"
+            title="Scroll to Bottom"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          {/* Scroll to Top Button */}
+          <button
+            onClick={() => {
+              const top = document.getElementById("page-top");
+              top?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="fixed bottom-20 right-4 z-50 flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full shadow-xl hover:scale-110 transition-all duration-300 ease-in-out"
+            title="Scroll to Top"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 15l7-7 7 7"
+              />
+            </svg>
+          </button>
+          {/* Place this at the very TOP of your page/component */}
+          <div id="page-bottom" className="h-1" />{" "}
+          {/* Place this at the very BOTTOM */}
         </main>
         {/* Pagination */}
         <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">

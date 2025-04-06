@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setData } from "../Redux/Slices/AuthSlice";
-import { GetPaymentDetails } from "../Redux/Slices/TenderSlice";
+
 import {
   Paper,
   Table,
@@ -11,17 +10,35 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { formatIndianCurrency } from "../Utils/CommonUtils";
-
+import { GetUserDetailsWithPlan } from "../Redux/Slices/CommonSlice";
+import debounce from "lodash/debounce";
 export default function UserManagement() {
+  const { userManagementUserDataWithPlan } = useSelector((s) => s.common);
   const [searchTerms, setSearchTerms] = useState("");
   const dispatch = useDispatch();
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      if (
+        typeof value === "string" &&
+        value.includes("@") &&
+        value.includes(".")
+      ) {
+        dispatch(GetUserDetailsWithPlan(`Email=${value}`));
+      } else if (!isNaN(value)) {
+        dispatch(GetUserDetailsWithPlan(`MobileNo=${value}`));
+      } else {
+        dispatch(GetUserDetailsWithPlan(`firstName=${value}`));
+      }
+    }, 400),
+    []
+  );
+
   const handleGlobalSearch = (e) => {
     const { value } = e.target;
     setSearchTerms(value);
 
     if (value?.length > 3) {
-      console.log(value);
+      debouncedSearch(value);
     }
   };
   return (
@@ -40,8 +57,12 @@ export default function UserManagement() {
         />
       </div>
       <div className="md:w-full max-w-[25rem] md:max-w-screen-md lg:max-w-screen-lg  overflow-x-auto custom-scrollbar">
-        {/* <TableContainer component={Paper} sx={{ maxWidth: "900px" }}>
+        <TableContainer component={Paper} sx={{ maxWidth: "900px" }}>
           <Table aria-label="simple table">
+            <caption>
+              {userManagementUserDataWithPlan?.totalRecords &&
+                `Total Records : ${userManagementUserDataWithPlan?.totalRecords}`}
+            </caption>
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontSize: 12 }}>User name</TableCell>
@@ -57,28 +78,29 @@ export default function UserManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paymentDetails?.map((row) => (
-                <TableRow
-                  key={row.paymentId}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell sx={{ fontSize: 12 }} component="th" scope="row">
-                    {row.firstName}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: 12 }} align="center  ">
-                    {row.mobileNo}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: 12 }} align="center  ">
-                    {row.email}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: 12 }} align="center  ">
-                    {row.planName}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {userManagementUserDataWithPlan &&
+                userManagementUserDataWithPlan?.value?.map((row) => (
+                  <TableRow
+                    key={row.paymentId}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell sx={{ fontSize: 12 }} component="th" scope="row">
+                      {row.firstName}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: 12 }} align="center  ">
+                      {row.mobileNo}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: 12 }} align="center  ">
+                      {row.email}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: 12 }} align="center  ">
+                      {row.planName}
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
-        </TableContainer> */}
+        </TableContainer>
       </div>
     </div>
   );

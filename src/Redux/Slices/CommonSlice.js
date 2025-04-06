@@ -17,7 +17,19 @@ const initialState = {
   planData: [],
   userList: [],
   filtersBasedOnUsers: [],
+  userManagementUserDataWithPlan: [],
 };
+export const GetUserDetailsWithPlan = createAsyncThunk(
+  "common/GetUserDetailsWithPlan",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(`/GetUserDetailsWithPlan?${params}`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
 export const GetUserList = createAsyncThunk(
   "common/GetUserList",
   async (params, { rejectWithValue }) => {
@@ -336,6 +348,20 @@ const commonSlice = createSlice({
         state.error = null;
       })
       .addCase(GetFiltersBasedOnUserId.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetUserDetailsWithPlan
+      .addCase(GetUserDetailsWithPlan.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetUserDetailsWithPlan.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.userManagementUserDataWithPlan = action.payload;
+        state.error = null;
+      })
+      .addCase(GetUserDetailsWithPlan.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });
