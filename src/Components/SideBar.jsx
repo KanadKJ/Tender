@@ -23,6 +23,7 @@ import logo from "../Assets/logoNew.png";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 import { cleanUpUserFilters } from "../Redux/Slices/TenderSlice";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 const Sidebar = ({ onLinkClick }) => {
   const { userData } = useSelector((s) => s.auth);
   const location = useLocation();
@@ -117,7 +118,7 @@ const Sidebar = ({ onLinkClick }) => {
         {userData?.userType === 1 && (
           <DriverLink
             comp={
-              <ManageAccountsIcon
+              <AdminPanelSettingsIcon
                 sx={{
                   color: "#b2b2b3",
                 }}
@@ -125,6 +126,19 @@ const Sidebar = ({ onLinkClick }) => {
             }
             name="Tender Management"
             to="dashboard/TenderManagement"
+          />
+        )}
+        {userData?.userType === 1 && (
+          <DriverLink
+            comp={
+              <ManageAccountsIcon
+                sx={{
+                  color: "#b2b2b3",
+                }}
+              />
+            }
+            name="User Management"
+            to="dashboard/UserManagement"
           />
         )}
 

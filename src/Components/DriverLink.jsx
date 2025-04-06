@@ -9,6 +9,7 @@ export default function DriverLink({ src, name, to, comp }) {
     >
       <span>
         {name === "Tender Management" ||
+        name === "User Management" ||
         name === "Home" ||
         name === "Pricing" ||
         name === "Tenders" ? (

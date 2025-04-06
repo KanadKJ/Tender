@@ -14,6 +14,10 @@ import {
   Button,
   Checkbox,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControl,
   IconButton,
@@ -24,10 +28,11 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import TuneIcon from "@mui/icons-material/Tune";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
@@ -57,6 +62,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
 import { toast } from "react-toastify";
+import ex from "../Assets/excelpng.png";
 export default function TenderPer() {
   // redux
   const { tenderData, tenderIsLoading, userSaverTemplates } = useSelector(
@@ -180,7 +186,8 @@ export default function TenderPer() {
   const queryString = useQueryParams(filters);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);
-
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   // hooks
   const dispatch = useDispatch();
 
@@ -310,7 +317,7 @@ export default function TenderPer() {
     });
 
     console.log("run end");
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     const stateIDS = searchParams.getAll("states") || [];
@@ -646,7 +653,6 @@ export default function TenderPer() {
         dispatch(GetTemplateDetails(userData?.id));
       })
       .catch((e) => {
-        console.log(e);
         toast.error("Something went wrong.");
       });
   };
@@ -692,7 +698,21 @@ export default function TenderPer() {
       })
       .catch((e) => console.log(e));
   };
+  const handleOpenDialog = (id) => {
+    setSelectedId(id);
+    setOpen(true);
+  };
 
+  const handleCloseDialog = () => {
+    setOpen(false);
+    setSelectedId(null);
+  };
+
+  const handleConfirmDelete = () => {
+    handleDeleteSavedFiltersbyUsers(selectedId);
+    handleCloseDialog();
+    handleClose();
+  };
   return (
     <>
       <div className="mt-14 px-2 md:px-12 lg:px-24 xl:px-32 mb-10 z-40">
@@ -750,7 +770,7 @@ export default function TenderPer() {
           </div>
           {/* FILTERS */}
           <div
-            className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 justify-between items-center "
+            className="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-6 justify-between items-center "
             style={{
               pointerEvents: isPlanExpired ? "none" : "auto", // Disables all interactions inside this div
               opacity: isPlanExpired ? 0.5 : 1, // Makes it look disabled (optional)
@@ -763,7 +783,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="SavedFilters"
               variant="contained"
@@ -778,7 +801,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="bidding_status"
               variant="contained"
@@ -794,7 +820,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="Keywords"
               variant="contained"
@@ -813,14 +842,19 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="organisations"
               variant="contained"
               onClick={(event) => handleClick(event, "organisations")}
             >
               Organisations
-              <CustomBadge data={filters?.organisations ? ["1"] : null} />
+              <CustomBadge
+                data={filters?.organisations?.length ? ["1"] : null}
+              />
             </Button>
 
             {/* States */}
@@ -830,7 +864,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="states"
               variant="contained"
@@ -847,7 +884,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="districts"
               variant="contained"
@@ -864,7 +904,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="pincode"
               variant="contained"
@@ -880,7 +923,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="tenderAmount"
               variant="contained"
@@ -897,7 +943,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="datePicker"
               variant="contained"
@@ -921,7 +970,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="datePickerclosing"
               variant="contained"
@@ -944,7 +996,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+                width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400",
               }}
               aria-describedby="sort"
               variant="contained"
@@ -960,7 +1015,10 @@ export default function TenderPer() {
               style={{
                 backgroundColor: "#0554f2",
                 color: isPlanExpired ? "#fff00" : "#fff",
-                width: "190px",
+               width: "150px",
+                height: "28px",
+                fontSize: "0.65rem", // Smaller text
+                fontWeight: "400", 
                 display: "flex",
                 gap: 10,
                 alignItems: "center",
@@ -995,7 +1053,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="SavedFilters"
                   variant="contained"
@@ -1010,7 +1071,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="bidding_status"
                   variant="contained"
@@ -1026,7 +1090,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="Keywords"
                   variant="contained"
@@ -1045,14 +1112,19 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="organisations"
                   variant="contained"
                   onClick={(event) => handleClick(event, "organisations")}
                 >
                   Organisations
-                  <CustomBadge data={filters?.organisations} />
+                  <CustomBadge
+                    data={filters?.organisations?.length ? ["1"] : null}
+                  />
                 </Button>
 
                 {/* States */}
@@ -1062,7 +1134,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="states"
                   variant="contained"
@@ -1079,7 +1154,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="districts"
                   variant="contained"
@@ -1095,7 +1173,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="pincode"
                   variant="contained"
@@ -1112,7 +1193,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="tenderAmount"
                   variant="contained"
@@ -1129,7 +1213,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="datePicker"
                   variant="contained"
@@ -1153,7 +1240,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="datePickerclosing"
                   variant="contained"
@@ -1177,7 +1267,10 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "190px",
+                    width: "150px",
+                    height: "28px",
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
                   }}
                   aria-describedby="sort"
                   variant="contained"
@@ -1190,6 +1283,24 @@ export default function TenderPer() {
               </div>
               <Divider />
             </Dialog>
+
+            {/* DIALOGS */}
+            {/* Delete confirmation pop-up */}
+            <Dialog open={open} onClose={handleCloseDialog}>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to delete this template?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseDialog}>Cancel</Button>
+                <Button onClick={handleConfirmDelete} color="error">
+                  Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
+
             {/* SavedFilters */}
             <Dialog
               id="SavedFilters"
@@ -1223,8 +1334,9 @@ export default function TenderPer() {
                       >
                         <h1>{f.templateName}</h1>
                         <button
-                          onClick={() => {
-                            handleDeleteSavedFiltersbyUsers(f.id);
+                          onClick={(e) => {
+                            e.stopPropagation(); // prevent parent onClick
+                            handleOpenDialog(f.id);
                           }}
                         >
                           <DeleteOutlineOutlinedIcon fontSize="sm" />
@@ -2539,24 +2651,37 @@ export default function TenderPer() {
             </Dialog>
           </div>
 
-          <div className="w-full p-2 flex justify-end items-center">
+          <div className="w-full p-2 flex justify-end items-center gap-4">
             {/*Export*/}
+            <Button
+              disabled={isPlanExpired}
+              style={{
+                backgroundColor: "#B00020",
+                color: isPlanExpired ? "#fff00" : "#fff",
+                padding: "6px 12px",
+                minWidth: "unset",
+                whiteSpace: "nowrap",
+              }}
+              variant="contained"
+              // onClick={handlePdfDownload}
+            >
+              <PictureAsPdfIcon fontSize="small" />
+            </Button>
+
+            {/* Excel Button */}
             <Button
               disabled={isPlanExpired}
               style={{
                 backgroundColor: "#10793F",
                 color: isPlanExpired ? "#fff00" : "#fff",
-
-                display: "flex",
-                gap: 10,
-                alignItems: "center",
+                padding: "6px 12px",
+                minWidth: "unset",
+                whiteSpace: "nowrap",
               }}
-              aria-describedby="export"
               variant="contained"
               onClick={handleDocumentDownload}
             >
-              <SystemUpdateAltIcon />
-              Export Results
+              <SystemUpdateAltIcon fontSize="small" />
             </Button>
           </div>
 
@@ -2579,124 +2704,126 @@ export default function TenderPer() {
                 return (
                   <div
                     key={tender?.uid}
-                    className={`flex flex-col md:flex-row  justify-between ${
-                      i % 2 === 0 ? "bg-white" : "bg-[#e2ecff]"
-                    } py-6 px-2 rounded-md gap-4 min-h-56 max-w-sm sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg w-full`}
+                    className={`flex flex-col md:flex-row justify-between border border-gray-300 ${
+                      i % 2 !== 0
+                        ? "bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-blue-400 shadow-sm"
+                        : "bg-white"
+                    } py-4 px-3 rounded-md gap-4 w-full max-w-screen-lg mb-4 box-border`}
                   >
-                    <div className="w-full flex flex-col gap-5">
-                      <div className="flex gap-4 flex-col ">
-                        <div className="">
-                          <h1 className="text-base font-semibold text-ellipsis">
-                            {tender?.id}|{tender?.organisation_chain}
-                          </h1>
-                        </div>
-                        <div className="flex w-full justify-start items-center overflow-hidden text-ellipsis line-clamp-2">
+                    {/* Left Section */}
+                    <div className="w-full flex flex-col gap-3">
+                      <div className="flex flex-col gap-2">
+                        <h1 className="text-sm font-medium text-ellipsis">
+                          {tender?.id} | {tender?.organisation_chain}
+                        </h1>
+
+                        <div className="flex items-center gap-2 overflow-hidden text-ellipsis">
                           <LocationOnIcon fontSize="small" />
-                          <p className="text-sm font-thin">
-                            {tender?.district && `${tender?.district},`}
-                            {tender?.state && `${tender?.state},`}
-                            {tender?.pincode && `${tender?.pincode}`}
+                          <p className="text-xs text-gray-600">
+                            {tender?.district && `${tender?.district}, `}
+                            {tender?.state && `${tender?.state}, `}
+                            {tender?.pincode}
                           </p>
                         </div>
-                        <div>
-                          <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
-                            {tender?.product_category}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="break-words text-base max-w-[514px]">
-                        <p className="">{tender?.description}</p>
+
+                        <span className="px-2 py-[2px] bg-blue-100 text-blue-700 text-[10px] font-semibold rounded-full w-fit shadow-sm">
+                          {tender?.product_category}
+                        </span>
                       </div>
 
-                      <div className="flex justify-start items-center gap-4">
+                      <p className="text-xs text-gray-700 break-words max-w-[514px]">
+                        {tender?.description}
+                      </p>
+
+                      <div className="flex gap-2 mt-1">
                         <button
                           onClick={() => navigate(`/tenders/${tender?.uid}`)}
-                          className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
-                hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
-                group"
+                          className="flex gap-2 px-3 py-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#0554F2] transition-all duration-300 ease-in-out"
                         >
                           View
-                          <span className="flex justify-center items-center">
-                            <VisibilityOutlinedIcon fontSize="sm" />
-                          </span>
+                          <VisibilityOutlinedIcon fontSize="small" />
                         </button>
+
                         <button
-                          onClick={() => {
-                            handleWishList(tender?.id);
-                          }}
-                          className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                      hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+                          onClick={() => handleWishList(tender?.id)}
+                          className="flex items-center gap-1 px-2 py-1 border rounded-md border-[#0554F2] bg-white text-xs font-medium text-[#0554F2] hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                         >
-                          <FavoriteBorderOutlinedIcon />
+                          <FavoriteBorderOutlinedIcon fontSize="small" />
                         </button>
                       </div>
                     </div>
-                    <div className="w-full flex flex-col gap-5">
-                      <div className="flex gap-4 justify-around">
-                        <div className="p-2 shadow-sm bg-[#EBCF1326] rounded-lg flex gap-4 justify-between items-center">
+
+                    {/* Right Section */}
+                    <div className="w-full flex flex-col gap-4 items-stretch">
+                      {/* Corrigendum & Days Left */}
+                      <div className="flex flex-col md:flex-row gap-3 w-full justify-between">
+                        <div className="flex flex-1 items-center gap-3 px-4 py-2 bg-gradient-to-r from-yellow-100 to-yellow-50 border-l-4 border-yellow-400 rounded shadow-sm">
                           <LightbulbCircleOutlinedIcon
-                            fontSize="sm"
-                            color="primary"
+                            fontSize="small"
+                            className="text-yellow-600"
                           />
-                          <h1 className="text-sm font-semibold">
-                            Corrigendum : NIT{" "}
-                          </h1>
-                          {corrigendum?.diffDays ? (
-                            <h1 className="text-[#C9B00F] text-center text-sm font-semibold">
-                              {corrigendum?.diffDays} days ago
-                            </h1>
-                          ) : (
-                            <h1 className="text-[#C9B00F] text-center text-sm">
-                              -
-                            </h1>
-                          )}
+                          <div className="flex items-center whitespace-nowrap gap-1 overflow-hidden text-ellipsis">
+                            <span className="text-xs font-bold text-yellow-800">
+                              Corrigendum: NIT
+                            </span>
+                            <span className="text-[11px] text-yellow-700 font-medium">
+                              {corrigendum?.diffDays
+                                ? `${corrigendum?.diffDays} days ago`
+                                : "-"}
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="flex gap-2 md:gap-0 md:flex-col justify-center items-center ">
+                        <div className="flex flex-col justify-center items-center w-full md:w-28">
                           <span
-                            style={{
-                              color: col,
-                            }}
-                            className={` rounded-md  text-lg font-extrabold `}
+                            className="text-lg font-extrabold"
+                            style={{ color: col }}
                           >
                             {diffDays}
                           </span>
                           <span
-                            style={{
-                              color: col,
-                            }}
-                            className={`text-xs  rounded-md text-center font-medium`}
+                            className="text-xs font-medium"
+                            style={{ color: col }}
                           >
                             Days left
                           </span>
                         </div>
                       </div>
-                      <div className="w-full flex flex-row gap-2 md:gap-4 justify-center items-center">
-                        <div className="px-2 md:px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24 max-w-28 md:max-w-36 w-full">
-                          <h6 className="text-[10px] md:text-sm font-normal text-[#565656]">
-                            Published Date
+
+                      {/* Dates and Amount */}
+                      <div className="flex flex-wrap gap-2 md:gap-4 justify-center items-stretch w-full">
+                        <div className="flex-1 min-w-[100px] px-3 py-3 border-l-4 border-blue-500 bg-[#F9FAFB] rounded-md shadow-sm">
+                          <h6 className="text-[11px] font-medium text-[#333] mb-1">
+                            📅 Published Date
                           </h6>
-                          <p className="text-[#212121] text-sm md:text-base font-medium">
+                          <p className="text-[#212121] text-xs font-semibold leading-tight">
                             {formatDateTime(tender?.published_date)[0]} <br />
                             {formatDateTime(tender?.published_date)[1]}
                           </p>
                         </div>
-                        <div className="px-2 md:px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24 max-w-28 md:max-w-36 w-full">
-                          <h6 className="text-[10px] md:text-sm font-normal text-[#565656]">
-                            Closing Date
-                          </h6>
 
-                          <p className="text-[#212121] text-sm md:text-base font-medium">
+                        <div className="flex-1 min-w-[100px] px-3 py-3 border-l-4 border-red-500 bg-[#F9FAFB] rounded-md shadow-sm">
+                          <h6 className="text-[11px] font-medium text-[#333] mb-1">
+                            ⏳ Closing Date
+                          </h6>
+                          <p className="text-[#212121] text-xs font-semibold leading-tight">
                             {formatDateTime(tender?.bid_submission_end_date)[0]}{" "}
                             <br />
                             {formatDateTime(tender?.bid_submission_end_date)[1]}
                           </p>
                         </div>
-                        <div className="px-2 md:px-4 py-3 rounded-md border border-[#EAEAEA] shadow-sm min-h-24 max-w-28 md:max-w-36 w-full">
-                          <h6 className="text-[10px] md:text-sm font-normal text-[#565656]">
-                            Tender Amount
+
+                        <div className="flex-1 min-w-[100px] px-3 py-3 border-l-4 border-green-500 bg-[#F9FAFB] rounded-md shadow-sm">
+                          <h6 className="text-[11px] font-medium text-[#333] mb-1">
+                            💰 Tender Amount
                           </h6>
-                          <p className="text-[#212121] text-sm md:text-base font-medium">
+                          <p
+                            className={`text-xs font-semibold leading-tight ${
+                              tender?.value_in_rs === 0
+                                ? "text-red-600"
+                                : "text-[#212121]"
+                            }`}
+                          >
                             {tender?.value_in_rs
                               ? formatIndianCurrency(tender?.value_in_rs)
                               : "Refer Document"}

@@ -22,8 +22,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import axios from "axios";
-import { toast } from "react-toastify";
 
 export default function TenderDetails() {
   const { id } = useParams();
@@ -310,19 +308,6 @@ export default function TenderDetails() {
                       <span>{d?.size}</span>
                     </p>
                     <div className="flex gap-4">
-                      <button
-                        onClick={() =>
-                          handleDocumentDownload(
-                            d?.id,
-                            extensionType(d?.name),
-                            "default"
-                          )
-                        }
-                        className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
-                                         hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
-                      >
-                        <FileDownloadOutlinedIcon />
-                      </button>
                       {extensionType(d?.name) === "xls" && (
                         <button
                           onClick={() =>
@@ -338,6 +323,19 @@ export default function TenderDetails() {
                           <PictureAsPdfIcon color="#e60c0c" />
                         </button>
                       )}
+                      <button
+                        onClick={() =>
+                          handleDocumentDownload(
+                            d?.id,
+                            extensionType(d?.name),
+                            "default"
+                          )
+                        }
+                        className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+                                         hover:border-[#0554F2]     hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+                      >
+                        <FileDownloadOutlinedIcon />
+                      </button>
                     </div>
                   </div>
                 ))}

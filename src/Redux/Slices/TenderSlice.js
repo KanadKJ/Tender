@@ -188,7 +188,7 @@ const tenderSlice = createSlice({
         state.tenderIsLoading = false;
         state.error = null;
         if (action.payload.message === "Template inserted successfully") {
-          toast.success("Template inserted successfully");
+          toast.success("Template added successfully");
         }
       })
       .addCase(InsertTemplate.rejected, (state, action) => {

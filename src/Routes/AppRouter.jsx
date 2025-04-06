@@ -8,6 +8,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../Screens/Dashboard";
 import SystemConfigSuper from "../Screens/SystemConfigSuper";
 import PaymentDetails from "../Screens/PaymentDetails";
+import UserManagement from "../Screens/UserManagement";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
 const TendersPage = lazy(() => import("../Screens/TenderPer"));
@@ -72,6 +73,14 @@ const AppRouter = () => {
                 element={
                   <ProtectedRoutes>
                     <SystemConfigSuper />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="UserManagement"
+                element={
+                  <ProtectedRoutes>
+                    <UserManagement />
                   </ProtectedRoutes>
                 }
               />

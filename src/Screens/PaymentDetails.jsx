@@ -25,7 +25,7 @@ export default function PaymentDetails() {
   useEffect(() => {
     if (userData) dispatch(GetPaymentDetails(userData?.id));
   }, []);
-  
+
   function formatDateTime(isoString) {
     const date = new Date(isoString);
 
@@ -39,20 +39,15 @@ export default function PaymentDetails() {
     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
   }
   return (
-    <div className="mt-2 px-2 mb-10 z-40">
+    <div className="mt-2 md:px-2 mb-10 z-40">
       <div className="w-full justify-start items-center">
         <h1 className="font-normal text-xs md:text-xl text-start pb-4">
           Payment History
         </h1>
       </div>
-      <div className="w-full">
-        <TableContainer
-          component={Paper}
-          sx={{
-            width: "100%",
-          }}
-        >
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <div className="md:w-full max-w-[25rem] md:max-w-screen-md lg:max-w-screen-lg  overflow-x-auto custom-scrollbar">
+        <TableContainer component={Paper} sx={{ maxWidth: "900px" }}>
+          <Table aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontSize: 12 }}>Name</TableCell>
