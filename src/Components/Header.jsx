@@ -4,7 +4,7 @@ import logo from "../Assets/logoNew.png";
 import { useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useEffect, useState } from "react";
-import { Avatar, Popover } from "@mui/material";
+import { Avatar, Dialog, Popover } from "@mui/material";
 import { logout, LogoutUser, setData } from "../Redux/Slices/AuthSlice";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -199,6 +199,7 @@ const Header = () => {
                 sx={{
                   borderRadius: "25px",
                 }}
+                disableScrollLock
               >
                 <div className="p-4 w-full flex flex-col justify-center items-center min-w-56">
                   <Avatar
@@ -225,7 +226,7 @@ const Header = () => {
                       handleClose();
                     }}
                   >
-                    <h1 className="text-2xl font-medium text-center">
+                    <h1 className="text-2xl hover:text-[26px] font-medium text-center">
                       {userData?.firstName}
                     </h1>
                     <h6 className="text-xs font-normal text-[#747474] text-center">

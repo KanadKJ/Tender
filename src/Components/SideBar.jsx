@@ -111,7 +111,7 @@ const Sidebar = ({ onLinkClick }) => {
           <span>
             <img src={trems} />
           </span>
-          <span className="text-[#565656] font-normal text-base">
+          <span className="text-[#565656] font-normal text-sm">
             Terms & Conditions
           </span>
         </button>
@@ -152,7 +152,7 @@ const Sidebar = ({ onLinkClick }) => {
           <span>
             <img src={logoutPic} />
           </span>
-          <span className="text-[#565656] font-normal text-base">Logout</span>
+          <span className="text-[#565656] font-normal text-sm">Logout</span>
         </Link>
       </ul>
     </nav>

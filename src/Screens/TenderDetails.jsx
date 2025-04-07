@@ -63,7 +63,7 @@ export default function TenderDetails() {
             <h6 className="text-md">
               Reference Number : {tenderDetails?.reference_number}
             </h6>
-            <h6 className="text-xl">{tenderDetails?.type}</h6>
+            {/* <h6 className="text-xl">{tenderDetails?.type}</h6> */}
             <div>
               <span className="p-1 bg-[#EAEAEA] text-xs rounded-md">
                 {tenderDetails?.product_category}
@@ -97,7 +97,7 @@ export default function TenderDetails() {
 
             <div className="p-4 border rounded-md flex flex-col gap-4  bg-white">
               <div>
-                <h1 className="text-base font-semibold">Fees & EMD Details</h1>
+                <h1 className="text-base font-semibold">Cost</h1>
               </div>
               <Divider />
               <div className="flex justify-between">
@@ -262,6 +262,7 @@ export default function TenderDetails() {
                               <TableCell>Title</TableCell>
                               <TableCell align="right">Type</TableCell>
                               <TableCell align="right">Description</TableCell>
+                              <TableCell align="right">Date</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -279,6 +280,9 @@ export default function TenderDetails() {
                               <TableCell align="center">{row?.type}</TableCell>
                               <TableCell align="right">
                                 {row?.description}
+                              </TableCell>
+                              <TableCell align="right">
+                                {formatDateTime(row?.published_date)[0]}
                               </TableCell>
                             </TableRow>
                           </TableBody>

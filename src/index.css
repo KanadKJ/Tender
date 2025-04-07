@@ -7,14 +7,14 @@ html {
 }
 
 /* Hide scrollbar for all browsers */
-* {
+/* * {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 *::-webkit-scrollbar {
   display: none;
-}
+} */
 /* Add to your global CSS or inside a component-level CSS file */
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;

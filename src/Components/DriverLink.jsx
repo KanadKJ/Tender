@@ -5,7 +5,7 @@ export default function DriverLink({ src, name, to, comp }) {
   return (
     <Link
       to={`/${to}`}
-      className="w-full flex gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md"
+      className="w-full flex items-center gap-2 active:text-[#0554F2] pl-2 hover:bg-[#F2F6FE] hover:shadow-md p-2 rounded-md"
     >
       <span>
         {name === "Tender Management" ||
@@ -18,7 +18,7 @@ export default function DriverLink({ src, name, to, comp }) {
           <img src={src} />
         )}
       </span>
-      <span className="text-[#565656] font-normal text-base">{name}</span>
+      <span className="text-[#565656] font-normal text-sm">{name}</span>
     </Link>
   );
 }

@@ -97,13 +97,13 @@ export const dateDifferenceCalculator = (d1, d2) => {
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   let col = "#C91D1D";
-  if (diffDays > 20) {
+  if (diffDays > 10) {
     col = "#14AD30";
-  } else if (diffDays > 15) {
+  } else if (diffDays > 7) {
     col = "#E58B15";
   }
 
-  return { diffDays, col };
+  return { diffDays: diffDays > 0 ? diffDays : 0, col };
 };
 
 export const pricingPlanData = {

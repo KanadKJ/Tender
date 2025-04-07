@@ -183,7 +183,7 @@ export default function TenderPer() {
     limit: searchParams.get("limit") || [],
     offset: searchParams.get("offset") || [],
     pincode: searchParams.get("pincode") || "",
-    bidding_status: searchParams.get("bidding_status") || "",
+    bidding_status: searchParams.get("bidding_status") || "active",
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
@@ -219,7 +219,7 @@ export default function TenderPer() {
     const limit = searchParams.get("limit") || "";
     const keywords = searchParams.get("keywords") || "";
     const pincode = searchParams.get("pincode") || "";
-    const bidding_status = searchParams.get("bidding_status") || "";
+    const bidding_status = searchParams.get("bidding_status") || "active";
     const stateIDS = searchParams.getAll("states") || [];
     const districtIds = searchParams.getAll("districts") || [];
     const organisationIds = searchParams.getAll("organisations") || [];
@@ -451,7 +451,9 @@ export default function TenderPer() {
       units,
     });
   }, [unitData]);
-
+  useEffect(() => {
+    navigate(`?${queryString}`, { replace: true });
+  }, []);
   useEffect(() => {
     dispatch(GetTenderListWithFilters(searchParams.toString()));
   }, [searchParams]);
@@ -556,7 +558,7 @@ export default function TenderPer() {
         return;
       }
     }
-    if (!filters?.states?.length) {
+    if (!filters?.states?.length && filters?.districts?.length) {
       toast.error("States are mandatory for adding districts");
       handleClose();
       return;
@@ -706,6 +708,10 @@ export default function TenderPer() {
       tender?.id?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
       tender?.department?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
+
+  const sortedTenders = filteredTenders?.sort((a, b) => {
+    return new Date(b.published_date) - new Date(a.published_date);
+  });
   const handleDocumentDownload = () => {
     console.log("called handleDocumentDownload");
 
@@ -868,9 +874,7 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "Keywords")}
             >
               Keywords
-              {filters.keywords && (
-                <CustomBadge data={filters.keywords ? ["1"] : null} />
-              )}
+              {filters.keywords && <CustomBadge data={filters?.keywords} />}
             </Button>
 
             {/* Organization */}
@@ -890,7 +894,18 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "organisations")}
             >
               Organisations
-              <CustomBadge data={filters?.organisations ? ["1"] : null} />
+              <CustomBadge
+                data={
+                  filters?.organisations?.length ||
+                  filters?.departments?.length ||
+                  filters?.divisions?.length ||
+                  filters?.sub_divisions?.length ||
+                  filters?.sections?.length ||
+                  filters?.units?.length
+                    ? ["1"]
+                    : null
+                }
+              />
             </Button>
 
             {/* States */}
@@ -1147,7 +1162,9 @@ export default function TenderPer() {
                 >
                   Keywords
                   {filters.keywords && (
-                    <CustomBadge data={filters.keywords ? ["1"] : null} />
+                    <CustomBadge
+                      data={filters?.keywords?.length ? ["1"] : null}
+                    />
                   )}
                 </Button>
 
@@ -1165,7 +1182,18 @@ export default function TenderPer() {
                   onClick={(event) => handleClick(event, "organisations")}
                 >
                   Organisations
-                  <CustomBadge data={filters?.organisations} />
+                  <CustomBadge
+                    data={
+                      filters?.organisations?.length ||
+                      filters?.departments?.length ||
+                      filters?.divisions?.length ||
+                      filters?.sub_divisions?.length ||
+                      filters?.sections?.length ||
+                      filters?.units?.length
+                        ? ["1"]
+                        : null
+                    }
+                  />
                 </Button>
 
                 {/* States */}
@@ -1325,7 +1353,7 @@ export default function TenderPer() {
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
             >
-              <div className="w-full flex justify-between items-center p-2">
+              <div className="w-full flex justify-between items-center p-2 ">
                 <label className="pl-2">Save Filter</label>
                 <CloseBTN />
               </div>
@@ -1334,7 +1362,7 @@ export default function TenderPer() {
                 <input
                   type="text"
                   placeholder="Filter Name"
-                  name="keywords"
+                  name="saveFilters"
                   value={saveFilter}
                   onChange={(e) => setSaveFilter(e.target.value)}
                   className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
@@ -1365,22 +1393,22 @@ export default function TenderPer() {
                     </p>
                   )}
                 </div>
-              </div>
-              <div className="flex justify-around gap-4 p-4">
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                <div className="flex justify-between mt-4 gap-x-4">
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={() => handleClose()}
-                >
-                  Close
-                </button>
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    onClick={() => handleClose("saveFilters")}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={handleSaveFiltersSearched}
-                >
-                  Save Filter
-                </button>
+                    onClick={handleSaveFiltersSearched}
+                  >
+                    Save Filter
+                  </button>
+                </div>
               </div>
             </Dialog>
 
@@ -1475,7 +1503,7 @@ export default function TenderPer() {
                 <CloseBTN />
               </div>
               <Divider />
-              <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+              <div className="p-5 flex flex-col gap-4">
                 {/* ORG */}
                 <Autocomplete
                   sx={{
@@ -1523,7 +1551,6 @@ export default function TenderPer() {
                       </li>
                     );
                   }}
-                  style={{ width: 250 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1815,22 +1842,22 @@ export default function TenderPer() {
                     />
                   )}
                 />
-              </div>
-              <div className="flex justify-around gap-4 p-4">
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                <div className="flex justify-between mt-4 gap-x-4">
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={() => handleReset("districts")}
-                >
-                  Reset
-                </button>
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    onClick={() => handleReset("districts")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={handleFilterSaved}
-                >
-                  Apply
-                </button>
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
             </Dialog>
             {/* states */}
@@ -1851,75 +1878,65 @@ export default function TenderPer() {
                 <CloseBTN />
               </div>
               <Divider />
-              <div className="w-full flex justify-between items-center p-2">
-                <FormControl sx={{ m: 1, width: 400 }}>
-                  <Autocomplete
-                    sx={{
-                      "& .MuiChip-root": {
-                        maxWidth: "200px", // Adjust width as needed
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    multiple
-                    id="states-autocomplete"
-                    options={statesData} // Pass states list
-                    disableCloseOnSelect
-                    getOptionDisabled={(option) =>
-                      userFilters?.STATE?.length > 0 &&
-                      !userFilters?.STATE?.some(
-                        (district) => district.id === option.id
-                      )
-                    }
-                    getOptionLabel={(option) => option.name} // Show state names
-                    value={statesData?.filter((d) =>
-                      filters?.states?.some((dep) => dep.id === d.id)
-                    )} // Set selected states
-                    onChange={(event, newValue) => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        states: newValue, // Store only state IDs
-                      }));
-                    }}
-                    renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
-                      return (
-                        <li key={key} {...optionProps}>
-                          <Checkbox
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.name}
-                        </li>
-                      );
-                    }}
-                    style={{ width: 400 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select States"
-                        placeholder="Choose states"
-                      />
-                    )}
-                  />
-                </FormControl>
-              </div>
-              <div className="flex justify-around gap-4 p-4">
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+              <div className="p-5 flex flex-col gap-4">
+                <Autocomplete
+                  multiple
+                  id="states-autocomplete"
+                  options={statesData} // Pass states list
+                  disableCloseOnSelect
+                  getOptionDisabled={(option) =>
+                    userFilters?.STATE?.length > 0 &&
+                    !userFilters?.STATE?.some(
+                      (district) => district.id === option.id
+                    )
+                  }
+                  getOptionLabel={(option) => option.name} // Show state names
+                  value={statesData?.filter((d) =>
+                    filters?.states?.some((dep) => dep.id === d.id)
+                  )} // Set selected states
+                  onChange={(event, newValue) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      states: newValue, // Store only state IDs
+                    }));
+                  }}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select States"
+                      placeholder="Choose states"
+                    />
+                  )}
+                />
+
+                <div className="flex justify-between mt-4 gap-x-4">
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={() => handleReset("states")}
-                >
-                  Reset
-                </button>
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    onClick={() => handleReset("states")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={handleFilterSaved}
-                >
-                  Apply
-                </button>
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
             </Dialog>
             {/* districts */}
@@ -1940,11 +1957,11 @@ export default function TenderPer() {
                 <CloseBTN />
               </div>
               <Divider />
-              <div className="w-full flex justify-between items-center p-2">
+              <div className="p-5 flex flex-col gap-4">
                 <Autocomplete
                   sx={{
                     "& .MuiChip-root": {
-                      maxWidth: "200px", // Adjust width as needed
+                      maxWidth: "100px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
@@ -1982,7 +1999,7 @@ export default function TenderPer() {
                       </li>
                     );
                   }}
-                  style={{ width: 500 }}
+                  style={{ width: 260 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1991,22 +2008,22 @@ export default function TenderPer() {
                     />
                   )}
                 />
-              </div>
-              <div className="flex justify-around gap-4 p-4">
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                <div className="flex justify-between mt-4 gap-x-4">
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={() => handleReset("districts")}
-                >
-                  Reset
-                </button>
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    onClick={() => handleReset("districts")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={handleFilterSaved}
-                >
-                  Apply
-                </button>
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
             </Dialog>
             {/* Published Date */}
@@ -2028,11 +2045,9 @@ export default function TenderPer() {
                   <CloseBTN />
                 </div>
                 <Divider />
-                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                <div className="p-5 flex flex-col gap-4">
                   <TextField
-                    style={{
-                      width: 300,
-                    }}
+                    className="w-full"
                     select
                     label="Date Option"
                     value={dateOption}
@@ -2095,6 +2110,7 @@ export default function TenderPer() {
                   {/* From Date Picker */}
 
                   <DatePicker
+                    className="w-full"
                     label="From Date"
                     value={
                       filters.published_date_after
@@ -2113,6 +2129,7 @@ export default function TenderPer() {
                   {/* To Date Picker */}
 
                   <DatePicker
+                    className="w-full"
                     label="To Date"
                     value={
                       filters.published_date_before
@@ -2128,22 +2145,22 @@ export default function TenderPer() {
                       }));
                     }}
                   />
-                </div>
-                <div className="flex justify-around gap-4 p-4">
-                  <button
-                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                  <div className="flex justify-between mt-4 gap-x-4">
+                    <button
+                      className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={() => handleReset("dates")}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                      onClick={() => handleReset("dates")}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                    onClick={handleFilterSaved}
-                  >
-                    Apply
-                  </button>
+                      onClick={handleFilterSaved}
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
               </Dialog>
             </LocalizationProvider>
@@ -2166,11 +2183,9 @@ export default function TenderPer() {
                   <CloseBTN />
                 </div>
                 <Divider />
-                <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+                <div className="p-5 flex flex-col gap-4">
                   <TextField
-                    style={{
-                      width: 300,
-                    }}
+                    disabled
                     select
                     label="Date Option"
                     value={dateOption}
@@ -2233,6 +2248,8 @@ export default function TenderPer() {
                   {/* From Date Picker */}
 
                   <DatePicker
+                    disabled
+                    className="w-full"
                     label="From Date"
                     value={
                       filters.published_date_after
@@ -2251,6 +2268,8 @@ export default function TenderPer() {
                   {/* To Date Picker */}
 
                   <DatePicker
+                    disabled
+                    className="w-full"
                     label="To Date"
                     value={
                       filters.published_date_before
@@ -2266,26 +2285,24 @@ export default function TenderPer() {
                       }));
                     }}
                   />
-                </div>
-                <div className="flex justify-around gap-4 p-4">
-                  {/* hover:bg-[#fff] hover:text-[#0554F2] */}
-                  <button
-                    className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
-                     transition-all duration-300 ease-in-out "
-                    onClick={() => handleReset("dates")}
-                    disabled
-                  >
-                    Reset
-                  </button>
-                  {/* hover:bg-[#fff] hover:text-[#0554F2] */}
-                  <button
-                    className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
-                    transition-all duration-300 ease-in-out "
-                    onClick={handleFilterSaved}
-                    disabled
-                  >
-                    Apply
-                  </button>
+                  <div className="flex justify-between mt-4 gap-x-4">
+                    <button
+                      disabled
+                      className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] transition-all duration-300 ease-in-out "
+                      // onClick={() => handleReset("keywords")}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      disabled
+                      className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] transition-all duration-300 ease-in-out "
+                      // onClick={handleFilterSaved}
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
               </Dialog>
             </LocalizationProvider>
@@ -2312,7 +2329,7 @@ export default function TenderPer() {
                   onChange={handleFilterSelection}
                   className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none p-2 rounded-md"
                 />
-                <div className="flex justify-around  gap-4 p-1 ">
+                <div className="flex justify-between mt-4 gap-x-4">
                   <button
                     className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
@@ -2411,8 +2428,9 @@ export default function TenderPer() {
                 <CloseBTN />
               </div>
               <Divider />
-              <div className="w-full flex flex-col gap-4 justify-between items-center p-2">
+              <div className="p-5 flex flex-col gap-4">
                 <Autocomplete
+                  className="w-full"
                   sx={{
                     "& .MuiChip-root": {
                       maxWidth: "200px", // Adjust width as needed
@@ -2420,7 +2438,6 @@ export default function TenderPer() {
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
                     },
-                    width: 300,
                   }}
                   options={amountOptions.filter(
                     (opt) =>
@@ -2460,8 +2477,8 @@ export default function TenderPer() {
 
                 {/* Max Amount Autocomplete */}
                 <Autocomplete
+                  className="w-full"
                   sx={{
-                    width: 300,
                     "& .MuiChip-root": {
                       maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
@@ -2504,22 +2521,22 @@ export default function TenderPer() {
                     />
                   )}
                 />
-              </div>
-              <div className="flex justify-around gap-4 p-4">
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                <div className="flex justify-between mt-4 gap-x-4">
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={() => handleReset("districts")}
-                >
-                  Reset
-                </button>
-                <button
-                  className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    onClick={() => handleReset("amounts")}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                  onClick={handleFilterSaved}
-                >
-                  Apply
-                </button>
+                    onClick={handleFilterSaved}
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
             </Dialog>
             {/* SORT */}
@@ -2706,9 +2723,28 @@ export default function TenderPer() {
             {tenderIsLoading ? (
               <div className="h-[20vh]"></div>
             ) : (
-              filteredTenders?.map((tender, i) => {
+              sortedTenders?.map((tender, i) => {
+                const now = new Date();
+
+                // Get local time in ISO format
+                const isoString = now.toISOString(); // Example: "2025-03-28T09:30:00.000Z"
+
+                // Convert to IST by adding 5.5 hours (19800 seconds)
+                const offsetMillis = 5.5 * 60 * 60 * 1000;
+                const ist = new Date(now.getTime() + offsetMillis);
+
+                // Format IST date string manually
+                const pad = (n) => String(n).padStart(2, "0");
+
+                const datePart = `${ist.getFullYear()}-${pad(
+                  ist.getMonth() + 1
+                )}-${pad(ist.getDate())}`;
+                const timePart = `${pad(ist.getHours())}:${pad(
+                  ist.getMinutes()
+                )}:${pad(ist.getSeconds())}`;
+                const timezone = "+05:30";
                 const { diffDays, col } = dateDifferenceCalculator(
-                  tender?.published_date,
+                  `${datePart}T${timePart}${timezone}`,
                   tender?.bid_submission_end_date
                 );
 
@@ -2774,25 +2810,27 @@ export default function TenderPer() {
                     {/* Right Section */}
                     <div className="w-full flex flex-col gap-4 items-stretch">
                       {/* Corrigendum & Days Left */}
-                      <div className="flex flex-col md:flex-row gap-3 w-full justify-between">
-                        <div className="flex flex-1 items-center gap-3 px-4 py-2 bg-gradient-to-r from-yellow-100 to-yellow-50 border-l-4 border-yellow-400 rounded shadow-sm">
-                          <LightbulbCircleOutlinedIcon
-                            fontSize="small"
-                            className="text-yellow-600"
-                          />
-                          <div className="flex items-center whitespace-nowrap gap-1 overflow-hidden text-ellipsis">
-                            <span className="text-xs font-bold text-yellow-800">
-                              Corrigendum: NIT
-                            </span>
-                            <span className="text-[11px] text-yellow-700 font-medium">
-                              {corrigendum?.diffDays
-                                ? `${corrigendum?.diffDays} days ago`
-                                : "-"}
-                            </span>
+                      <div className="flex flex-col md:flex-row gap-3 w-full justify-end">
+                        {corrigendum?.diffDays && (
+                          <div className="flex flex-1 justify-start items-center gap-3 px-4 py-2 bg-gradient-to-r from-yellow-100 to-yellow-50 border-l-4 border-yellow-400 rounded shadow-sm">
+                            <LightbulbCircleOutlinedIcon
+                              fontSize="small"
+                              className="text-yellow-600"
+                            />
+                            <div className="flex items-center whitespace-nowrap gap-1 overflow-hidden text-ellipsis">
+                              <span className="text-xs font-bold text-yellow-800">
+                                Corrigendum: NIT
+                              </span>
+                              <span className="text-[11px] text-yellow-700 font-medium">
+                                {corrigendum?.diffDays
+                                  ? `${corrigendum?.diffDays} days ago`
+                                  : "-"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
+                        )}
 
-                        <div className="flex flex-col justify-center items-center w-full md:w-28">
+                        <div className="flex flex-col justify-end items-center w-full md:w-28">
                           <span
                             className="text-lg font-extrabold"
                             style={{ color: col }}
@@ -2910,7 +2948,7 @@ export default function TenderPer() {
         {/* Pagination */}
         <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
           <Pagination
-            disabled={allGood}
+            // disabled={allGood}
             count={Math.ceil(tenderData?.count / 50) || 1}
             defaultPage={1}
             siblingCount={0}
