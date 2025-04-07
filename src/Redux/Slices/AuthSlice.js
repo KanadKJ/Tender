@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TMGetApi } from "../../Api/TMAPI";
 import { toast } from "react-toastify";
+import { setEncryptedItem } from "../../Utils/CommonUtils";
 
 const initialState = {
   userData: null, // Should be an object, not an array
@@ -30,7 +31,7 @@ export const InsertFilterJson = createAsyncThunk(
       const res = await TMGetApi.post(
         `/InsertFilterJson`,
         {
-          filterjson, // This is now a string
+          filterjson,
           userid,
           planid,
         },
@@ -48,9 +49,26 @@ export const InsertFilterJson = createAsyncThunk(
   }
 );
 
+export const GetUserDetailsForLoginAsUser = createAsyncThunk(
+  "auth/GetUserDetailsForLoginAsUser",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await TMGetApi.post(
+        `/GetUserDetailsForLoginAsUser/`,
+        data
+      );
+      return response?.data?.value[0];
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  }
+);
+
 export const GetUserDetails = createAsyncThunk(
   "auth/GetUserDetails", // Corrected action type
   async (data, { rejectWithValue }) => {
+    console.log(data, "auth slice ");
+
     try {
       const response = await TMGetApi.post(`/GetUserDetails/`, data);
 
@@ -61,9 +79,12 @@ export const GetUserDetails = createAsyncThunk(
       //   return rejectWithValue("User already logged in.");
       // }
       const user = response.data.value[0]; // Store only the user object
-      localStorage.setItem("user", JSON.stringify(user));
 
-      return user;
+      const obj = {
+        user,
+        data,
+      };
+      return obj;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
     }
@@ -178,21 +199,46 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // GetUserDetails
       .addCase(GetUserDetails.pending, (state) => {
         state.authIsLoading = true;
         state.error = null;
       })
       .addCase(GetUserDetails.fulfilled, (state, action) => {
+        const { user, data } = action.payload;
+
         state.authIsLoading = false;
-        state.userData = action.payload;
-        state.userFilters = JSON.parse(action.payload?.filterjson);
+        state.userData = user;
+        state.userFilters = JSON.parse(user?.filterjson);
+        if (user?.userType === 1) {
+          const encrypted = setEncryptedItem(JSON.stringify(data));
+          localStorage.setItem("controller", encrypted);
+        }
+        localStorage.setItem("user", JSON.stringify(user));
+
         state.error = null;
       })
       .addCase(GetUserDetails.rejected, (state, action) => {
-        console.log(action.payload);
         state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       })
+      // GetUserDetailsForLoginAsUser
+      .addCase(GetUserDetailsForLoginAsUser.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetUserDetailsForLoginAsUser.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.userData = action.payload;
+        state.userFilters = JSON.parse(action.payload?.filterjson);
+        localStorage.setItem("user", JSON.stringify(action.payload));
+        localStorage.setItem("sessionInControl", "true");
+      })
+      .addCase(GetUserDetailsForLoginAsUser.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // SignUpUser
       .addCase(SignUpUser.pending, (state) => {
         state.authIsLoading = true;
         state.error = null;
@@ -236,6 +282,8 @@ const authSlice = createSlice({
         if (action?.payload?.message === "User logged out successfully") {
           state.userData = null;
           localStorage.removeItem("user");
+          localStorage.removeItem("controller");
+          localStorage.removeItem("sessionInControl");
           state.userFilters = null;
         }
       })

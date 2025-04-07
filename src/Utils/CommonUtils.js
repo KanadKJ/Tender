@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import CryptoJS from "crypto-js";
 export const TMAPI_BASE_URL =
   "https://smp1jsf6ce.execute-api.ap-south-1.amazonaws.com/Prod/TMApi";
 
@@ -11,6 +11,7 @@ export const DummyStates = [
     statename: "West Bengal",
   },
 ];
+const SECRET_KEY = "n9$P@3fLz@1V!sK7zZ*2Qm#5r!J8hL9c";
 export const amountOptions = [
   { label: "1K", value: "1000", valueLabel: "1K" },
   { label: "5K", value: "5000", valueLabel: "5K" },
@@ -375,3 +376,20 @@ export const keywordOptions = [
   { value: "Medical", label: "Medical" },
   // Add more options if needed
 ];
+
+export const setEncryptedItem = (value) => {
+  const ciphertext = CryptoJS.AES.encrypt(value, SECRET_KEY).toString();
+  return ciphertext;
+};
+export const getDecryptedItem = (value) => {
+  const ciphertext = value;
+  if (!ciphertext) return null;
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET_KEY);
+    const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+    return decryptedData;
+  } catch (e) {
+    console.error("Error decrypting data", e);
+    return null;
+  }
+};

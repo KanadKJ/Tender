@@ -37,7 +37,7 @@ const Sidebar = ({ onLinkClick }) => {
   }, [userData]);
 
   return (
-    <nav className="flex flex-col justify-start items-start max-w-[250px] w-full  rounded-md sticky">
+    <nav className="flex flex-col justify-start items-start max-w-[250px] w-full mt-2 rounded-md sticky">
       <ul
         className="w-full flex flex-col gap-2 md:hidden"
         onClick={() => dispatch(sibebarHandler(false))}

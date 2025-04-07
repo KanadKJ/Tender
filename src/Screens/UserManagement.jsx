@@ -26,6 +26,7 @@ import { GetUserDetailsWithPlan } from "../Redux/Slices/CommonSlice";
 import PaymentDetails from "./PaymentDetails";
 import AddressDetails from "./AddressDetails";
 import CompanyDetails from "./CompanyDetails";
+import { GetUserDetailsForLoginAsUser } from "../Redux/Slices/AuthSlice";
 
 export default function UserManagement() {
   const dispatch = useDispatch();
@@ -102,6 +103,12 @@ export default function UserManagement() {
 
   const handleLoginAsUser = (user) => {
     console.log("Login as user:", user);
+    dispatch(
+      GetUserDetailsForLoginAsUser({
+        email: user?.email,
+        password: "",
+      })
+    );
   };
 
   useEffect(() => {

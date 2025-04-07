@@ -5,7 +5,12 @@ import { useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useEffect, useState } from "react";
 import { Avatar, Dialog, Popover } from "@mui/material";
-import { logout, LogoutUser, setData } from "../Redux/Slices/AuthSlice";
+import {
+  GetUserDetails,
+  logout,
+  LogoutUser,
+  setData,
+} from "../Redux/Slices/AuthSlice";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
@@ -13,8 +18,10 @@ import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined
 import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { cleanUpUserFilters } from "../Redux/Slices/TenderSlice";
+import { getDecryptedItem } from "../Utils/CommonUtils";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [sessionInControlStatus, setSessionInControlStatus] = useState(false);
   const { userData, userFilters } = useSelector((s) => s.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,6 +30,13 @@ const Header = () => {
   useEffect(() => {
     if (localStorage.getItem("user") && !userData) {
       dispatch(setData(JSON.parse(localStorage.getItem("user"))));
+    }
+
+    if (localStorage.getItem("sessionInControl")) {
+      console.log("session is in admins control");
+      setSessionInControlStatus(true);
+    } else {
+      setSessionInControlStatus(false);
     }
   }, [userData, userFilters]);
   const handleSidebar = () => {
@@ -37,11 +51,21 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const handleGoBack = () => {
+    const encryptedData = localStorage.getItem("controller");
+    if (encryptedData) {
+      const decrypted = getDecryptedItem(encryptedData);
+      console.log("Decrypted Data:", decrypted);
+      dispatch(GetUserDetails(JSON.parse(decrypted)));
+      localStorage.removeItem("sessionInControl");
+      setSessionInControlStatus(false);
+    }
+  };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   return (
     <header className="backdrop-blur-lg z-10 h-14 md:h-16 shadow-md sm:px-1 fixed w-full  top-0 left-0 transition-shadow duration-700 bg-white/70">
-      <div className="flex flex-row h-full items-center px-4">
+      <div className="flex h-full flex-row items-center px-4">
         <div className="text-lg font-bold text-gray-800">
           <div className="flex justify-between items-center gap-2">
             <button className="md:hidden p-2 rounded" onClick={handleSidebar}>
@@ -260,6 +284,23 @@ const Header = () => {
           )
         }
       </div>
+      {sessionInControlStatus && (
+        <div className="p-1 grid grid-cols-3 justify-center bg-black text-red-500 rounded-lg mt-1 relative -top-5">
+          <div className="col-span-2 flex justify-center">
+            <span className="p-1">
+              You are logged in as {userData?.firstName}
+            </span>
+          </div>
+          <div className="col-span-1 flex justify-end px-4">
+            <button
+              onClick={handleGoBack}
+              className="px-2 py-1 bg-red-100 rounded-md "
+            >
+              Go back
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
