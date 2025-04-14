@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Background from "../Components/Background";
 import {
   Accordion,
@@ -35,9 +35,46 @@ import i7 from "../Assets/i7.png";
 import ExplorGrid from "../Components/ExplorGrid";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 export default function HomePage() {
   const navigate = useNavigate();
   const carouselRef = useRef(null);
+  const [locationText, setLocationText] = useState("");
+  const [pincode, setPincode] = useState("");
+  useEffect(() => {
+    // Step 1: Get current coordinates
+    const apiKey = "AIzaSyAWT4w__vAES1bLE-k-I3IF1i-Beyf05LA";
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          // Step 2: Use Nominatim reverse geocoding to get address
+          const res = await axios.get(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
+          );
+          console.log(res.data);
+
+          const address = res?.data?.results[0]?.formatted_address;
+          const pincodeObj = res?.data?.results[0]?.address_components?.find(
+            (comp) => comp?.types?.includes("postal_code")
+          );
+          const pincode = pincodeObj ? pincodeObj.long_name : "Not found";
+          setPincode(pincode);
+
+          setLocationText(address);
+        } catch (err) {
+          toast.error("Error fetching location address:");
+        }
+      },
+      (error) => {
+        // toast.error("Location access denied or failed");
+        console.error("Location access denied or failed", error);
+      }
+    );
+  }, []);
   const CustomButtonGroup = () => (
     <div className="hidden absolute top-1/2 w-full md:flex justify-between px-8 md:px-12 lg:px-16 -translate-y-1/2 mt-8">
       <button
@@ -60,11 +97,21 @@ export default function HomePage() {
       <div className="flex justify-center items-center px-6 md:px-12 lg:px-24 xl:px-32 ">
         <div className="flex flex-col justify-center items-center gap-4">
           <div className="w-3/4">
-            <h1 className="font-extrabold text-2xl md:text-5xl flex-1 text-center text-wrap">
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                transition: {
+                  duration: 0.5,
+                },
+              }}
+              className="font-extrabold text-2xl md:text-5xl flex-1 text-center text-wrap"
+            >
               <span className="text-[#0554F2]">Tender</span> Sourcing Platform
               for Contractors in<span> </span>
               <span className="text-[#0554F2]">West Bengal</span>
-            </h1>
+            </motion.h1>
           </div>
           <div className="text-sm md:text-2xl text-[#565656] flex-1 text-center text-wrap">
             <p>
@@ -88,67 +135,25 @@ export default function HomePage() {
               </span>
               <input
                 type="text"
-                className="border-2 shadow-md border-gray-400 focus:border-blue-500 focus:outline-none w-full px-3 py-3.5 pl-10 rounded-md"
+                className="border-2 shadow-md border-gray-400 focus:border-blue-500 focus:outline-none w-full px-3 py-2 pl-10 rounded-md"
                 placeholder="Search"
+                value={locationText}
               />
             </div>
 
             {/* Autocomplete Dropdown */}
-            <div className="w-full max-w-[15rem]">
-              <Autocomplete
-                disablePortal
-                loading
-                sx={{
-                  width: "100%",
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                    padding: "0.4rem",
-                    "& fieldset": {
-                      borderColor: "#276BF2",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#276BF2",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#276BF2",
-                    },
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "#276BF2",
-                  },
+            <div className="">
+              <button
+                onClick={() => {
+                  navigate(`/tenders?pincode
+=${pincode}`);
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Indian Tenders"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        color: "#276BF2",
-                        fontWeight: 500,
-                        "& fieldset": {
-                          borderColor: "#276BF2",
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#276BF2",
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#276BF2",
-                        },
-                      },
-                      "& .MuiInputBase-input": {
-                        color: "#276BF2",
-                        fontWeight: 500,
-                      },
-                      "& .MuiInputLabel-root": {
-                        color: "#276BF2",
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": {
-                        color: "#276BF2",
-                      },
-                    }}
-                  />
-                )}
-              />
+                className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
+                group"
+              >
+                Search nearby tenders
+              </button>
             </div>
           </div>
         </div>
@@ -187,16 +192,13 @@ export default function HomePage() {
             </h1>
           </div>
           <div className="flex flex-col md:flex-row gap-10 justify-center items-center">
-            <div
-              className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent 
-rounded-2xl border border-white/30 text-center  w-72 sm:w-52 lg:w-72 h-32"
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent rounded-2xl border border-white/30 text-center  w-72 sm:w-52 lg:w-72 h-32"
             >
               {/* Upper-left Fading Shadow */}
-              <div
-                className="absolute top-0 left-0 w-full h-full 
-  bg-transparent rounded-2xl 
-  shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"
-              ></div>
+              <div className="absolute top-0 left-0 w-full h-full bg-transparent rounded-2xl shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"></div>
 
               {/* Number */}
               <h1 className="relative text-4xl font-bold text-white">87%</h1>
@@ -205,17 +207,14 @@ rounded-2xl border border-white/30 text-center  w-72 sm:w-52 lg:w-72 h-32"
               <p className="relative font-normal text-base text-white/80">
                 tender purchase growth
               </p>
-            </div>
-            <div
-              className="relative flex flex-col justify-center gap-1 bg-gradient-to-br from-white/30 to-transparent 
-rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-36"
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="relative flex flex-col justify-center gap-1 bg-gradient-to-br from-white/30 to-transparent rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-36"
             >
               {/* Upper-left Fading Shadow */}
-              <div
-                className="absolute top-0 left-0 w-full h-full 
-  bg-transparent rounded-2xl 
-  shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"
-              ></div>
+              <div className="absolute top-0 left-0 w-full h-full bg-transparent rounded-2xl shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"></div>
 
               {/* Number */}
               <h1 className="relative text-5xl  font-bold text-white">450k+</h1>
@@ -224,17 +223,14 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-36"
               <p className="relative font-normal text-lg text-white/80">
                 number of active tenders
               </p>
-            </div>
-            <div
-              className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent 
-rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
             >
               {/* Upper-left Fading Shadow */}
-              <div
-                className="absolute top-0 left-0 w-full h-full 
-  bg-transparent rounded-2xl 
-  shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"
-              ></div>
+              <div className="absolute top-0 left-0 w-full h-full bg-transparent rounded-2xl shadow-[-1px_-1px_2px_rgba(255,255,255,0.5)] pointer-events-none"></div>
 
               {/* Number */}
               <h1 className="relative text-4xl font-bold text-white">9/10</h1>
@@ -243,7 +239,7 @@ rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
               <p className="relative font-normal text-base text-white/80">
                 customer satisfaction score
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
         <div className="w-full flex flex-col md:flex-row justify-center items-center gap-6 mt-16 md:mt-0">

@@ -261,6 +261,49 @@ export default function SystemConfigSuper() {
           />
         </div>
       </div>
+       {/* States */}
+       <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
+        <label className="w-2/3 text-base text-[#565656] font-medium">
+          STATE
+        </label>
+        <div className="w-full">
+          <Autocomplete
+            sx={{
+              maxWidth: "480px",
+              padding: "0px",
+              "& .MuiOutlinedInput-root": { padding: "5px" },
+            }}
+            multiple
+            id="states-autocomplete"
+            options={statesData} // Pass states list
+            disableCloseOnSelect
+            getOptionLabel={(option) => option.name} // Show state names
+            value={adminFilters.STATE} // Set selected states
+            onChange={(event, newValue) => {
+              setAdminFilters((prev) => ({
+                ...prev,
+                STATE: newValue, // Store only state IDs
+              }));
+            }}
+            renderOption={(props, option, { selected }) => {
+              const { key, ...optionProps } = props;
+              return (
+                <li key={key} {...optionProps}>
+                  <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                  {option.name}
+                </li>
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select States"
+                placeholder="Choose states"
+              />
+            )}
+          />
+        </div>
+      </div>
       {/* District */}
       <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
@@ -369,49 +412,7 @@ export default function SystemConfigSuper() {
           />
         </div>
       </div>
-      {/* States */}
-      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
-        <label className="w-2/3 text-base text-[#565656] font-medium">
-          STATE
-        </label>
-        <div className="w-full">
-          <Autocomplete
-            sx={{
-              maxWidth: "480px",
-              padding: "0px",
-              "& .MuiOutlinedInput-root": { padding: "5px" },
-            }}
-            multiple
-            id="states-autocomplete"
-            options={statesData} // Pass states list
-            disableCloseOnSelect
-            getOptionLabel={(option) => option.name} // Show state names
-            value={adminFilters.STATE} // Set selected states
-            onChange={(event, newValue) => {
-              setAdminFilters((prev) => ({
-                ...prev,
-                STATE: newValue, // Store only state IDs
-              }));
-            }}
-            renderOption={(props, option, { selected }) => {
-              const { key, ...optionProps } = props;
-              return (
-                <li key={key} {...optionProps}>
-                  <Checkbox style={{ marginRight: 8 }} checked={selected} />
-                  {option.name}
-                </li>
-              );
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Select States"
-                placeholder="Choose states"
-              />
-            )}
-          />
-        </div>
-      </div>
+     
       {/* Departments */}
       <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">

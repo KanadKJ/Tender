@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ScrpApiTendersMetadata } from "../../Api/SCPAPI";
-import { queryBuilder } from "../../Utils/CommonUtils";
 import { TMGetApi } from "../../Api/TMAPI";
 
 const initialState = {

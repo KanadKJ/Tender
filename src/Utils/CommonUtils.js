@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import CryptoJS from "crypto-js";
+
 export const TMAPI_BASE_URL =
   "https://smp1jsf6ce.execute-api.ap-south-1.amazonaws.com/Prod/TMApi";
 
@@ -33,26 +34,32 @@ export const dateOptions = [
   { label: "Published in 7 days", value: "7days" },
   { label: "Published in 15 days", value: "15days" },
 ];
-export const queryBuilder = (params) => {
-  const queryParams = [];
-  Object.entries(params).forEach(([key, value]) => {
-    if (Array.isArray(value) && value.length > 0) {
-      // If array, handle objects or primitive values
+export const queryBuilder = (filters) => {
+  const params = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
+      return;
+    }
+
+    if (Array.isArray(value)) {
       value.forEach((item) => {
         if (typeof item === "object" && item !== null) {
-          // If item is an object, extract the `id` property
-          queryParams.push(`${key}=${encodeURIComponent(item.id)}`);
-        } else {
-          // If item is a primitive value, add it directly
-          queryParams.push(`${key}=${encodeURIComponent(item)}`);
+          params.append(key, item.id);
+        } else if (item !== undefined && item !== null && item !== "") {
+          params.append(key, item);
         }
       });
-    } else if (value !== undefined && value !== null && value !== "") {
-      // Add non-empty values to query
-      queryParams.push(`${key}=${encodeURIComponent(value)}`);
+    } else {
+      params.set(key, value);
     }
   });
-  return queryParams.length ? `?${queryParams.join("&")}` : "";
+  return params.toString();
 };
 export const formatDateTime = (dateString) => {
   if (dateString === undefined) return [null, null];
@@ -89,7 +96,8 @@ export const carouselResponsive = {
 export const dateDifferenceCalculator = (d1, d2) => {
   const date1 = new Date(d1);
   const date2 = new Date(d2);
-
+  date1.setHours(0, 0, 0, 0);
+  date2.setHours(0, 0, 0, 0);
   if (isNaN(date1) || isNaN(date2)) {
     return { diffDays: null, col: "#000000" };
   }

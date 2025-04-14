@@ -1,3 +1,323 @@
+
+1) +1 In days left (done)
+2)in days left 0--then show--"Closed"--text (done)
+3) Remove bidding status and ictive inactive filters from Reset all button (done) # has bugs
+4) Corrigendum: NIT---"Published Corrigendum -" (done)
+5) Show full data count-- Left side alligneed with PDF and Excel button (done)
+6) If logged in then show "Profile" ---in header menu (done)
+
+8) if not logged in then hide or disabled pagination. (done)
+9) If not logged in from View tender page if someone clicks on Download button
+ it should go to login page....same with filters (done)
+
+10---IMP ---Based in filter json user should see the results after login
+PS for 10, After every change in filters after binding the filters from json.
+when the user change the filters on every change the page is refreshed
+dur to queryString generator
+
+states: 29
+districts: 558
+districts: 559
+organisations: 2
+organisations: 215
+divisions: 2
+sub_divisions: 1
+ordering: -published_date
+bidding_status: active
+
+
+states: 29
+districts: 558
+districts: 559
+organisations: 2
+organisations: 215
+departments: 5
+departments: 6
+departments: 1453
+departments: 1455
+divisions: 2
+sub_divisions: 1
+ordering: -published_date
+bidding_status: active
+
+search with everything and attach it with keywords
+and search with keywords after 3 inputs
+
+
+
+
+
+
+****** ISSUES ********
+
+
+1 - on reset the page and link is not refreshed,
+2 - org, dist, state are not binded on refreshing the page
+3 - Textbox search ---make it with keywords filter and keep validations as it is
+4 - size consistency of dropdown in filters 
+
+
+
+
+/////  UserManagement.jsx ///
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Tooltip,
+  Pagination,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import PaymentIcon from "@mui/icons-material/Payments";
+import HomeIcon from "@mui/icons-material/Home";
+import BusinessIcon from "@mui/icons-material/Business";
+import LoginIcon from "@mui/icons-material/Login";
+import debounce from "lodash/debounce";
+import { GetUserDetailsWithPlan } from "../Redux/Slices/CommonSlice";
+
+export default function UserManagement() {
+  const dispatch = useDispatch();
+  const { userManagementUserDataWithPlan } = useSelector((s) => s.common);
+
+  const [searchTerms, setSearchTerms] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 100;
+
+  const handleLoginAsUser = (user) => {
+    console.log("Login as user:", user);
+  };
+
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      if (typeof value === "string" && value.includes("@") && value.includes(".")) {
+        dispatch(GetUserDetailsWithPlan(`Email=${value}&Page=1&Size=${rowsPerPage}`));
+      } else if (!isNaN(value)) {
+        dispatch(GetUserDetailsWithPlan(`MobileNo=${value}&Page=1&Size=${rowsPerPage}`));
+      } else {
+        dispatch(GetUserDetailsWithPlan(`firstName=${value}&Page=1&Size=${rowsPerPage}`));
+      }
+    }, 400),
+    []
+  );
+
+  const handleGlobalSearch = (e) => {
+    const { value } = e.target;
+    setSearchTerms(value);
+
+    if (value?.length > 3) {
+      debouncedSearch(value);
+    } else if (value === "") {
+      setCurrentPage(1);
+      dispatch(GetUserDetailsWithPlan(`Page=1&Size=${rowsPerPage}`));
+    }
+  };
+
+  const handleChangePage = (event, value) => {
+    setCurrentPage(value);
+    if (searchTerms.length > 3) {
+      debouncedSearch(searchTerms);
+    } else {
+      dispatch(GetUserDetailsWithPlan(`Page=${value}&Size=${rowsPerPage}`));
+    }
+  };
+
+  const handlePaymentHistory = (user) => {
+    console.log("Payment History for:", user);
+  };
+
+  const handleAddress = (user) => {
+    console.log("Address for:", user);
+  };
+
+  const handleCompanyDetails = (user) => {
+    console.log("Company Details for:", user);
+  };
+
+  useEffect(() => {
+    dispatch(GetUserDetailsWithPlan(`Page=1&Size=${rowsPerPage}`));
+  }, [dispatch]);
+
+  const totalRecords = userManagementUserDataWithPlan?.totalRecords || 0;
+  const pageCount = Math.max(Math.ceil(totalRecords / rowsPerPage), 1);
+
+  return (
+    <div className="mt-6 px-4 md:px-8 mb-10">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        <h1 className="text-xl font-semibold text-gray-800">User Management</h1>
+      </div>
+
+      {/* Search */}
+      <div className="relative w-full max-w-md mb-6">
+        <SearchIcon className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          onChange={handleGlobalSearch}
+          value={searchTerms}
+          className="pl-9 pr-3 py-1.5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300 text-sm"
+          placeholder="Search by email, mobile or name..."
+        />
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto custom-scrollbar">
+        <TableContainer component={Paper} className="shadow-md rounded-lg">
+          <Table size="small">
+            <caption className="caption-top text-sm text-gray-600 px-4 py-2">
+              {totalRecords ? `Total Records: ${totalRecords}` : "No records found"}
+            </caption>
+            <TableHead>
+              <TableRow className="bg-gray-100">
+                <TableCell sx={{ fontWeight: "bold", fontSize: 12 }}>User Name</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontSize: 12 }} align="center">Mobile No.</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontSize: 12 }} align="center">Email</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontSize: 12 }} align="center">Plan Name</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontSize: 12 }} align="center">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {userManagementUserDataWithPlan?.value?.map((row) => (
+                <TableRow
+                  key={row.paymentId}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                    "&:hover": { backgroundColor: "#f9fafb" },
+                  }}
+                >
+                  <TableCell sx={{ fontSize: 12 }}>{row.firstName}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">{row.mobileNo}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">{row.email}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">{row.planName}</TableCell>
+                  <TableCell align="center">
+                    <div className="flex items-center justify-center space-x-1">
+                      <Tooltip title="Check Payment History">
+                        <IconButton onClick={() => handlePaymentHistory(row)} size="small">
+                          <PaymentIcon fontSize="small" className="text-blue-600" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Check Address">
+                        <IconButton onClick={() => handleAddress(row)} size="small">
+                          <HomeIcon fontSize="small" className="text-green-600" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Check Company Details">
+                        <IconButton onClick={() => handleCompanyDetails(row)} size="small">
+                          <BusinessIcon fontSize="small" className="text-purple-600" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Login As User">
+                        <IconButton onClick={() => handleLoginAsUser(row)} size="small">
+                          <LoginIcon fontSize="small" className="text-orange-500" />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={handleChangePage}
+          color="primary"
+          size="small"
+        />
+      </div>
+    </div>
+  );
+}
+
+
+
+
+PaymentInfoDialog
+
+
+d>10 = green
+7-9 = yellow
+d<7 = red
+Corrigendum if not hide (done)
+
+
+add publish date in Latest Corrigendum List after desc in details page (done)
+
+Open Tender---not needed (done)
+
+Bidding status --> default active (done)
+
+Fees & EMD Details--->Cost (done)
+
+tender closing date - current date = if negative show 0 days (done)
+
+//todos
+alignment of all save and reset button in filters (done)
+
+
+
+keyword and orgs count issue (done)
+
+
+===========================
+{
+    "UNIT": [],
+    "STATE": [
+        {
+            "id": 29,
+            "name": "West Bengal"
+        }
+    ],
+    "Keyword": [],
+    "PinCode": [],
+    "SECTION": [],
+    "Category": [],
+    "DISTRICT": [
+        {
+            "id": 558,
+            "name": "24 Paraganas North",
+            "state": "West Bengal"
+        },
+        {
+            "id": 559,
+            "name": "24 Paraganas South",
+            "state": "West Bengal"
+        }
+    ],
+    "DIVISION": [],
+    "template": "2",
+    "DEPARTMENT": [],
+    "ExpiryDate": "2025-04-30",
+    "TenderValue": "150000",
+    "ORGANIZATION": [
+        {
+            "id": 2,
+            "name": "ASANSOL DURGAPUR DEVELOPMENT AUTHORITY"
+        },
+        {
+            "id": 215,
+            "name": "PWD"
+        }
+    ],
+    "SUB_DIVISION": []
+}
+
+
+
+tenderPER ==  BACK up
+
+
+
 import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,14 +349,12 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import TuneIcon from "@mui/icons-material/Tune";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
@@ -46,7 +364,6 @@ import {
   formatIndianCurrency,
   handleDownload,
   keywordOptions,
-  queryBuilder,
 } from "../Utils/CommonUtils";
 import {
   GetDistrictsList,
@@ -67,7 +384,6 @@ import CustomBadge from "../Components/CustomBadge";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
-import SearchIcon from "@mui/icons-material/Search";
 import { toast } from "react-toastify";
 export default function TenderPer() {
   // redux
@@ -86,22 +402,12 @@ export default function TenderPer() {
     unitData,
   } = useSelector((s) => s.common);
   const { userData, userFilters } = useSelector((s) => s.auth);
+  console.log(userFilters);
+
   const [isPlanExpired, setIsPlanExpired] = useState(false);
   const [allGood, setAllGood] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchEvery, setSearchEvery] = useState("");
-  useEffect(() => {
-    if (userFilters?.ExpiryDate) {
-      const expiryDate = new Date(userFilters.ExpiryDate);
-      const currentDate = new Date();
-
-      if (expiryDate < currentDate) {
-        setIsPlanExpired(true);
-      } else {
-        setIsPlanExpired(false);
-      }
-    }
-  }, [userFilters]);
 
   //state
   // eslint-disable-next-line
@@ -115,7 +421,7 @@ export default function TenderPer() {
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
-    keywords: searchParams.getAll("keywords") || [],
+    keywords: searchParams.getAll("keywords") || userFilters?.Keyword,
     states:
       searchParams
         .getAll("states")
@@ -195,8 +501,6 @@ export default function TenderPer() {
     // closing_date_after: searchParams.get("published_date_after") || "",
     // published_date_before: searchParams.get("published_date_before") || "",
   });
-  console.log(filters);
-
   // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
   const [dateOption, setDateOption] = useState("");
@@ -217,7 +521,6 @@ export default function TenderPer() {
     if (userData) {
       dispatch(GetTemplateDetails(userData?.id));
     }
-    console.log("userdatat UE");
   }, [userData]);
 
   useEffect(() => {
@@ -339,13 +642,7 @@ export default function TenderPer() {
 
     console.log("run end");
   }, []);
-  useEffect(() => {
-    const pc = searchParams.get("pincode") || "";
-    setFilters({
-      ...filters,
-      pincode: pc,
-    });
-  }, []);
+
   useEffect(() => {
     const stateIDS = searchParams.getAll("states") || [];
     const states = stateIDS?.length
@@ -390,7 +687,7 @@ export default function TenderPer() {
           })
           .filter(Boolean)
       : userFilters?.ORGANIZATION;
-    if (organisations?.length) {
+    if (organisationIds.length) {
       dispatch(GetDrpList(organisations));
     }
     setFilters({
@@ -452,18 +749,16 @@ export default function TenderPer() {
       ...filters,
       sub_divisions,
     });
-  }, [subDivData, userFilters]);
+  }, [subDivData,userFilters]);
 
   useEffect(() => {
     const sectionsIds = searchParams.getAll("sections") || [];
-    const sections = sectionsIds?.length
-      ? sectionsIds
-          ?.map((id) => {
-            const dt = sectionsData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.SECTION;
+    const sections = sectionsIds?.length?
+    sectionsIds?.map((id) => {
+        const dt = sectionsData?.find((d) => d.id === parseInt(id));
+        return dt ? dt : null;
+      })
+      .filter(Boolean):userFilters?.SECTION
     if (sections?.length) {
       dispatch(GetUnitList(sections));
     }
@@ -471,63 +766,42 @@ export default function TenderPer() {
       ...filters,
       sections,
     });
-  }, [sectionsData, userFilters]);
+  }, [sectionsData,userFilters]);
   useEffect(() => {
     const unitIds = searchParams.getAll("units") || [];
-    const units = unitIds?.length
-      ? unitIds
-          ?.map((id) => {
-            const dt = unitData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.UNIT;
+    const units = unitIds?.length?
+    unitIds?.map((id) => {
+        const dt = unitData?.find((d) => d.id === parseInt(id));
+        return dt ? dt : null;
+      })
+      .filter(Boolean):userFilters?.UNIT
 
     setFilters({
       ...filters,
       units,
     });
-  }, [unitData, userFilters]);
-
+  }, [unitData,userFilters]);
   useEffect(() => {
-    let s = searchParams.toString();
+    if (userFilters?.ExpiryDate) {
+      const expiryDate = new Date(userFilters.ExpiryDate);
+      const currentDate = new Date();
 
-    if (s) {
-      dispatch(GetTenderListWithFilters(s));
-    } else {
-      dispatch(GetTenderListWithFilters(queryString));
-      navigate(`?${queryString}`, { replace: true });
+      if (expiryDate < currentDate) {
+        setIsPlanExpired(true);
+      } else {
+        setIsPlanExpired(false);
+      }
     }
+    console.log("Added");
+  }, [userFilters]);
+  useEffect(() => {
+    handleFilterSaved()
+    navigate(`?${queryString}`, { replace: true });
+  }, [ queryString]);
+  useEffect(() => {
+    dispatch(GetTenderListWithFilters(searchParams.toString()));
   }, [searchParams]);
 
-  useEffect(() => {
-    console.log("initial obj creator");
-    if (userData) {
-      const obj = {
-        states: userFilters?.STATE,
-        districts: userFilters?.DISTRICT,
-        organisations: userFilters?.ORGANIZATION,
-        pincode: userFilters?.PinCode,
-        sections: userFilters?.SECTION,
-        divisions: userFilters?.DIVISION,
-        sub_divisions: userFilters?.SUB_DIVISION,
-        sections: userFilters?.SECTION,
-        departments: userFilters?.DEPARTMENT,
-        units: userFilters?.UNIT,
-        ordering: ["-published_date"],
-        bidding_status: "active",
-        pincode: filters?.pincode,
-      };
-      console.log(userFilters);
-
-      let q = queryBuilder(obj);
-      navigate(`?${q}`, { replace: true });
-      dispatch(GetTenderListWithFilters(q));
-      console.log(q);
-    }
-
-    // dispatch(GetTenderListWithFilters(userFiltersqueryString));
-  }, [userData, userFilters]);
   const handleClick = (event, id) => {
     if (!userData) {
       navigate("/login");
@@ -642,7 +916,6 @@ export default function TenderPer() {
     setAllGood(false);
     handleClose();
     navigate(`?${queryString}`, { replace: true });
-    return "ok";
   };
   const handleOrderingChange = (event, newValue) => {
     setFilters((prev) => {
@@ -784,7 +1057,6 @@ export default function TenderPer() {
       tender?.id?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
       tender?.department?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
-  console.log(typeof filteredTenders, filteredTenders);
 
   const sortedTenders = filteredTenders?.sort((a, b) => {
     return new Date(b.published_date) - new Date(a.published_date);
@@ -822,61 +1094,22 @@ export default function TenderPer() {
   };
   const handleResetAll = () => {
     // Reset all the filter states to their default values
-
-    if (userData) {
-      const obj = {
-        states: userFilters?.STATE,
-        districts: userFilters?.DISTRICT,
-        organisations: userFilters?.ORGANIZATION,
-        pincode: userFilters?.PinCode,
-        sections: userFilters?.SECTION,
-        divisions: userFilters?.DIVISION,
-        sub_divisions: userFilters?.SUB_DIVISION,
-        sections: userFilters?.SECTION,
-        departments: userFilters?.DEPARTMENT,
-        units: userFilters?.UNIT,
-        ordering: ["-published_date"],
-        bidding_status: "active",
-      };
-      setFilters((prev) => ({
-        ...prev,
-        bidding_status: "active",
-        keywords: null,
-        pincode: null,
-        value_in_rs_max: null,
-        published_date_after: null,
-        published_date_before: null,
-        ordering: ["-published_date"],
-      }));
-      console.log(userFilters);
-
-      let q = queryBuilder(obj);
-      navigate(`?bidding_status=active&ordering=-published_date&${q}`, {
-        replace: true,
-      });
-      dispatch(GetTenderListWithFilters(q));
-      console.log(q);
-    }
-    // navigate(`?bidding_status=active&ordering=-published_date`, { replace: true });
+    setFilters({
+      bidding_status: "active",
+      keywords: null,
+      organisations: null,
+      states: null,
+      districts: null,
+      pincode: null,
+      value_in_rs_max: null,
+      published_date_after: null,
+      published_date_before: null,
+      ordering: ["-published_date"],
+    });
+    navigate(`?${queryString}`, { replace: true });
   };
 
-  const handleSearchWithEverything = (e) => {
-    if (handleFilterSaved() === "ok") {
-      setFilters((prev) => ({
-        ...prev,
-        keywords: [searchTerm],
-      }));
-
-      const newParams = new URLSearchParams(searchParams);
-      if (searchTerm) {
-        newParams.set("keywords", searchTerm);
-      } else {
-        newParams.delete("keywords");
-      }
-      setSearchParams(newParams);
-    }
-    // navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
-  };
+  const handleSearchWithEverything = (e) => {};
   return (
     <>
       <div id="page-top" className="h-1" />
@@ -897,7 +1130,7 @@ export default function TenderPer() {
             </div>
           </div>
           {/* Search Filter */}
-          <div className="flex w-full justify-between items-center gap-2">
+          <div className="flex w-full justify-evenly items-center gap-2">
             <div className="w-full flex  justify-center items-center ">
               <span className="relative left-8 z-0">
                 <svg
@@ -917,14 +1150,7 @@ export default function TenderPer() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button
-                onClick={handleSearchWithEverything}
-                className="p-2 ml-2 bg-[#0554F2] text-white rounded-lg"
-              >
-                <SearchIcon />
-              </button>
             </div>
-
             <div className="flex md:hidden">
               <Button
                 disabled={isPlanExpired}
@@ -1634,40 +1860,27 @@ export default function TenderPer() {
               <div className="p-5 flex flex-col gap-4">
                 {/* ORG */}
                 <Autocomplete
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   multiple
                   id="organization-autocomplete"
                   limitTags={1}
-                  options={orgData}
+                  options={orgData} // Array of objects with `id` and `name`
                   disableCloseOnSelect
                   getOptionDisabled={(option) =>
                     userFilters?.ORGANIZATION.length > 0 &&
                     !userFilters?.ORGANIZATION.some((d) => d.id === option.id)
                   }
-                  getOptionLabel={(option) => option.name}
+                  getOptionLabel={(option) => option.name} // No optional chaining needed
                   value={orgData.filter((d) =>
                     filters?.organisations?.some((dep) => dep.id === d.id)
-                  )}
+                  )} // Ensure objects match by reference
                   onChange={(event, newValue) => {
                     const validData = newValue.filter((dep) =>
                       orgData.some((d) => d.id === dep.id)
@@ -1683,13 +1896,9 @@ export default function TenderPer() {
                   renderOption={(props, option, { selected }) => {
                     const { key, ...optionProps } = props;
                     return (
-                      <li
-                        key={key}
-                        {...optionProps}
-                        style={{ fontSize: "0.75rem" }}
-                      >
+                      <li key={key} {...optionProps}>
                         <Checkbox
-                          style={{ marginRight: 8, fontSize: "0.75rem" }}
+                          style={{ marginRight: 8 }}
                           checked={selected}
                         />
                         {option.name}
@@ -1701,38 +1910,17 @@ export default function TenderPer() {
                       {...params}
                       label="Select organisation"
                       placeholder="Choose organisation"
-                      size="small"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      sx={{
-                        fontSize: "8px",
-                      }}
                     />
                   )}
                 />
-
                 {/* DEP */}
                 <Autocomplete
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   disabled={!filters?.organisations?.length}
@@ -1764,11 +1952,7 @@ export default function TenderPer() {
                   renderOption={(props, option, { selected }) => {
                     const { key, ...optionProps } = props;
                     return (
-                      <li
-                        key={key}
-                        {...optionProps}
-                        style={{ fontSize: "0.75rem" }}
-                      >
+                      <li key={key} {...optionProps}>
                         <Checkbox
                           style={{ marginRight: 8 }}
                           checked={selected}
@@ -1777,6 +1961,7 @@ export default function TenderPer() {
                       </li>
                     );
                   }}
+                  style={{ width: 250 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1787,25 +1972,12 @@ export default function TenderPer() {
                 />
                 {/* DIV */}
                 <Autocomplete
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   limitTags={1}
@@ -1837,11 +2009,7 @@ export default function TenderPer() {
                   renderOption={(props, option, { selected }) => {
                     const { key, ...optionProps } = props;
                     return (
-                      <li
-                        key={key}
-                        {...optionProps}
-                        style={{ fontSize: "0.75rem" }}
-                      >
+                      <li key={key} {...optionProps}>
                         <Checkbox
                           style={{ marginRight: 8 }}
                           checked={selected}
@@ -1850,6 +2018,7 @@ export default function TenderPer() {
                       </li>
                     );
                   }}
+                  style={{ width: 250 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1860,25 +2029,12 @@ export default function TenderPer() {
                 />
                 {/*SUB DIV */}
                 <Autocomplete
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   limitTags={1}
@@ -1910,11 +2066,7 @@ export default function TenderPer() {
                   renderOption={(props, option, { selected }) => {
                     const { key, ...optionProps } = props;
                     return (
-                      <li
-                        key={key}
-                        {...optionProps}
-                        style={{ fontSize: "0.75rem" }}
-                      >
+                      <li key={key} {...optionProps}>
                         <Checkbox
                           style={{ marginRight: 8 }}
                           checked={selected}
@@ -1923,6 +2075,7 @@ export default function TenderPer() {
                       </li>
                     );
                   }}
+                  style={{ width: 250 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1933,25 +2086,12 @@ export default function TenderPer() {
                 />
                 {/*Sections */}
                 <Autocomplete
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   limitTags={1}
@@ -1983,11 +2123,7 @@ export default function TenderPer() {
                   renderOption={(props, option, { selected }) => {
                     const { key, ...optionProps } = props;
                     return (
-                      <li
-                        key={key}
-                        {...optionProps}
-                        style={{ fontSize: "0.75rem" }}
-                      >
+                      <li key={key} {...optionProps}>
                         <Checkbox
                           style={{ marginRight: 8 }}
                           checked={selected}
@@ -1996,6 +2132,7 @@ export default function TenderPer() {
                       </li>
                     );
                   }}
+                  style={{ width: 250 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -2006,25 +2143,12 @@ export default function TenderPer() {
                 />
                 {/*Units */}
                 <Autocomplete
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   limitTags={1}
@@ -2054,11 +2178,7 @@ export default function TenderPer() {
                   renderOption={(props, option, { selected }) => {
                     const { key, ...optionProps } = props;
                     return (
-                      <li
-                        key={key}
-                        {...optionProps}
-                        style={{ fontSize: "0.75rem" }}
-                      >
+                      <li key={key} {...optionProps}>
                         <Checkbox
                           style={{ marginRight: 8 }}
                           checked={selected}
@@ -2067,6 +2187,7 @@ export default function TenderPer() {
                       </li>
                     );
                   }}
+                  style={{ width: 250 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -2113,27 +2234,6 @@ export default function TenderPer() {
               <Divider />
               <div className="p-5 flex flex-col gap-4">
                 <Autocomplete
-                  size="small"
-                  sx={{
-                    width: "100%", // or specific width
-                    "& .MuiChip-root": {
-                      maxWidth: "200px",
-                      overflow: "hidden",
-                      whiteSpace: "nowrap",
-                      textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
-                    },
-                  }}
                   multiple
                   id="states-autocomplete"
                   options={statesData} // Pass states list
@@ -2213,25 +2313,12 @@ export default function TenderPer() {
               <Divider />
               <div className="p-5 flex flex-col gap-4">
                 <Autocomplete
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "100px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   multiple
@@ -2314,9 +2401,6 @@ export default function TenderPer() {
                 <Divider />
                 <div className="p-5 flex flex-col gap-4">
                   <TextField
-                    sx={{
-                      fontSize: "12px",
-                    }}
                     className="w-full"
                     select
                     label="Date Option"
@@ -2701,25 +2785,12 @@ export default function TenderPer() {
               <div className="p-5 flex flex-col gap-4">
                 <Autocomplete
                   className="w-full"
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   options={amountOptions.filter(
@@ -2761,25 +2832,12 @@ export default function TenderPer() {
                 {/* Max Amount Autocomplete */}
                 <Autocomplete
                   className="w-full"
-                  size="small"
                   sx={{
-                    width: "100%", // or specific width
                     "& .MuiChip-root": {
-                      maxWidth: "200px",
+                      maxWidth: "200px", // Adjust width as needed
                       overflow: "hidden",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "2px 6px",
-                      minHeight: "32px",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "0.85rem",
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "0.85rem", // ✅ Smaller label
-                      // ✅ Optional: move label up slightly
                     },
                   }}
                   options={amountOptions.filter(
@@ -3020,8 +3078,8 @@ export default function TenderPer() {
 
             {/* Tender List */}
             {tenderIsLoading ? (
-              <div className="h-[100vh]"></div>
-            ) : sortedTenders?.length ? (
+              <div className="h-[20vh]"></div>
+            ) : (
               sortedTenders?.map((tender, i) => {
                 const now = new Date();
 
@@ -3189,16 +3247,6 @@ export default function TenderPer() {
                   </div>
                 );
               })
-            ) : (
-              <div className="w-full text-center py-10 text-gray-500">
-                <ReceiptLongIcon
-                  fontSize="large"
-                  className="mb-2 text-gray-400"
-                />
-                <Typography variant="body1" sx={{ fontSize: 13 }}>
-                  No tenders found.
-                </Typography>
-              </div>
             )}
           </div>
           {/* Scroll Down Button */}

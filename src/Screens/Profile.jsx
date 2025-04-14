@@ -69,7 +69,6 @@ export default function Profile() {
       companyId: companyDetailsData?.id || null,
     });
   }, [companyDetailsData]);
-  console.log(addressDetailsData);
 
   const [editSections, setEditSections] = useState({
     personal: false,
@@ -109,7 +108,7 @@ export default function Profile() {
       [name]: value,
     });
   };
-  console.log(formData);
+
   const handleSubmit = (section) => {
     const newErrors = {};
 

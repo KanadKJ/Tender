@@ -9,8 +9,6 @@ export default function ProtectedRoutes({ children }) {
 
   const isAuthenticated = userData || localStorage.getItem("user");
 
-  console.log("protected called");
-
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Background from "../Components/Background";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GetDocumentURL, GetTenderDetails } from "../Redux/Slices/TenderSlice";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
@@ -25,7 +25,9 @@ import {
 
 export default function TenderDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userData } = useSelector((s) => s.auth);
   const { tenderDetails, documentURL } = useSelector((s) => s.tender);
   useEffect(() => {
     dispatch(GetTenderDetails(id));
@@ -36,6 +38,10 @@ export default function TenderDetails() {
   // }, [documentURL]);
 
   const handleDocumentDownload = (id, t, c) => {
+    if (!userData) {
+      navigate("/login");
+      return;
+    }
     dispatch(GetDocumentURL({ id, t, c }))
       .unwrap()
       .then((fileUrl) => {

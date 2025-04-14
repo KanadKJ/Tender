@@ -14,7 +14,13 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  TextField,
 } from "@mui/material";
+import { format } from "date-fns";
 import SearchIcon from "@mui/icons-material/Search";
 import PaymentIcon from "@mui/icons-material/Payments";
 import HomeIcon from "@mui/icons-material/Home";
@@ -35,304 +41,207 @@ export default function UserManagement() {
   const [searchTerms, setSearchTerms] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isActive, setIsActive] = useState("");
+  const [packageId, setPackageId] = useState("");
+  const [isExpired, setIsExpired] = useState("");
+  const [expiryFrom, setExpiryFrom] = useState("");
+  const [expiryTo, setExpiryTo] = useState("");
+
   const rowsPerPage = 100;
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [showAddressPopup, setShowAddressPopup] = useState(false);
   const [showCompanyPopup, setShowCompanyPopup] = useState(false);
 
-  const debouncedSearch = useCallback(
-    debounce((value) => {
-      if (
-        typeof value === "string" &&
-        value.includes("@") &&
-        value.includes(".")
-      ) {
-        dispatch(
-          GetUserDetailsWithPlan(`Email=${value}&Page=1&Size=${rowsPerPage}`)
-        );
-      } else if (!isNaN(value)) {
-        dispatch(
-          GetUserDetailsWithPlan(`MobileNo=${value}&Page=1&Size=${rowsPerPage}`)
-        );
+  const buildQuery = (page = 1, size = rowsPerPage, search = searchTerms) => {
+    let query = `Page=${page}&Size=${size}`;
+    if (isActive !== "") query += `&IsActive=${isActive}`;
+    if (packageId !== "") query += `&PackageId=${packageId}`;
+    if (isExpired !== "") query += `&IsExpired=${isExpired}`;
+    if (expiryFrom) query += `&SearchExpiryFrom=${format(new Date(expiryFrom), "yyyy-MM-dd")}`;
+    if (expiryTo) query += `&SearchExpiryTo=${format(new Date(expiryTo), "yyyy-MM-dd")}`;
+
+    if (search.length > 3) {
+      if (search.includes("@")) {
+        query += `&Email=${search}`;
+      } else if (!isNaN(search)) {
+        query += `&MobileNo=${search}`;
       } else {
-        dispatch(
-          GetUserDetailsWithPlan(
-            `firstName=${value}&Page=1&Size=${rowsPerPage}`
-          )
-        );
+        query += `&FirstName=${search}`;
       }
+    }
+    return query;
+  };
+
+  const debouncedSearch = useCallback(
+    debounce(() => {
+      dispatch(GetUserDetailsWithPlan(buildQuery(1)));
     }, 400),
-    [dispatch]
+    [isActive, packageId, isExpired, expiryFrom, expiryTo, searchTerms]
   );
 
   const handleGlobalSearch = (e) => {
     const { value } = e.target;
     setSearchTerms(value);
-
-    if (value?.length > 3) {
-      debouncedSearch(value);
+    if (value.length > 3) {
+      debouncedSearch();
     } else if (value === "") {
       setCurrentPage(1);
-      dispatch(GetUserDetailsWithPlan(`Page=1&Size=${rowsPerPage}`));
+      dispatch(GetUserDetailsWithPlan(buildQuery()));
     }
   };
 
   const handleChangePage = (event, value) => {
     setCurrentPage(value);
-    if (searchTerms.length > 3) {
-      debouncedSearch(searchTerms);
-    } else {
-      dispatch(GetUserDetailsWithPlan(`Page=${value}&Size=${rowsPerPage}`));
-    }
-  };
-
-  const handlePaymentHistory = (user) => {
-    setSelectedUser(user);
-    setShowPaymentPopup(true);
-  };
-
-  const handleAddress = (user) => {
-    setSelectedUser(user);
-    setShowAddressPopup(true);
-  };
-
-  const handleCompanyDetails = (user) => {
-    setSelectedUser(user);
-    setShowCompanyPopup(true);
+    dispatch(GetUserDetailsWithPlan(buildQuery(value)));
   };
 
   const handleLoginAsUser = (user) => {
-    console.log("Login as user:", user);
-    dispatch(
-      GetUserDetailsForLoginAsUser({
-        email: user?.email,
-        password: "",
-      })
-    );
+    dispatch(GetUserDetailsForLoginAsUser({ email: user?.email, password: "" }));
   };
 
   useEffect(() => {
-    dispatch(GetUserDetailsWithPlan(`Page=1&Size=${rowsPerPage}`));
-  }, [dispatch]);
+    dispatch(GetUserDetailsWithPlan(buildQuery()));
+  }, [dispatch, isActive, packageId, isExpired, expiryFrom, expiryTo]);
 
   const totalRecords = userManagementUserDataWithPlan?.totalRecords || 0;
-  const pageCount = useMemo(
-    () => Math.max(Math.ceil(totalRecords / rowsPerPage), 1),
-    [totalRecords]
-  );
+  const pageCount = useMemo(() => Math.max(Math.ceil(totalRecords / rowsPerPage), 1), [totalRecords]);
 
   return (
     <div className="mt-6 px-4 md:px-8 mb-10">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold text-gray-800">
-          User Management
-        </h1>
+      <h1 className="text-2xl font-semibold text-gray-800 mb-4">User Management</h1>
+
+      <div className="flex flex-wrap gap-4 mb-6">
+        <div className="relative w-full max-w-sm">
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fontSize="small" />
+          <input
+            type="text"
+            placeholder="Search by email, mobile or name..."
+            value={searchTerms}
+            onChange={handleGlobalSearch}
+            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Active Status</InputLabel>
+          <Select value={isActive} label="Active Status" onChange={(e) => setIsActive(e.target.value)}>
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value={1}>Active</MenuItem>
+            <MenuItem value={0}>Inactive</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Plan</InputLabel>
+          <Select value={packageId} label="Plan" onChange={(e) => setPackageId(e.target.value)}>
+            <MenuItem value="">All</MenuItem>
+            {["Free", "Basic", "Dulex", "Advance", "Standard", "Professional", "Premium", "Plan on Demand"].map((label, i) => (
+              <MenuItem key={i + 1} value={i + 1}>{label}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Is Expired</InputLabel>
+          <Select value={isExpired} label="Is Expired" onChange={(e) => setIsExpired(e.target.value)}>
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value={1}>Yes</MenuItem>
+            <MenuItem value={0}>No</MenuItem>
+          </Select>
+        </FormControl>
+
+        <TextField label="Expiry From" type="date" size="small" sx={{ minWidth: 160 }} InputLabelProps={{ shrink: true }} value={expiryFrom} onChange={(e) => setExpiryFrom(e.target.value)} />
+        <TextField label="Expiry To" type="date" size="small" sx={{ minWidth: 160 }} InputLabelProps={{ shrink: true }} value={expiryTo} onChange={(e) => setExpiryTo(e.target.value)} />
       </div>
 
-      {/* Search Input */}
-      <div className="mb-6 w-full max-w-sm relative">
-        <SearchIcon
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          fontSize="small"
-        />
-        <input
-          type="text"
-          placeholder="Search by email, mobile or name..."
-          value={searchTerms}
-          onChange={handleGlobalSearch}
-          className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition"
-        />
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto custom-scrollbar">
-        <TableContainer component={Paper} className="shadow-md rounded-lg">
-          <Table size="small">
-            <caption className="caption-top text-sm text-gray-600 px-4 py-2">
-              {totalRecords
-                ? `Total Records: ${totalRecords}`
-                : "No records found"}
-            </caption>
-            <TableHead>
-              <TableRow className="bg-gray-100">
-                <TableCell sx={{ fontWeight: "bold", fontSize: 12 }}>
-                  User Name
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", fontSize: 12 }}
-                  align="center"
-                >
-                  Mobile No.
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", fontSize: 12 }}
-                  align="center"
-                >
-                  Email
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", fontSize: 12 }}
-                  align="center"
-                >
-                  Plan Name
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", fontSize: 12 }}
-                  align="center"
-                >
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {userManagementUserDataWithPlan?.value?.length > 0 ? (
-                userManagementUserDataWithPlan.value.map((row) => (
-                  <TableRow
-                    key={`${row.paymentId}-${row.email}`}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                      "&:hover": { backgroundColor: "#f9fafb" },
-                    }}
-                  >
-                    <TableCell sx={{ fontSize: 12 }}>{row.firstName}</TableCell>
-                    <TableCell sx={{ fontSize: 12 }} align="center">
-                      {row.mobileNo}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: 12 }} align="center">
-                      {row.email}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: 12 }} align="center">
-                      {row.planName}
-                    </TableCell>
-                    <TableCell align="center">
-                      <div className="flex items-center justify-center space-x-1">
-                        <Tooltip title="Check Payment History">
-                          <IconButton
-                            onClick={() => handlePaymentHistory(row)}
-                            size="small"
-                          >
-                            <PaymentIcon
-                              fontSize="small"
-                              className="text-blue-600"
-                            />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Check Address">
-                          <IconButton
-                            onClick={() => handleAddress(row)}
-                            size="small"
-                          >
-                            <HomeIcon
-                              fontSize="small"
-                              className="text-green-600"
-                            />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Check Company Details">
-                          <IconButton
-                            onClick={() => handleCompanyDetails(row)}
-                            size="small"
-                          >
-                            <BusinessIcon
-                              fontSize="small"
-                              className="text-purple-600"
-                            />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Login As User">
-                          <IconButton
-                            onClick={() => handleLoginAsUser(row)}
-                            size="small"
-                          >
-                            <LoginIcon
-                              fontSize="small"
-                              className="text-orange-500"
-                            />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    align="center"
-                    sx={{ fontSize: 13, py: 2 }}
-                  >
-                    No data found.
+      <TableContainer component={Paper} className="shadow-md rounded-lg overflow-x-auto">
+        <Table size="small">
+          <caption className="caption-top text-sm text-gray-600 px-4 py-2">
+            {totalRecords ? `Total Records: ${totalRecords}` : "No records found"}
+          </caption>
+          <TableHead>
+            <TableRow className="bg-gray-100">
+              {["User Name", "Mobile No.", "Email", "Plan Name", "Company Name", "Created On", "Expiry Date", "Actions"].map((head, i) => (
+                <TableCell key={i} align={i > 0 ? "center" : "left"} sx={{ fontWeight: "bold", fontSize: 12 }}>{head}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {userManagementUserDataWithPlan?.value?.length > 0 ? (
+              userManagementUserDataWithPlan.value.map((row) => (
+                <TableRow key={`${row.paymentId}-${row.email}`} sx={{ "&:hover": { backgroundColor: "#f9fafb" } }}>
+                  <TableCell sx={{ fontSize: 12 }}>{row.firstName}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">{row.mobileNo}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">{row.email}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">{row.planName}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">{row.companyName || "-"}</TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">
+                    {row.createdOn ? format(new Date(row.createdOn), "dd-MM-yyyy") : "-"}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: 12 }} align="center">
+                    {row.expiryDate ? format(new Date(row.expiryDate), "dd-MM-yyyy") : "-"}
+                  </TableCell>
+                  <TableCell align="center">
+                    <div className="flex items-center justify-center space-x-1">
+                      <Tooltip title="Check Payment History">
+                        <IconButton onClick={() => { setSelectedUser(row); setShowPaymentPopup(true); }} size="small">
+                          <PaymentIcon fontSize="small" className="text-blue-600" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Check Address">
+                        <IconButton onClick={() => { setSelectedUser(row); setShowAddressPopup(true); }} size="small">
+                          <HomeIcon fontSize="small" className="text-green-600" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Check Company Details">
+                        <IconButton onClick={() => { setSelectedUser(row); setShowCompanyPopup(true); }} size="small">
+                          <BusinessIcon fontSize="small" className="text-purple-600" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Login As User">
+                        <IconButton onClick={() => handleLoginAsUser(row)} size="small">
+                          <LoginIcon fontSize="small" className="text-orange-500" />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
                   </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8} align="center" sx={{ fontSize: 13, py: 2 }}>No data found.</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      {/* Pagination */}
       <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={handleChangePage}
-          color="primary"
-          size="small"
-        />
+        <Pagination count={pageCount} page={currentPage} onChange={handleChangePage} color="primary" size="small" />
       </div>
 
-      {/* Payment History Dialog */}
-      <Dialog
-        open={showPaymentPopup}
-        onClose={() => setShowPaymentPopup(false)}
-        fullWidth
-        maxWidth="md"
-      >
+      <Dialog open={showPaymentPopup} onClose={() => setShowPaymentPopup(false)} fullWidth maxWidth="md">
         <DialogTitle className="flex justify-between items-center">
           Payment History - {selectedUser?.firstName}
-          <IconButton onClick={() => setShowPaymentPopup(false)} size="small">
-            <CloseIcon />
-          </IconButton>
+          <IconButton onClick={() => setShowPaymentPopup(false)} size="small"><CloseIcon /></IconButton>
         </DialogTitle>
-        <DialogContent>
-          {selectedUser && <PaymentDetails userId={selectedUser.id} />}
-        </DialogContent>
+        <DialogContent>{selectedUser && <PaymentDetails userId={selectedUser.id} />}</DialogContent>
       </Dialog>
 
-      {/* Address Dialog */}
-      <Dialog
-        open={showAddressPopup}
-        onClose={() => setShowAddressPopup(false)}
-        fullWidth
-        maxWidth="sm"
-      >
+      <Dialog open={showAddressPopup} onClose={() => setShowAddressPopup(false)} fullWidth maxWidth="sm">
         <DialogTitle className="flex justify-between items-center">
           Address Details - {selectedUser?.firstName}
-          <IconButton onClick={() => setShowAddressPopup(false)} size="small">
-            <CloseIcon />
-          </IconButton>
+          <IconButton onClick={() => setShowAddressPopup(false)} size="small"><CloseIcon /></IconButton>
         </DialogTitle>
-        <DialogContent>
-          {selectedUser && <AddressDetails userId={selectedUser.id} />}
-        </DialogContent>
+        <DialogContent>{selectedUser && <AddressDetails userId={selectedUser.id} />}</DialogContent>
       </Dialog>
 
-      {/* Company Dialog */}
-      <Dialog
-        open={showCompanyPopup}
-        onClose={() => setShowCompanyPopup(false)}
-        fullWidth
-        maxWidth="sm"
-      >
+      <Dialog open={showCompanyPopup} onClose={() => setShowCompanyPopup(false)} fullWidth maxWidth="sm">
         <DialogTitle className="flex justify-between items-center">
           Company Details - {selectedUser?.firstName}
-          <IconButton onClick={() => setShowCompanyPopup(false)} size="small">
-            <CloseIcon />
-          </IconButton>
+          <IconButton onClick={() => setShowCompanyPopup(false)} size="small"><CloseIcon /></IconButton>
         </DialogTitle>
-        <DialogContent>
-          {selectedUser && <CompanyDetails userId={selectedUser.id} />}
-        </DialogContent>
+        <DialogContent>{selectedUser && <CompanyDetails userId={selectedUser.id} />}</DialogContent>
       </Dialog>
     </div>
   );

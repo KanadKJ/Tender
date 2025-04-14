@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "../Layouts/MainLayout";
 import Login from "../Screens/Login";
 import Register from "../Screens/Register";
-import Profile from "../Screens/Profile";
+
 import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../Screens/Dashboard";
 import SystemConfigSuper from "../Screens/SystemConfigSuper";
@@ -15,6 +15,7 @@ const TendersPage = lazy(() => import("../Screens/TenderPer"));
 const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
 const PricingPage = lazy(() => import("../Screens/Pricing"));
 const AboutUsPage = lazy(() => import("../Screens/AboutUs"));
+const ProfilePage = lazy(() => import("../Screens/Profile"));
 const TermsAndConditionsPage = lazy(() =>
   import("../Screens/TermsAndConditions")
 );
@@ -34,21 +35,14 @@ const AppRouter = () => {
 
             <Route path="/T&C" element={<TermsAndConditionsPage />} />
             <Route path="/About-Us" element={<AboutUsPage />} />
-            <Route
-              path="/tenders/:id"
-              element={
-                <ProtectedRoutes>
-                  <TenderDetails />
-                </ProtectedRoutes>
-              }
-            />
+            <Route path="/tenders/:id" element={<TenderDetails />} />
             <Route path="*" element={<HomePage />} />
             <Route path="/dashboard" element={<Dashboard />}>
               <Route
                 index
                 element={
                   <ProtectedRoutes>
-                    <Profile />
+                    <ProfilePage />
                   </ProtectedRoutes>
                 }
               />
@@ -56,7 +50,7 @@ const AppRouter = () => {
                 path="profile"
                 element={
                   <ProtectedRoutes>
-                    <Profile />
+                    <ProfilePage />
                   </ProtectedRoutes>
                 }
               />

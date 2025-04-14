@@ -5,6 +5,7 @@ import blueBg from "../Assets/onlyBlueBg.png";
 import Ribbons from "./Ribbons";
 import illLeft from "../Assets/illLeft.png";
 import char from "../Assets/Characters.png";
+import { motion } from "framer-motion";
 export default function Background({ type, lifed, show, isHome }) {
   const bg = {
     default: bgvector,
@@ -17,7 +18,16 @@ export default function Background({ type, lifed, show, isHome }) {
         <>
           <div className="w-full hidden md:flex h-auto justify-between absolute top-12">
             <div>
-              <img
+              <motion.img
+                initial={{
+                  x: -100,
+                }}
+                animate={{
+                  x: 0,
+                  transition: {
+                    duration: 0.5,
+                  },
+                }}
                 src={illLeft}
                 alt="illLeft"
                 className="h-80 md:h-90 lg:h-96 relative -left-28 md:-left-36 lg:-left-40"
@@ -29,7 +39,16 @@ export default function Background({ type, lifed, show, isHome }) {
             </div>
           </div>
           <div className="w-full flex justify-center items-center absolute top-[512px]">
-            <img
+            <motion.img
+            initial={{
+              right: 500,
+            }}
+            animate={{
+              right: 0,
+              transition: {
+                duration: 0.5,
+              },
+            }}
               src={char}
               alt="illLeft"
               className="h-60 md:h-90 lg:h-96 flex md:hidden"

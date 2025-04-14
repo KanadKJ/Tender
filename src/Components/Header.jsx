@@ -64,7 +64,23 @@ const Header = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   return (
-    <header className="backdrop-blur-lg z-10 h-14 md:h-16 shadow-md sm:px-1 fixed w-full  top-0 left-0 transition-shadow duration-700 bg-white/70">
+    <header className="backdrop-blur-lg z-10  shadow-md sm:px-1 fixed w-full  top-0 left-0 transition-shadow duration-700 bg-white/70">
+      {sessionInControlStatus && (
+        <div className="flex justify-end bg-yellow-300 text-black-500 rounded-lg mt-1 ">
+          <div className="col-span-1 flex gap-4 px-4 py-1">
+            <span className="text-sm">
+              You are logged in as :{" "}
+              <span className="font-semibold">{userData?.firstName}</span>
+            </span>
+            <button
+              onClick={handleGoBack}
+              className="px-2 text-sm bg-yellow-100 rounded-md "
+            >
+              Go back
+            </button>
+          </div>
+        </div>
+      )}
       <div className="flex h-full flex-row items-center px-4">
         <div className="text-lg font-bold text-gray-800">
           <div className="flex justify-between items-center gap-2">
@@ -86,7 +102,7 @@ const Header = () => {
               className="flex flex-col cursor-pointer"
               onClick={() => navigate("/")}
             >
-              <img src={logo} alt="Logo" className=" h-[60px] md:h-[80px]" />
+              <img src={logo} alt="Logo" className=" h-[40px] md:h-[60px]" />
             </div>
           </div>
         </div>
@@ -186,6 +202,28 @@ const Header = () => {
                 <span>About Us</span>
               </span>
             </div>
+            {userData && (
+              <div
+                className="flex flex-col justify-center items-center mx-3 text-center text-xs "
+                onClick={() => navigate("/dashboard")}
+              >
+                <span
+                  className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
+                before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
+                before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
+                hover:before:left-0 "
+                >
+                  <span>
+                    <PersonOutlineOutlinedIcon
+                      sx={{
+                        height: 20,
+                      }}
+                    />
+                  </span>
+                  <span>Profile</span>
+                </span>
+              </div>
+            )}
           </div>
         </div>
         {
@@ -225,7 +263,13 @@ const Header = () => {
                 }}
                 disableScrollLock
               >
-                <div className="p-4 w-full flex flex-col justify-center items-center min-w-56">
+                <div
+                  onClick={() => {
+                    navigate("/dashboard");
+                    handleClose();
+                  }}
+                  className="cursor-pointer p-4 w-full flex flex-col justify-center items-center min-w-56"
+                >
                   <Avatar
                     sx={{
                       bgcolor: "#0554F2",
@@ -243,13 +287,7 @@ const Header = () => {
                           userData?.firstName?.split(" ")[0]?.length - 1
                         ]?.toUpperCase()}
                   </Avatar>
-                  <div
-                    className="cursor-pointer mt-5"
-                    onClick={() => {
-                      navigate("/dashboard");
-                      handleClose();
-                    }}
-                  >
+                  <div className="cursor-pointer mt-5">
                     <h1 className="text-2xl hover:text-[26px] font-medium text-center">
                       {userData?.firstName}
                     </h1>
@@ -284,23 +322,6 @@ const Header = () => {
           )
         }
       </div>
-      {sessionInControlStatus && (
-        <div className="p-1 grid grid-cols-3 justify-center bg-black text-red-500 rounded-lg mt-1 relative -top-5">
-          <div className="col-span-2 flex justify-center">
-            <span className="p-1">
-              You are logged in as {userData?.firstName}
-            </span>
-          </div>
-          <div className="col-span-1 flex justify-end px-4">
-            <button
-              onClick={handleGoBack}
-              className="px-2 py-1 bg-red-100 rounded-md "
-            >
-              Go back
-            </button>
-          </div>
-        </div>
-      )}
     </header>
   );
 };
