@@ -10,7 +10,7 @@ import {
 import gradiant from "../Assets/GradientSection.png";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { carouselResponsive } from "../Utils/CommonUtils";
+import { carouselResponsive, GEO_LOCATION_KEY } from "../Utils/CommonUtils";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -45,7 +45,8 @@ export default function HomePage() {
   const [pincode, setPincode] = useState("");
   useEffect(() => {
     // Step 1: Get current coordinates
-    const apiKey = "AIzaSyAWT4w__vAES1bLE-k-I3IF1i-Beyf05LA";
+    const apiKey = process.env.GEO_LOCATION_KEY || GEO_LOCATION_KEY;
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;

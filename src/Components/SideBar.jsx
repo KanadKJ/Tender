@@ -102,7 +102,7 @@ const Sidebar = ({ onLinkClick }) => {
           to="dashboard/payment-history"
         />
 
-        <DriverLink src={saved} name="Followed Tenders" to="" />
+        <DriverLink src={saved} name="Followed Tenders" to="dashboard/FollowTenders" />
 
         <button
           onClick={() => navigate("/T&C")}

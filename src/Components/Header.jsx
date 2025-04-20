@@ -165,7 +165,7 @@ const Header = () => {
                 <span>Pricing</span>
               </span>
             </div>
-            <div className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
+            <div onClick={() => navigate("help")} className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
               <span
                 className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 

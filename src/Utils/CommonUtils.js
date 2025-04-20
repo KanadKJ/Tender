@@ -34,6 +34,11 @@ export const dateOptions = [
   { label: "Published in 7 days", value: "7days" },
   { label: "Published in 15 days", value: "15days" },
 ];
+export const dateOptionsClosing = [
+  { label: "Closing Today", value: "today" },
+  { label: "Closing in 7 days", value: "7days" },
+  { label: "Closing in 15 days", value: "15days" },
+];
 export const queryBuilder = (filters) => {
   const params = new URLSearchParams();
 
@@ -61,6 +66,7 @@ export const queryBuilder = (filters) => {
   });
   return params.toString();
 };
+export const GEO_LOCATION_KEY = "AIzaSyAWT4w__vAES1bLE-k-I3IF1i-Beyf05LA";
 export const formatDateTime = (dateString) => {
   if (dateString === undefined) return [null, null];
   const date = new Date(dateString);
@@ -240,14 +246,19 @@ export const handleDownload = async (fileUrl, t, e) => {
     const response = await axios.get(fileUrl, {
       responseType: "blob", // Ensures it's treated as a file
     });
-
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `${ext}`); // Set filename
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    const blob = new Blob([response.data], {
+      type: response.headers['content-type'],
+    });
+    
+    const url = window.URL.createObjectURL(blob);
+    
+    // Open in new tab
+    const newTab = window.open(url, "_blank");
+    
+    // Optional: Revoke the object URL after a short delay
+    // setTimeout(() => {
+    //   window.URL.revokeObjectURL(url);
+    // }, 1000);
   } catch (error) {
     toast.error("Error downloading the PDF:", error);
   }

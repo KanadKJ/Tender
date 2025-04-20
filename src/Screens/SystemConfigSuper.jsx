@@ -196,7 +196,11 @@ export default function SystemConfigSuper() {
             }}
             id="controllable-states-demo"
             options={userList}
-            getOptionLabel={(option) => option?.first_name || ""}
+            getOptionLabel={(option) =>
+              option
+                ? `${option?.first_name||""} - ${option?.mobile_no||""}`
+                : ""
+            }
             renderInput={(params) => <TextField {...params} label="Users" />}
           />
         </div>
@@ -261,8 +265,8 @@ export default function SystemConfigSuper() {
           />
         </div>
       </div>
-       {/* States */}
-       <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
+      {/* States */}
+      <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">
           STATE
         </label>
@@ -412,7 +416,7 @@ export default function SystemConfigSuper() {
           />
         </div>
       </div>
-     
+
       {/* Departments */}
       <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0  justify-between">
         <label className="w-2/3 text-base text-[#565656] font-medium">

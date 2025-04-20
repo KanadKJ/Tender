@@ -47,20 +47,34 @@ export const GetTenderList = createAsyncThunk(
     }
   }
 );
+let tenderAbortController; 
+
 export const GetTenderListWithFilters = createAsyncThunk(
   "tender/GetTenderListWithFilters",
   async (params, { rejectWithValue }) => {
     try {
-      const res = await ScrpApiTenders.get(`/tenders/?${params}`);
+      // Abort
+      if (tenderAbortController) {
+        tenderAbortController.abort();
+      }
+      tenderAbortController = new AbortController();
+      const res = await ScrpApiTenders.get(`/tenders/?${params}`, {
+        signal: tenderAbortController.signal,
+      });
 
       return res.data;
     } catch (error) {
+      if (error.name === "CanceledError" || error.name === "AbortError") {
+        console.warn("Previous tender fetch request cancelled");
+        return;
+      }
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch tenders"
       );
     }
   }
 );
+
 export const GetTenderDetails = createAsyncThunk(
   "tender/GetTenderDetails",
   async (id, { rejectWithValue }) => {
@@ -157,8 +171,8 @@ const tenderSlice = createSlice({
         state.error = null;
       })
       .addCase(GetTenderListWithFilters.fulfilled, (state, action) => {
-        state.tenderIsLoading = false;
         state.tenderData = action.payload;
+        state.tenderIsLoading = false;
         state.error = null;
       })
       .addCase(GetTenderListWithFilters.rejected, (state, action) => {

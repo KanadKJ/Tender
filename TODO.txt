@@ -10,10 +10,8 @@
 9) If not logged in from View tender page if someone clicks on Download button
  it should go to login page....same with filters (done)
 
-10---IMP ---Based in filter json user should see the results after login
-PS for 10, After every change in filters after binding the filters from json.
-when the user change the filters on every change the page is refreshed
-dur to queryString generator
+10---IMP ---Based in filter json user should see the results after login (done)
+
 
 states: 29
 districts: 558
@@ -39,24 +37,30 @@ divisions: 2
 sub_divisions: 1
 ordering: -published_date
 bidding_status: active
-
+ 
 search with everything and attach it with keywords
 and search with keywords after 3 inputs
 
+-- in tender management page concate username +"-"+ mobile --> (done)
+-- file download in new tab --> (done)
+**need api** user management toggel button next to login as a user (done)
 
-
-
+-- Show tenders with no value check box on tender amount filter (done)
 
 
 ****** ISSUES ********
-
-
-1 - on reset the page and link is not refreshed,
-2 - org, dist, state are not binded on refreshing the page
-3 - Textbox search ---make it with keywords filter and keep validations as it is
-4 - size consistency of dropdown in filters 
-
-
+p1 
+-- wishlist api intergration
+-- tender amount --> 50l 1cr  (done)
+-- excel export in UserManagement (done)
+-- closing date filter --> bidding_submission_end_date_after & before (done)
+1) Issue in Tender amount(done)
+2) Issue in Closing date (done)
+3) Excel export on user management section (done)
+Toggle button to active./inactive user (done)
+ One page with Dropdown,Name,Mobile, Query box (done)
+6) Show tenders with no value checkbox in Tender amount box === remainiing full impl (done)
+7) Share button with WhatsApp and gmail in tender list like (https://www.tender247.com/keyword/birbhum+tenders) (done)
 
 
 /////  UserManagement.jsx ///
@@ -239,11 +243,7 @@ export default function UserManagement() {
   );
 }
 
-
-
-
 PaymentInfoDialog
-
 
 d>10 = green
 7-9 = yellow
@@ -312,11 +312,7 @@ keyword and orgs count issue (done)
     "SUB_DIVISION": []
 }
 
-
-
 tenderPER ==  BACK up
-
-
 
 import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";

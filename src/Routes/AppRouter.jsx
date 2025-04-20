@@ -9,6 +9,7 @@ import Dashboard from "../Screens/Dashboard";
 import SystemConfigSuper from "../Screens/SystemConfigSuper";
 import PaymentDetails from "../Screens/PaymentDetails";
 import UserManagement from "../Screens/UserManagement";
+import FollowedTenders from "../Screens/FollowedTenders";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
 const TendersPage = lazy(() => import("../Screens/TenderPer"));
@@ -19,6 +20,8 @@ const ProfilePage = lazy(() => import("../Screens/Profile"));
 const TermsAndConditionsPage = lazy(() =>
   import("../Screens/TermsAndConditions")
 );
+const FollowedTendersPage = lazy(() => import("../Screens/FollowedTenders"));
+const HelpPage = lazy(() => import("../Screens/Help"));
 
 const AppRouter = () => {
   return (
@@ -34,6 +37,7 @@ const AppRouter = () => {
             <Route index element={<HomePage />} />
 
             <Route path="/T&C" element={<TermsAndConditionsPage />} />
+            <Route path="/help" element={<HelpPage />} />
             <Route path="/About-Us" element={<AboutUsPage />} />
             <Route path="/tenders/:id" element={<TenderDetails />} />
             <Route path="*" element={<HomePage />} />
@@ -75,6 +79,14 @@ const AppRouter = () => {
                 element={
                   <ProtectedRoutes>
                     <UserManagement />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="FollowTenders"
+                element={
+                  <ProtectedRoutes>
+                    <FollowedTendersPage />
                   </ProtectedRoutes>
                 }
               />

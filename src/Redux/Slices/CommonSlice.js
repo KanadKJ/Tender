@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ScrpApiTendersMetadata } from "../../Api/SCPAPI";
 import { TMGetApi } from "../../Api/TMAPI";
+import { toast } from "react-toastify";
 
 const initialState = {
   isDistrictCallLoading: false,
@@ -18,17 +19,7 @@ const initialState = {
   filtersBasedOnUsers: [],
   userManagementUserDataWithPlan: [],
 };
-export const GetUserDetailsWithPlan = createAsyncThunk(
-  "common/GetUserDetailsWithPlan",
-  async (params, { rejectWithValue }) => {
-    try {
-      const res = await TMGetApi.get(`/GetUserDetailsWithPlan?${params}`);
-      return res.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message);
-    }
-  }
-);
+
 export const GetUserList = createAsyncThunk(
   "common/GetUserList",
   async (params, { rejectWithValue }) => {
@@ -179,6 +170,30 @@ export const GetUnitList = createAsyncThunk(
     try {
       const res = await ScrpApiTendersMetadata.get(`/units/?${queryString}`);
       return res.data?.results;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetUserDetailsWithPlan = createAsyncThunk(
+  "common/GetUserDetailsWithPlan",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(`/GetUserDetailsWithPlan?${params}`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const ToggleUserStatus = createAsyncThunk(
+  "common/ToggleUserStatus",
+  async ({ uid, statusOfUser }, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.post(
+        `/ToggleUserStatus?userId=${uid}&isActive=${statusOfUser}`
+      );
+      return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
@@ -361,6 +376,22 @@ const commonSlice = createSlice({
         state.error = null;
       })
       .addCase(GetUserDetailsWithPlan.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // ToggleUserStatus
+      .addCase(ToggleUserStatus.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(ToggleUserStatus.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = null;
+        if (action.payload?.message === "User status updated successfully.") {
+          toast.success("User status updated successfully.");
+        }
+      })
+      .addCase(ToggleUserStatus.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });
