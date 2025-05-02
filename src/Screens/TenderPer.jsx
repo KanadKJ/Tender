@@ -373,6 +373,7 @@ export default function TenderPer() {
     console.log("initial obj creator");
     if (userData) {
       const pc = searchParams.get("pincode") || "";
+      const kw = searchParams.getAll("keywords") || [];
       const obj = {
         states: userFilters?.STATE,
         districts: userFilters?.DISTRICT,
@@ -387,10 +388,12 @@ export default function TenderPer() {
         ordering: ["-published_date"],
         bidding_status: "active",
         pincode: filters?.pincode || pc,
+        keywords: kw,
       };
       setFilters({
         ...filters,
         pincode: pc,
+        keywords: kw,
       });
       let q = queryBuilder(obj);
       navigate(`?${q}`, { replace: true });
@@ -637,6 +640,7 @@ export default function TenderPer() {
   };
   const handleSavedSeachFromTemplate = (obj) => {
     navigate(`?${obj?.url}`, { replace: true });
+    dispatch(GetTenderListWithFilters(obj?.url));
     handleClose();
   };
   const dataFetcher = (type, ids) => {

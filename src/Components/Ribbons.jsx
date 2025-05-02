@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 export default function Ribbons() {
   return (
-    <div className="hidden lg:flex flex-col relative top-[-180px] mt-8 z-[-10] bg-transparent marquee">
+    <div className="hidden lg:flex flex-col relative top-[-180px] mt-8 z-[-10] bg-transparent">
       <motion.div
         initial={{
           width: 0,

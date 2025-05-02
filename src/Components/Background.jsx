@@ -16,39 +16,17 @@ export default function Background({ type, lifed, show, isHome }) {
     <div className="absolute top-0 left-0 h-full w-full -z-10 ">
       {isHome === "yes" && (
         <>
-          <div className="w-full hidden md:flex h-auto justify-between absolute top-12">
-            <div>
-              <motion.img
-                initial={{
-                  x: -100,
-                }}
-                animate={{
-                  x: 0,
-                  transition: {
-                    duration: 0.5,
-                  },
-                }}
-                src={illLeft}
-                alt="illLeft"
-                className="h-80 md:h-90 lg:h-96 relative -left-28 md:-left-36 lg:-left-40"
-              />
-            </div>
-
-            <div>
-              <img src={char} alt="char" className="h-72 mt-12" />
-            </div>
-          </div>
-          <div className="w-full flex justify-center items-center absolute top-[512px]">
+          <div className="w-full flex justify-center items-center absolute top-[680px]">
             <motion.img
-            initial={{
-              right: 500,
-            }}
-            animate={{
-              right: 0,
-              transition: {
-                duration: 0.5,
-              },
-            }}
+              initial={{
+                right: 500,
+              }}
+              animate={{
+                right: 0,
+                transition: {
+                  duration: 0.5,
+                },
+              }}
               src={char}
               alt="illLeft"
               className="h-60 md:h-90 lg:h-96 flex md:hidden"
@@ -69,7 +47,7 @@ export default function Background({ type, lifed, show, isHome }) {
         <div
           className={
             isHome === "yes"
-              ? "absolute top-[99%] z-50 w-full overflow-x-clip"
+              ? "absolute top-[550px] mt-28 z-50 w-full overflow-x-clip"
               : "top-[90%] absolute z-50 w-full overflow-x-clip"
           }
         >
