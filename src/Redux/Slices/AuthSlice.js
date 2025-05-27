@@ -11,6 +11,25 @@ const initialState = {
   companyDetailsData: null,
   addressDetailsData: null,
 };
+//GetOtp
+export const GetOtp = createAsyncThunk(
+  "auth/GetOtp",
+  async (data, { rejectWithValue }) => {
+    let obj = {
+      mobileNumber: `91${data}`,
+      param1: "",
+      param2: "",
+      param3: "",
+    };
+    try {
+      const response = await TMGetApi.post(`/send-otp`, obj);
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  }
+);
+//ValidateOtp
 // InsertFilterJson
 export const InsertFilterJson = createAsyncThunk(
   "auth/InsertFilterJson",
@@ -70,23 +89,31 @@ export const GetUserDetails = createAsyncThunk(
     console.log(data, "auth slice ");
 
     try {
-      const response = await TMGetApi.post(`/GetUserDetails/`, data);
+      const response = await TMGetApi.post(`/verify-otp-and-get-user`, data);
 
-      if (!response?.data?.value?.length) {
-        return rejectWithValue("Invalid Email or Password");
-      }
-      // if (response?.data?.value[0]?.isLoggedIn) {
-      //   return rejectWithValue("User already logged in.");
+      // if (!response?.data?.value?.length) {
+      //   return rejectWithValue("Failed, OTP did not match");
       // }
+
+      if (response?.data?.statusCode === 401) {
+        return rejectWithValue(response?.data?.errors);
+      }
+      if (response?.data?.statusCode === 404) {
+        return rejectWithValue(response?.data?.errors);
+      }
+      if (response?.data?.value[0]?.isLoggedIn) {
+        return rejectWithValue("User already logged in.");
+      }
       const user = response.data.value[0]; // Store only the user object
 
       const obj = {
         user,
         data,
+        valid: true,
       };
       return obj;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      return rejectWithValue(console.log(error));
     }
   }
 );
@@ -354,6 +381,19 @@ const authSlice = createSlice({
         state.addressDetailsData = action.payload[0];
       })
       .addCase(GetAddressDetails.rejected, (state, action) => {
+        state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // getOtp
+      .addCase(GetOtp.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetOtp.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+      })
+      .addCase(GetOtp.rejected, (state, action) => {
         state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

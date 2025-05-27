@@ -247,14 +247,14 @@ export const handleDownload = async (fileUrl, t, e) => {
       responseType: "blob", // Ensures it's treated as a file
     });
     const blob = new Blob([response.data], {
-      type: response.headers['content-type'],
+      type: response.headers["content-type"],
     });
-    
+
     const url = window.URL.createObjectURL(blob);
-    
+
     // Open in new tab
     const newTab = window.open(url, "_blank");
-    
+
     // Optional: Revoke the object URL after a short delay
     // setTimeout(() => {
     //   window.URL.revokeObjectURL(url);
@@ -412,3 +412,67 @@ export const getDecryptedItem = (value) => {
     return null;
   }
 };
+
+export const WBDistricts = {
+  0: [
+    { name: "Alipurduar" },
+    { name: "Bankura" },
+    { name: "Birbhum" },
+    { name: "Cooch Behar" },
+    { name: "Dakshin Dinajpur" },
+    { name: "Darjeeling" },
+  ],
+
+  1: [
+    { name: "Hooghly" },
+    { name: "Howrah" },
+    { name: "Jalpaiguri" },
+    { name: "Jhargram" },
+    { name: "Kalimpong" },
+    { name: "Kolkata" },
+    { name: "Malda" },
+    { name: "Murshidabad" },
+    { name: "Nadia" },
+    { name: "North 24 Parganas" },
+    { name: "Paschim Bardhaman" },
+    { name: "Paschim Medinipur" },
+    { name: "Purba Bardhaman" },
+    { name: "Purba Medinipur" },
+    { name: "Purulia" },
+    { name: "South 24 Parganas" },
+    { name: "Uttar Dinajpur" },
+  ],
+};
+
+export const testimonailContent = [
+  {
+    review:
+      "“Thanks to E Tender Mitra, I never miss an important tender. The filters save me so much time!”",
+    userName: "— Dayamay Chandra",
+    posotion: ", Civil Contractor",
+  },
+  {
+    review:
+      "“Excellent service and genuine support team. Perfect for small contractors like us.”",
+    userName: "— Kaushik Ghosh",
+    posotion: ", Electrical Vendor",
+  },
+  {
+    review:
+      "“Highly reliable and cost-effective. I’ve secured multiple projects thanks to their timely alerts.”",
+    userName: "— Swapan Kuma Bhakta",
+    posotion: " Civil Supplier, Birbhum",
+  },
+  {
+    review:
+      "“E Tender Mitra saves me hours every week. I only see tenders that matter to me — no clutter, just opportunity.”",
+    userName: "— Sourav Ghosh",
+    posotion: ", Contractor, Bankura",
+  },
+  {
+    review:
+      "“Customer support is amazing. They actually understand tender-related problems and guide you properly.”",
+    userName: "— Anurag Chatterjee",
+    posotion: ", Electrical Contractor, Birbhum ",
+  },
+];

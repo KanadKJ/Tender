@@ -435,6 +435,14 @@ export default function TenderPer() {
         published_date_after: "",
         published_date_before: "",
       }));
+      setDateOption("");
+    } else if (name === "Closingdates") {
+      setFilters((prev) => ({
+        ...prev,
+        bidding_submission_end_date_after: "",
+        bidding_submission_end_date_before: "",
+      }));
+      setDateOption("");
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -709,9 +717,9 @@ export default function TenderPer() {
 
     if (userData) {
       const obj = {
-        states: userFilters?.STATE,
-        districts: userFilters?.DISTRICT,
-        organisations: userFilters?.ORGANIZATION,
+        states: userFilters?.STATE || [],
+        districts: userFilters?.DISTRICT || [],
+        organisations: userFilters?.ORGANIZATION || [],
         pincode: userFilters?.PinCode,
         sections: userFilters?.SECTION,
         divisions: userFilters?.DIVISION,
@@ -730,10 +738,13 @@ export default function TenderPer() {
         value_in_rs_max: null,
         published_date_after: null,
         published_date_before: null,
+        bidding_submission_end_date_after: null,
+        bidding_submission_end_date_before: null,
         ordering: ["-published_date"],
+        ...obj,
       }));
       console.log(userFilters);
-
+      setDateOption("");
       let q = queryBuilder(obj);
       navigate(`?bidding_status=active&ordering=-published_date&${q}`, {
         replace: true,
@@ -977,7 +988,7 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "pincode")}
             >
               Pincode
-              <CustomBadge data={filters.pincode ? ["1"] : null} />
+              <CustomBadge data={filters.pincode?.length ? ["1"] : null} />
             </Button>
             {/* Tender Amount */}
 
@@ -1255,7 +1266,7 @@ export default function TenderPer() {
                   onClick={(event) => handleClick(event, "pincode")}
                 >
                   Pincode
-                  <CustomBadge data={filters.pincode ? ["1"] : null} />
+                  <CustomBadge data={filters.pincode?.length ? ["1"] : null} />
                 </Button>
 
                 {/* Tender Amount */}
@@ -2217,7 +2228,9 @@ export default function TenderPer() {
                           published_date_after = today
                             .toISOString()
                             .split("T")[0];
-                          published_date_before = today
+                          published_date_before = new Date(
+                            today.setDate(today.getDate() + 1)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
@@ -2264,6 +2277,7 @@ export default function TenderPer() {
                   {/* From Date Picker */}
 
                   <DatePicker
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="From Date"
                     value={
@@ -2283,6 +2297,7 @@ export default function TenderPer() {
                   {/* To Date Picker */}
 
                   <DatePicker
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="To Date"
                     value={
@@ -2354,7 +2369,9 @@ export default function TenderPer() {
                           bidding_submission_end_date_after = today
                             .toISOString()
                             .split("T")[0];
-                          bidding_submission_end_date_before = today
+                          bidding_submission_end_date_before = new Date(
+                            today.setDate(today.getDate() + 1)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
@@ -2401,6 +2418,7 @@ export default function TenderPer() {
                   {/* From Date Picker */}
 
                   <DatePicker
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="From Date"
                     value={
@@ -2420,6 +2438,7 @@ export default function TenderPer() {
                   {/* To Date Picker */}
 
                   <DatePicker
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="To Date"
                     value={
@@ -2440,7 +2459,7 @@ export default function TenderPer() {
                     <button
                       className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                     hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
-                      onClick={() => handleReset("dates")}
+                      onClick={() => handleReset("Closingdates")}
                     >
                       Reset
                     </button>

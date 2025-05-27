@@ -14,7 +14,7 @@ const MainLayout = () => {
   const { authIsLoading } = useSelector((s) => s.auth);
   const { isSidebarOpen } = useSelector((state) => state.common);
   const location = useLocation();
-  const noHeaderRoutes = ["/login", "/signup"];
+  const noHeaderRoutes = ["/login", "/signup", "/validateOtp"];
   const showHeader = !noHeaderRoutes.includes(location.pathname);
 
   const handleSidebar = () => {

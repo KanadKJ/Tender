@@ -11,7 +11,12 @@ import {
 import gradiant from "../Assets/GradientSection.png";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { carouselResponsive, GEO_LOCATION_KEY } from "../Utils/CommonUtils";
+import {
+  carouselResponsive,
+  GEO_LOCATION_KEY,
+  testimonailContent,
+  WBDistricts,
+} from "../Utils/CommonUtils";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -33,6 +38,7 @@ import i4 from "../Assets/i4.png";
 import i5 from "../Assets/i5.png";
 import i6 from "../Assets/i6.png";
 import i7 from "../Assets/i7.png";
+import authgrd from "../Assets/AUTHGRD.png";
 import NewBG from "../Assets/NewBG.jpg";
 import ExplorGrid from "../Components/ExplorGrid";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
@@ -48,6 +54,7 @@ export default function HomePage() {
   const [locationText, setLocationText] = useState("");
   const [keyword, setKeyword] = useState("");
   const [pincode, setPincode] = useState("");
+  const [showMore, setShowMore] = useState(false);
   useEffect(() => {
     // Step 1: Get current coordinates
     const apiKey = process.env.GEO_LOCATION_KEY || GEO_LOCATION_KEY;
@@ -308,9 +315,13 @@ export default function HomePage() {
         <div className="w-full flex justify-center items-center flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-10 ">
           <div className="flex justify-center items-center gap-2 mt-4">
             <PlayCircleFilledWhiteOutlinedIcon />
-            <span className="text-2xl font-normal text-[#565656]">
+            <a
+              href="https://www.youtube.com/@eTenderMitra"
+              target="_blank"
+              className="text-2xl font-normal text-[#565656]"
+            >
               See how it works
-            </span>
+            </a>
           </div>
           <div>
             <button
@@ -340,8 +351,16 @@ export default function HomePage() {
             </div>
             <div className="flex flex-col md:flex-row gap-10 justify-center items-center">
               <motion.div
+                viewport={{ once: true }}
                 initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                whileInView={{
+                  opacity: 1,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.7,
+                    ease: "easeInOut",
+                  },
+                }}
                 className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent rounded-2xl border border-white/30 text-center  w-72 sm:w-52 lg:w-72 h-32"
               >
                 {/* Upper-left Fading Shadow */}
@@ -356,8 +375,16 @@ export default function HomePage() {
                 </p>
               </motion.div>
               <motion.div
+                viewport={{ once: true }}
                 initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                whileInView={{
+                  opacity: 1,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.5,
+                    ease: "easeInOut",
+                  },
+                }}
                 className="relative flex flex-col justify-center gap-1 bg-gradient-to-br from-white/30 to-transparent rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-36"
               >
                 {/* Upper-left Fading Shadow */}
@@ -374,8 +401,16 @@ export default function HomePage() {
                 </p>
               </motion.div>
               <motion.div
+                viewport={{ once: true }}
                 initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                whileInView={{
+                  opacity: 1,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.7,
+                    ease: "easeInOut",
+                  },
+                }}
                 className="relative flex flex-col justify-center  bg-gradient-to-br from-white/30 to-transparent rounded-2xl border border-white/30 text-center w-72 sm:w-52 lg:w-72 h-32"
               >
                 {/* Upper-left Fading Shadow */}
@@ -393,16 +428,44 @@ export default function HomePage() {
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center items-center gap-6 mt-16 md:mt-0">
             <div className="w-full flex flex-col gap-4">
-              <h1 className="text-4xl font-semibold w-full flex flex-col gap-3 md:gap-6">
+              <motion.h1
+                viewport={{ once: true }}
+                initial={{
+                  opacity: 0,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.7,
+                    ease: "easeInOut",
+                  },
+                }}
+                className="text-4xl font-semibold w-full flex flex-col gap-3 md:gap-6"
+              >
                 <span>Take a demo & get a </span>
                 <span>guided walkthrough with a </span>
                 <span>platform expert</span>
-              </h1>
+              </motion.h1>
               <button className="py-2 px-3 rounded-lg bg-white text-[#0554F2] max-w-36">
                 Request Demo
               </button>
             </div>
-            <div className="w-full flex flex-col gap-8 my-16">
+            <motion.div
+              viewport={{ once: true }}
+              initial={{
+                opacity: 0,
+              }}
+              whileInView={{
+                opacity: 1,
+                transition: {
+                  duration: 0.3,
+                  delay: 0.7,
+                  ease: "easeInOut",
+                },
+              }}
+              className="w-full flex flex-col gap-8 my-16"
+            >
               <div className="relative pb-4 flex justify-center md:justify-end items-center gap-1">
                 <h1 className="text-xl text-right font-semibold">
                   Keyword & Category Searches
@@ -411,7 +474,7 @@ export default function HomePage() {
               </div>
               <div className="relative pb-4 flex justify-center md:justify-end items-center gap-1">
                 <h1 className="text-xl text-right font-semibold ">
-                  Alerts on Email, SMS & WhatsApp
+                  Create Filters & Get Tender Just Second
                 </h1>
                 <div className="absolute bottom-0 right-0 w-full  h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
               </div>
@@ -421,10 +484,16 @@ export default function HomePage() {
                 </h1>
                 <div className="absolute bottom-0 right-0 w-full md:w-3/4 h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
               </div>
-            </div>
+              <div className="relative pb-4 flex justify-center md:justify-end items-center gap-1">
+                <h1 className="text-xl text-right font-semibold">
+                  View Tender Live Location Wise
+                </h1>
+                <div className="absolute bottom-0 right-0 w-full md:w-3/4 h-[2px] bg-gradient-to-l from-[#fff] to-transparent"></div>
+              </div>
+            </motion.div>
           </div>
         </div>
-        <div className="w-full  grid grid-cols-1 md:grid-cols-4  gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-32">
+        <div className="w-full  grid grid-cols-1 md:grid-cols-3  gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-32">
           <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
             <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
               <ArticleOutlinedIcon
@@ -441,7 +510,7 @@ export default function HomePage() {
               Download all the documents like Tender notice, NIT, BOQ etc
             </p>
           </div>
-          <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
+          {/* <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
             <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
               <NotificationsActiveOutlinedIcon
                 sx={{
@@ -456,7 +525,7 @@ export default function HomePage() {
             <p className="text-sm font-normal text-[#565656] text-center max-w-64">
               Download all the documents like Tender notice, NIT, BOQ etc
             </p>
-          </div>
+          </div> */}
           <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
             <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
               <SettingsSuggestOutlinedIcon
@@ -495,43 +564,15 @@ export default function HomePage() {
             Explore by Keywords
           </h1>
           <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 ">
-            <ExplorGrid
-              title={"Construction Tenders"}
-              subTitle={"11.4K Tenders"}
-              pic={i1}
-            />
-            <ExplorGrid
-              title={"Road Tenders"}
-              subTitle={"11.4K Tenders"}
-              pic={i2}
-            />
-            <ExplorGrid
-              title={"Water Tenders"}
-              subTitle={"11.4K Tenders"}
-              pic={i3}
-            />
-            <ExplorGrid
-              title={"Building Tenders"}
-              subTitle={"11.4K Tenders"}
-              pic={i4}
-            />
+            <ExplorGrid title={"Construction Tenders"} pic={i1} />
+            <ExplorGrid title={"Road Tenders"} pic={i2} />
+            <ExplorGrid title={"Water Tenders"} pic={i3} />
+            <ExplorGrid title={"Building Tenders"} pic={i4} />
           </div>
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 ">
-            <ExplorGrid
-              title={"Electrical Tenders"}
-              subTitle={"11.4K Tenders"}
-              pic={i5}
-            />
-            <ExplorGrid
-              title={"Painting Tenders"}
-              subTitle={"11.4K Tenders"}
-              pic={i6}
-            />
-            <ExplorGrid
-              title={"Medical Tenders"}
-              subTitle={"11.4K Tenders"}
-              pic={i7}
-            />
+            <ExplorGrid title={"Electrical Tenders"} pic={i5} />
+            <ExplorGrid title={"Painting Tenders"} pic={i6} />
+            <ExplorGrid title={"Medical Tenders"} pic={i7} />
           </div>
         </div>
         <div className="w-full flex flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
@@ -610,37 +651,52 @@ export default function HomePage() {
           <h1 className="w-full text-center text-4xl font-normal text-black">
             Search with districts
           </h1>
+
           <div className="w-full grid grid-cols-2 md:grid-cols-6 justify-center gap-4 ">
-            <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
-              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-                Tender by Sector
-              </h6>
-            </div>
-            <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
-              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-                Tender by Keyword
-              </h6>
-            </div>
-            <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
-              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-                Tender by Financiers
-              </h6>
-            </div>
-            <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
-              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-                Tender by Authority
-              </h6>
-            </div>
-            <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
-              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-                Tender by City
-              </h6>
-            </div>
-            <div className="flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
-              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
-                Tender by City
-              </h6>
-            </div>
+            {WBDistricts[0]?.map((d) => (
+              <div
+                style={{
+                  backgroundImage: `url(${authgrd})`, // Corrected syntax
+                  backgroundSize: "cover", // Ensures it covers the area
+                  backgroundRepeat: "no-repeat", // Prevents repeating
+                  backgroundPosition: "center",
+                  objectFit: "contain",
+                }}
+                className="flex flex-col justify-center items-center p-4 border rounded-lg"
+              >
+                <h6 className="text-base text-[#212121] text-center font-normal">
+                  {d.name}
+                </h6>
+              </div>
+            ))}
+          </div>
+          <div className="w-full grid grid-cols-2 md:grid-cols-6 justify-center gap-4 ">
+            {showMore &&
+              WBDistricts[1]?.map((d) => (
+                <div
+                  style={{
+                    backgroundImage: `url(${authgrd})`, // Corrected syntax
+                    backgroundSize: "cover", // Ensures it covers the area
+                    backgroundRepeat: "no-repeat", // Prevents repeating
+                    backgroundPosition: "center",
+                    objectFit: "contain",
+                  }}
+                  className="backdrop-blur-lg flex flex-col justify-center items-center p-4 border rounded-lg"
+                >
+                  <h6 className="text-base text-[#212121] text-center font-normal">
+                    {d.name}
+                  </h6>
+                </div>
+              ))}
+          </div>
+          <div className="flex justify-center items-center">
+            <button
+              onClick={() => setShowMore((prev) => !prev)}
+              className="px-3 py-1 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
+            hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
+            >
+              {showMore ? "Show less" : "Show more"}
+            </button>
           </div>
         </div>
         <div
@@ -666,7 +722,7 @@ export default function HomePage() {
             <div className="text-green-500 flex justify-center items-center gap-2">
               <CheckCircleOutlineOutlinedIcon />
               <h1 className="text-[#212121] text-xl font-normal">
-                3 Days Free Trial for New Year
+                14 Days Free Trial for New Year
               </h1>
             </div>
             <div className="text-green-500 flex justify-center items-center gap-2">
@@ -687,6 +743,26 @@ export default function HomePage() {
             </button>
           </div>
         </div>
+        <div className="relative top-10 text-white px-6 md:px-12 lg:px-24 xl:px-32 min-h-72 flex flex-col justify-center items-center gap-8">
+          <h1 className="w-full text-center text-4xl font-normal text-black">
+            Get tenders in 2 steps
+          </h1>
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 border p-4 rounded-md shadow-md w-2/3">
+            <div className="text-green-500 flex justify-center items-center gap-2">
+              <h1 className="text-[#212121] text-xl font-normal text-center">Join</h1>
+            </div>
+            <div className="w-14 h-1 border border-gray-600 rounded-full bg-slate-400" />
+            <div className="text-green-500 flex justify-center items-center gap-2">
+              <h1 className="text-[#212121] text-xl font-normal text-center">
+                Get Verified
+              </h1>
+            </div>
+            <div className="w-14 h-1 border border-gray-600 rounded-full bg-slate-400" />
+            <div className="text-green-500 flex justify-center items-center gap-2">
+              <h1 className="text-[#212121] text-xl font-normal text-center">Get tender</h1>
+            </div>
+          </div>
+        </div>
 
         <div className="w-full flex flex-col items-center relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
           <h1 className="w-full text-4xl font-normal text-center mb-8 text-[#212121]">
@@ -702,69 +778,26 @@ export default function HomePage() {
             containerClass="w-full rounded-xl max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl mx-auto shadow-md m-5"
             arrows={false}
           >
-            <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
-              <img
-                src={tm}
-                alt="testimonial"
-                className="h-72 object-cover rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
-              />
-              <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
-                <p className="text-justify text-base text-[#565656] font-normal">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Debitis vitae recusandae ab ut cumque reprehenderit
-                  accusantium beatae explicabo qui, facere sint laboriosam porro
-                  assumenda unde!
-                </p>
-                <div className="flex flex-col">
-                  <span className="text-base font-medium">test user</span>
-                  <span className="text-sm font-normal text-[#565656]">
-                    TEST
-                  </span>
+            {testimonailContent?.map((d) => (
+              <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
+                <img
+                  src={tm}
+                  alt="testimonial"
+                  className="h-72 object-cover rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
+                />
+                <div className="flex flex-col justify-between gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
+                  <p className="text-justify text-base text-[#565656] font-normal">
+                    {d?.review}
+                  </p>
+                  <div className="flex flex-col pb-4">
+                    <span className="text-base font-medium">{d?.userName}</span>
+                    <span className="text-sm font-normal text-[#565656]">
+                      {d.posotion}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
-              <img
-                src={tm}
-                alt="testimonial"
-                className="h-72  rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
-              />
-              <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
-                <p className="text-justify text-base text-[#565656] font-normal">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Debitis vitae recusandae ab ut cumque reprehenderit
-                  accusantium beatae explicabo qui, facere sint laboriosam porro
-                  assumenda unde!
-                </p>
-                <div className="flex flex-col">
-                  <span className="text-base font-medium">test user</span>
-                  <span className="text-sm font-normal text-[#565656]">
-                    TEST
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
-              <img
-                src={tm}
-                alt="testimonial"
-                className="h-72  rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
-              />
-              <div className="flex flex-col gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
-                <p className="text-justify text-base text-[#565656] font-normal">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Debitis vitae recusandae ab ut cumque reprehenderit
-                  accusantium beatae explicabo qui, facere sint laboriosam porro
-                  assumenda unde!
-                </p>
-                <div className="flex flex-col">
-                  <span className="text-base font-medium">test user</span>
-                  <span className="text-sm font-normal text-[#565656]">
-                    TEST
-                  </span>
-                </div>
-              </div>
-            </div>
+            ))}
           </Carousel>
         </div>
         <div className="w-full gap-8 flex flex-col md:flex-row items-center relative px-6 sm:px-8 md:px-12 lg:px-24 xl:px-32 mt-16">
@@ -782,31 +815,33 @@ export default function HomePage() {
                   id="panel1-header"
                 >
                   <h1 className="text-base font-normal text-[#212121]">
-                    What is a tender and how does it work?
-                  </h1>
-                </AccordionSummary>
-                <AccordionDetails>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </AccordionDetails>
-              </Accordion>
-            </div>
-            <div className="p-3 border-t border-gray-300">
-              <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                >
-                  <h1 className="text-base font-normal text-[#212121]">
                     What is a tender sourcing platform?
                   </h1>
                 </AccordionSummary>
                 <AccordionDetails>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
+                  A tender sourcing platform helps businesses and contractors
+                  find and manage tender details and submit bids if interested.
+                  And contractors can easily participate in tenders of their
+                  choice.
+                </AccordionDetails>
+              </Accordion>
+            </div>
+            <div className="p-3 border-t border-gray-300 w-full">
+              <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1-content"
+                  id="panel1-header"
+                >
+                  <h1 className="text-base font-normal text-[#212121]">
+                    How to apply tender?
+                  </h1>
+                </AccordionSummary>
+                <AccordionDetails>
+                  Here are easy steps to apply for a tender. <br />o Find Tender{" "}
+                  <br />
+                  o Review tender document <br /> o Checking eligibility <br />{" "}
+                  o Preparing the bid o Bid submission
                 </AccordionDetails>
               </Accordion>
             </div>
@@ -818,49 +853,35 @@ export default function HomePage() {
                   id="panel1-header"
                 >
                   <h1 className="text-base font-normal text-[#212121]">
-                    What are the 4 pillars of sourcing?
+                    Why choice our Platform?
                   </h1>
                 </AccordionSummary>
                 <AccordionDetails>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </AccordionDetails>
-              </Accordion>
-            </div>
-            <div className="p-3 border-t border-gray-300">
-              <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                >
-                  <h1 className="text-base font-normal text-[#212121]">
-                    How to apply for a tender?
-                  </h1>
-                </AccordionSummary>
-                <AccordionDetails>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </AccordionDetails>
-              </Accordion>
-            </div>
-            <div className="p-3 border-t border-gray-300">
-              <Accordion disableGutters={true} sx={{ boxShadow: "none" }}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                >
-                  <h1 className="text-base font-normal text-[#212121]">
-                    Is there a free trial available?
-                  </h1>
-                </AccordionSummary>
-                <AccordionDetails>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
+                  <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>You can easily find all tenders on our platform.</li>
+                    <li>
+                      Get tenders that matter — filtered by location,
+                      department, or category.
+                    </li>
+                    <li>
+                      Choose from Basic to Premium or customize with Plan on
+                      Demand — made for businesses of every size.
+                    </li>
+                    <li>We help you submit bids.</li>
+                    <li>You can set your preferred filters.</li>
+                    <li>We have no hidden charges.</li>
+                    <li>
+                      The keyword search system will help you find tenders.
+                    </li>
+                    <li>
+                      You can choose the subscription plan of your choice at a
+                      low cost.
+                    </li>
+                    <li>
+                      Not just info — we help you understand and act on it, with
+                      personalized guidance.
+                    </li>
+                  </ul>
                 </AccordionDetails>
               </Accordion>
             </div>

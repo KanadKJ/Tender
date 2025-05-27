@@ -4,13 +4,13 @@ import logo from "../Assets/logoNew.png";
 import Ribbons from "../Components/Ribbons";
 import { useDispatch, useSelector } from "react-redux";
 import { GetOtp, GetUserDetails } from "../Redux/Slices/AuthSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import authgrd from "../Assets/AUTHGRD.png";
 import otpillus from "../Assets/OTP.png";
-const LoginPage = () => {
+const ValidateOtp = () => {
   // state
-  const [phone, setPhone] = useState(null);
+
   const [otp, setOtp] = useState(null);
   console.log(otp);
 
@@ -19,6 +19,10 @@ const LoginPage = () => {
   const [userData, setUserData] = useState({});
 
   // hooks
+  const location = useLocation();
+  const { phone } = location?.state || {};
+  console.log(phone);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // useEffect(() => {
@@ -30,51 +34,49 @@ const LoginPage = () => {
   //   }
   // }, []);
   // redux states
-  const { authIsLoading } = useSelector((s) => s.auth);
-
-  // handle input change
-  const handleChange = (e) => {
-    setErrors({});
-    const { value } = e.target;
-    setPhone(value);
-  };
+  const { authIsLoading, error } = useSelector((s) => s.auth);
+  console.log(error);
 
   // validation
   const validateForm = () => {
     const newErrors = {};
+    console.log("string", otp?.toString());
 
-    if (phone?.toString()?.length < 10 || phone === null) {
-      newErrors.phone = "Please provide valid mobile number.";
+    if (otp?.toString()?.length < 4 || otp === null) {
+      newErrors.otp = "Please provide valid OTP.";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   // form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleOtp = async (e) => {
     if (!validateForm()) {
       return;
     }
 
     try {
-      const response = await dispatch(GetOtp(phone)).unwrap();
+      let obj = {
+        mobileNumber: `91${phone}`,
+        otp: otp,
+      };
+      const response = await dispatch(GetUserDetails(obj)).unwrap();
       console.log(response);
-      if (!response) {
+      if (response?.statusCode === 404) {
+        setErrors({ loginError: "User not found" });
         return; // Stop execution, prevent navigation
       }
-      if (response?.success) {
-        navigate("/validateOtp", {
-          state: { phone },
-        });
+      if (response?.valid) {
+        navigate("/dashboard/profile");
       }
-      // navigate("/dashboard/profile");
+      //   if (response?.success) {
+      //     setShowOtp(true);
+      //   }
+      //   navigate("/dashboard/profile");
     } catch (error) {
       setErrors({ loginError: error });
     }
   };
-
   return (
     <div className="p-3 flex-1 w-full flex ">
       <Background type={"default"} />
@@ -140,54 +142,51 @@ const LoginPage = () => {
           <h2 className="text-sm font-normal text-[#565656] text-center">
             All tender contracts at one place
           </h2>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <div className="mt-8 w-full flex  justify-center items-center gap-2 ">
-              <span className="p-2 border rounded-md">+91</span>
               <input
                 type="text"
                 id="number"
                 name="number"
-                value={phone}
+                value={otp}
                 onChange={(e) => {
                   const value = e.target.value;
                   // Only allow digits and max 10 characters
-                  if (/^\d{0,10}$/.test(value)) {
-                    handleChange(e);
+                  if (/^\d{0,4}$/.test(value)) {
+                    setOtp(value);
                   }
                 }}
-                placeholder="Mobile number"
+                placeholder="Enter OTP"
                 className={`w-full p-2 border ${
-                  errors.phone ? "border-red-500" : "border-gray-300"
+                  errors.otp ? "border-red-500" : "border-gray-300"
                 } rounded`}
               />
             </div>
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            {errors?.otp && (
+              <p className="text-red-500 text-sm mt-1">{errors?.otp}</p>
             )}
+            {error && (
+              <div className="flex">
+                <p className="text-red-500 text-sm mt-1">{`${error[0]}, ${
+                  error[1] && JSON.parse(error[1])?.message
+                }`}</p>
+              </div>
+            )}
+
             <button
-              type="submit"
+              onClick={handleOtp}
               className="w-full bg-[#212121] text-white p-2 rounded "
             >
-              {authIsLoading ? "Sending OTP" : "Request OTP"}
+              {authIsLoading ? "Verifying OTP" : "Submit"}
             </button>
-          </form>
+          </div>
 
           <div className="w-full flex justify-center items-center">
-            {errors.loginError && (
-              <p className="text-red-500 text-sm mt-1">{errors.loginError}</p>
+            {errors?.loginError && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors?.loginError.message}
+              </p>
             )}
-          </div>
-          <div className="w-full flex justify-center items-center mt-2">
-            <span className="mt-2">
-              Don’t have an account?
-              <a
-                className="text-blue-500 px-1 cursor-pointer"
-                onClick={() => navigate("/signup")}
-              >
-                Register
-              </a>
-            </span>
           </div>
         </div>
       </div>
@@ -195,4 +194,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default ValidateOtp;

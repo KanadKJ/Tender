@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 import logo from "../Assets/logoNew.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useEffect, useState } from "react";
 import { Avatar, Dialog, Popover } from "@mui/material";
@@ -20,6 +20,9 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { cleanUpUserFilters } from "../Redux/Slices/TenderSlice";
 import { getDecryptedItem } from "../Utils/CommonUtils";
 const Header = () => {
+  const location = useLocation();
+  const pathname = location.pathname;
+  const isActive = (path) => pathname === path || pathname.startsWith(path);
   const [anchorEl, setAnchorEl] = useState(null);
   const [sessionInControlStatus, setSessionInControlStatus] = useState(false);
   const { userData, userFilters } = useSelector((s) => s.auth);
@@ -111,10 +114,10 @@ const Header = () => {
           <div className="hidden md:flex">
             <div className="flex flex-col justify-center items-center mx-3 text-center text-xs">
               <span
-                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
+                className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0"
+                hover:before:left-0 `}
                 onClick={() => navigate("/")}
               >
                 <span>
@@ -129,10 +132,14 @@ const Header = () => {
             </div>
             <div className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
               <span
-                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
+                className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0 "
+                hover:before:left-0  ${
+                  isActive("/tenders")
+                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
+                    : ""
+                }`}
                 onClick={() => navigate("/tenders?")}
               >
                 <span>
@@ -150,10 +157,14 @@ const Header = () => {
               onClick={() => navigate("pricing")}
             >
               <span
-                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
+                className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0 "
+                hover:before:left-0 ${
+                  isActive("/pricing")
+                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
+                    : ""
+                }`}
               >
                 <span>
                   <CurrencyRupeeOutlinedIcon
@@ -165,12 +176,19 @@ const Header = () => {
                 <span>Pricing</span>
               </span>
             </div>
-            <div onClick={() => navigate("help")} className="flex flex-col justify-center items-center mx-3 text-center text-xs ">
+            <div
+              onClick={() => navigate("help")}
+              className="flex flex-col justify-center items-center mx-3 text-center text-xs "
+            >
               <span
-                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
+                className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0 "
+                hover:before:left-0  ${
+                  isActive("/help")
+                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
+                    : ""
+                }`}
               >
                 <span>
                   <HelpOutlinedIcon
@@ -187,10 +205,14 @@ const Header = () => {
               onClick={() => navigate("About-Us")}
             >
               <span
-                className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
+                className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0 "
+                hover:before:left-0  ${
+                  isActive("/About-Us")
+                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
+                    : ""
+                }`}
               >
                 <span>
                   <InfoOutlinedIcon
@@ -208,10 +230,14 @@ const Header = () => {
                 onClick={() => navigate("/dashboard")}
               >
                 <span
-                  className="text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
+                  className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0 "
+                hover:before:left-0  ${
+                  isActive("/dashboard")
+                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
+                    : ""
+                }`}
                 >
                   <span>
                     <PersonOutlineOutlinedIcon

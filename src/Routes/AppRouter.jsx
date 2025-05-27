@@ -23,6 +23,7 @@ const TermsAndConditionsPage = lazy(() =>
 );
 const FollowedTendersPage = lazy(() => import("../Screens/FollowedTenders"));
 const HelpPage = lazy(() => import("../Screens/Help"));
+const ValidateOtpPage = lazy(() => import("../Screens/ValidateOtp"));
 
 const AppRouter = () => {
   return (
@@ -30,7 +31,8 @@ const AppRouter = () => {
       <Suspense fallback={<h1>Loading...</h1>}>
         <Routes>
           <Route path="/" element={<MainLayout />}>
-            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<Register />} />
             {/* <Route path="/tenders" element={<TendersPage />} /> */}
             <Route path="/tenders/" element={<TendersPage />} />
@@ -39,9 +41,9 @@ const AppRouter = () => {
 
             <Route path="/T&C" element={<TermsAndConditionsPage />} />
             <Route path="/help" element={<HelpPage />} />
+            <Route path="/validateOtp" element={<ValidateOtpPage />} />
             <Route path="/About-Us" element={<AboutUsPage />} />
             <Route path="/tenders/:id" element={<TenderDetails />} />
-            <Route path="*" element={<HomePage />} />
             <Route path="/dashboard" element={<Dashboard />}>
               <Route
                 index

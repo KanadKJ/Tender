@@ -2,12 +2,25 @@ import React, { useState } from "react";
 import Background from "../Components/Background";
 import { Autocomplete, TextField, Button } from "@mui/material";
 
-const category = [{ catergoryName: "Help for bid submission" }];
+const category = [
+  { cname: "Help for bid submission" },
+  { cname: "Need Demo" },
+  { cname: "Get Digital signature certificate" },
+  { cname: "Report for missing tender" },
+  { cname: "Request for inactive account" },
+  { cname: "plan on demand" },
+  { cname: "Others" },
+];
 
 export default function Help() {
-  const [option, setOption] = useState([]);
+  const [option, setOption] = useState(null);
   const [inputValue, setInputValue] = useState("");
-
+  const [fullName, setFullName] = useState("");
+  const [contact, setContact] = useState("");
+  const [userQuery, SetUserQuery] = useState("");
+  const handleFormSumit = () => {
+    console.log(option, fullName, contact, userQuery);
+  };
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-[#f8fafc] to-[#e0f2fe]">
       <Background type={"default"} show="no" />
@@ -29,7 +42,6 @@ export default function Help() {
             <div className="w-full max-w-sm">
               <Autocomplete
                 size="small"
-                multiple
                 value={option}
                 onChange={(event, newValue) => setOption(newValue)}
                 inputValue={inputValue}
@@ -38,7 +50,7 @@ export default function Help() {
                 }}
                 id="category-autocomplete"
                 options={category}
-                getOptionLabel={(option) => option?.catergoryName}
+                getOptionLabel={(option) => option?.cname}
                 renderInput={(params) => (
                   <TextField {...params} label="Select Category" />
                 )}
@@ -50,6 +62,7 @@ export default function Help() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
             <label className="w-28 text-[#334155] font-medium">Full Name</label>
             <input
+              onChange={(e) => setFullName(e.target.value)}
               type="text"
               placeholder="Enter your full name"
               className="w-full max-w-sm px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -60,6 +73,7 @@ export default function Help() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
             <label className="w-28 text-[#334155] font-medium">Contact</label>
             <input
+              onChange={(e) => setContact(e.target.value)}
               type="number"
               placeholder="Enter your contact number"
               className="w-full max-w-sm px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -70,6 +84,7 @@ export default function Help() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
             <label className="w-28 text-[#334155] font-medium">Query</label>
             <textarea
+              onChange={(e) => SetUserQuery(e.target.value)}
               rows={4}
               placeholder="Write your query..."
               className="w-full max-w-sm px-4 py-2 border border-gray-300 rounded-md shadow-sm resize-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -83,6 +98,7 @@ export default function Help() {
               color="primary"
               size="large"
               className="bg-blue-600 text-white hover:bg-blue-700"
+              onClick={handleFormSumit}
             >
               Submit Query
             </Button>
