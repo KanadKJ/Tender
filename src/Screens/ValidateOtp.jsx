@@ -102,7 +102,7 @@ const ValidateOtp = () => {
           <div className="text-green-500 flex justify-center items-center gap-2">
             <CheckCircleOutlineOutlinedIcon />
             <h1 className="text-[#212121] text-sm font-normal">
-              3 Days Free Trial for New Year
+              14 Days Free Trial for New Year
             </h1>
           </div>
           <div className="text-green-500 flex justify-center items-center gap-2">
@@ -167,8 +167,8 @@ const ValidateOtp = () => {
             )}
             {error && (
               <div className="flex">
-                <p className="text-red-500 text-sm mt-1">{`${error[0]}, ${
-                  error[1] && JSON.parse(error[1])?.message
+                <p className="text-red-500 text-sm mt-1">{`${error[0]&&error[0]}, ${
+                  error[1] && JSON.parse(error[1])?.message||""
                 }`}</p>
               </div>
             )}

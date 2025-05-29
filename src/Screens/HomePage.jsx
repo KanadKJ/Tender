@@ -447,7 +447,10 @@ export default function HomePage() {
                 <span>guided walkthrough with a </span>
                 <span>platform expert</span>
               </motion.h1>
-              <button className="py-2 px-3 rounded-lg bg-white text-[#0554F2] max-w-36">
+              <button
+                onClick={() => navigate("help")}
+                className="py-2 px-3 rounded-lg bg-white text-[#0554F2] max-w-36"
+              >
                 Request Demo
               </button>
             </div>
@@ -506,9 +509,6 @@ export default function HomePage() {
             <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
               Get Documents Easily
             </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
           </div>
           {/* <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
             <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
@@ -538,9 +538,6 @@ export default function HomePage() {
             <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
               Automate your search
             </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
           </div>
           <div className="flex flex-col justify-center items-center gap-4 p-4 border rounded-lg">
             <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
@@ -554,9 +551,6 @@ export default function HomePage() {
             <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
               Search easily like Google
             </h6>
-            <p className="text-sm font-normal text-[#565656] text-center max-w-64">
-              Download all the documents like Tender notice, NIT, BOQ etc
-            </p>
           </div>
         </div>
         <div className="w-full flex flex-col gap-4 relative px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-16">
@@ -662,7 +656,8 @@ export default function HomePage() {
                   backgroundPosition: "center",
                   objectFit: "contain",
                 }}
-                className="flex flex-col justify-center items-center p-4 border rounded-lg"
+                className="flex flex-col justify-center items-center p-4 border rounded-lg cursor-pointer"
+                onClick={() => navigate("/tenders?")}
               >
                 <h6 className="text-base text-[#212121] text-center font-normal">
                   {d.name}
@@ -722,7 +717,7 @@ export default function HomePage() {
             <div className="text-green-500 flex justify-center items-center gap-2">
               <CheckCircleOutlineOutlinedIcon />
               <h1 className="text-[#212121] text-xl font-normal">
-                14 Days Free Trial for New Year
+                14 Days Free Trial
               </h1>
             </div>
             <div className="text-green-500 flex justify-center items-center gap-2">
@@ -749,7 +744,9 @@ export default function HomePage() {
           </h1>
           <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 border p-4 rounded-md shadow-md w-2/3">
             <div className="text-green-500 flex justify-center items-center gap-2">
-              <h1 className="text-[#212121] text-xl font-normal text-center">Join</h1>
+              <h1 className="text-[#212121] text-xl font-normal text-center">
+                Join
+              </h1>
             </div>
             <div className="w-14 h-1 border border-gray-600 rounded-full bg-slate-400" />
             <div className="text-green-500 flex justify-center items-center gap-2">
@@ -759,7 +756,9 @@ export default function HomePage() {
             </div>
             <div className="w-14 h-1 border border-gray-600 rounded-full bg-slate-400" />
             <div className="text-green-500 flex justify-center items-center gap-2">
-              <h1 className="text-[#212121] text-xl font-normal text-center">Get tender</h1>
+              <h1 className="text-[#212121] text-xl font-normal text-center">
+                Get tender
+              </h1>
             </div>
           </div>
         </div>

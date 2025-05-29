@@ -102,7 +102,7 @@ export const GetUserDetails = createAsyncThunk(
         return rejectWithValue(response?.data?.errors);
       }
       if (response?.data?.value[0]?.isLoggedIn) {
-        return rejectWithValue("User already logged in.");
+        return rejectWithValue(["User already logged in"]);
       }
       const user = response.data.value[0]; // Store only the user object
 

@@ -100,7 +100,7 @@ const LoginPage = () => {
           <div className="text-green-500 flex justify-center items-center gap-2">
             <CheckCircleOutlineOutlinedIcon />
             <h1 className="text-[#212121] text-sm font-normal">
-              3 Days Free Trial for New Year
+              14 Days Free Trial for New Year
             </h1>
           </div>
           <div className="text-green-500 flex justify-center items-center gap-2">
