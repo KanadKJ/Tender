@@ -60,19 +60,13 @@ const LoginPage = () => {
 
     try {
       const response = await dispatch(GetOtp(phone)).unwrap();
-      console.log(response);
-      if (!response) {
-        return; // Stop execution, prevent navigation
-      }
-      if (response?.success) {
-        navigate("/validateOtp", {
-          state: { phone },
-        });
-      }
       // navigate("/dashboard/profile");
     } catch (error) {
       setErrors({ loginError: error });
     }
+    navigate("/validateOtp", {
+      state: { phone },
+    });
   };
 
   return (
@@ -169,7 +163,7 @@ const LoginPage = () => {
               type="submit"
               className="w-full bg-[#212121] text-white p-2 rounded "
             >
-              {authIsLoading ? "Sending OTP" : "Request OTP"}
+              Request OTP
             </button>
           </form>
 

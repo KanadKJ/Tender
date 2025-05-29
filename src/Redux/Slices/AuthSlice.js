@@ -10,6 +10,7 @@ const initialState = {
   userFilters: null,
   companyDetailsData: null,
   addressDetailsData: null,
+  
 };
 //GetOtp
 export const GetOtp = createAsyncThunk(

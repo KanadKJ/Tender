@@ -49,7 +49,7 @@ const MainLayout = () => {
                 color: "#0554f29e",
                 zIndex: theme.zIndex.drawer + 100,
               })}
-              open={tenderIsLoading || isDistrictCallLoading || authIsLoading}
+              open={tenderIsLoading || isDistrictCallLoading}
             >
               <CircularProgress color="#0554f2" />
             </Backdrop>
