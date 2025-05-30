@@ -135,11 +135,7 @@ const Header = () => {
                 className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0  ${
-                  isActive("/tenders")
-                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
-                    : ""
-                }`}
+                hover:before:left-0`}
                 onClick={() => navigate("/tenders?")}
               >
                 <span>
@@ -160,11 +156,7 @@ const Header = () => {
                 className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0 ${
-                  isActive("/pricing")
-                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
-                    : ""
-                }`}
+                hover:before:left-0`}
               >
                 <span>
                   <CurrencyRupeeOutlinedIcon
@@ -184,11 +176,7 @@ const Header = () => {
                 className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0  ${
-                  isActive("/help")
-                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
-                    : ""
-                }`}
+                hover:before:left-0`}
               >
                 <span>
                   <HelpOutlinedIcon
@@ -208,11 +196,7 @@ const Header = () => {
                 className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0  ${
-                  isActive("/About-Us")
-                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
-                    : ""
-                }`}
+                hover:before:left-0`}
               >
                 <span>
                   <InfoOutlinedIcon
@@ -233,11 +217,7 @@ const Header = () => {
                   className={`text-[#212121] pb-1 text-sm font-normal hover:text-[#0554F2] relative flex items-center rounded-lg cursor-pointer 
                 before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 before:bg-[#0554F2] 
                 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full 
-                hover:before:left-0  ${
-                  isActive("/dashboard")
-                    ? "text-[#0554F2] font-semibold before:w-full before:left-0"
-                    : ""
-                }`}
+                hover:before:left-0`}
                 >
                   <span>
                     <PersonOutlineOutlinedIcon

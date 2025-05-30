@@ -13,7 +13,9 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import {
   carouselResponsive,
+  formatNumber,
   GEO_LOCATION_KEY,
+  queryBuilder,
   testimonailContent,
   WBDistricts,
 } from "../Utils/CommonUtils";
@@ -48,13 +50,19 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import Ribbons from "../Components/Ribbons";
+import { GetTenderListWithFilters } from "../Redux/Slices/TenderSlice";
+import { useDispatch, useSelector } from "react-redux";
 export default function HomePage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const carouselRef = useRef(null);
   const [locationText, setLocationText] = useState("");
   const [keyword, setKeyword] = useState("");
   const [pincode, setPincode] = useState("");
   const [showMore, setShowMore] = useState(false);
+  const { tenderData } = useSelector((s) => s.tender);
+  console.log(tenderData?.count);
+
   useEffect(() => {
     // Step 1: Get current coordinates
     const apiKey = process.env.GEO_LOCATION_KEY || GEO_LOCATION_KEY;
@@ -88,6 +96,17 @@ export default function HomePage() {
       }
     );
   }, []);
+
+  useEffect(() => {
+    let obj = {
+      ordering: ["-published_date"],
+      bidding_status: "active",
+    };
+    let q = queryBuilder(obj);
+    navigate(`?${q}`, { replace: true });
+    dispatch(GetTenderListWithFilters(q));
+  }, []);
+
   const CustomButtonGroup = () => (
     <div className="hidden absolute top-1/2 w-full md:flex justify-between px-8 md:px-12 lg:px-16 -translate-y-1/2 mt-8">
       <button
@@ -392,7 +411,7 @@ export default function HomePage() {
 
                 {/* Number */}
                 <h1 className="relative text-5xl  font-bold text-white">
-                  450k+
+                  {formatNumber(tenderData?.count) || "10k plus"}
                 </h1>
 
                 {/* Description */}

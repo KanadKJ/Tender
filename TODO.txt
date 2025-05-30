@@ -3,16 +3,15 @@ same for districts -- (done)
 
 request demo btn on home screen help page -- done
 
+on selecting the saved filter template after selecting the applied filters are not binded -- done
 
+in closing date in from todays date and to date +7 -- done
 
+in Our Achivements, number of active tenders can we show real time tender count. -- done
 
 
 on tenders page when search with everything on keywords need to click two times for the results.
 2025_ZPHD_845516_7
 
-in Our Achivements, number of active tenders can we show real time tender count.
-
-in closing date in from todays date and to date +7
 
 
-on selecting the saved filter template after selecting the applied filters are not binded

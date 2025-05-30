@@ -93,6 +93,15 @@ export const formatIndianCurrency = (num) => {
     maximumFractionDigits: 2,
   }).format(num)}`;
 };
+export const formatNumber = (num) => {
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+  }
+  return num.toString();
+};
 export const carouselResponsive = {
   superLargeDesktop: { breakpoint: { max: 4000, min: 1024 }, items: 1 },
   desktop: { breakpoint: { max: 1024, min: 768 }, items: 1 },
@@ -100,10 +109,10 @@ export const carouselResponsive = {
   mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
 };
 export const dateDifferenceCalculator = (d1, d2) => {
-  const date1 = new Date(d1);
-  const date2 = new Date(d2);
-  date1.setHours(0, 0, 0, 0);
-  date2.setHours(0, 0, 0, 0);
+  // Extract just the date parts to ignore timezones entirely
+  const date1 = new Date(d1?.slice(0, 10));
+  const date2 = new Date(d2?.slice(0, 10));
+
   if (isNaN(date1) || isNaN(date2)) {
     return { diffDays: null, col: "#000000" };
   }

@@ -91,8 +91,6 @@ export default function TenderPer() {
     unitData,
   } = useSelector((s) => s.common);
   const { userData, userFilters } = useSelector((s) => s.auth);
-  console.log(userFilters);
-
   const [isPlanExpired, setIsPlanExpired] = useState(false);
   const [allGood, setAllGood] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -147,7 +145,8 @@ export default function TenderPer() {
   });
   // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
-  const [dateOption, setDateOption] = useState("");
+  const [datePublishedOption, setDatePublishedOption] = useState("");
+  const [dateClosedOption, setDateClosedOption] = useState("");
   const queryString = useQueryParams(filters);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);
@@ -160,7 +159,7 @@ export default function TenderPer() {
     dispatch(GetDistrictsList(29));
     dispatch(GetStatesList());
     dispatch(GetOrgList());
-  }, []);
+  }, [tenderData]);
   useEffect(() => {
     if (userData) {
       dispatch(GetTemplateDetails(userData?.id));
@@ -435,14 +434,14 @@ export default function TenderPer() {
         published_date_after: "",
         published_date_before: "",
       }));
-      setDateOption("");
+      setDatePublishedOption("");
     } else if (name === "Closingdates") {
       setFilters((prev) => ({
         ...prev,
         bidding_submission_end_date_after: "",
         bidding_submission_end_date_before: "",
       }));
-      setDateOption("");
+      setDateClosedOption("");
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -647,8 +646,8 @@ export default function TenderPer() {
       });
   };
   const handleSavedSeachFromTemplate = (obj) => {
-    navigate(`?${obj?.url}`, { replace: true });
     dispatch(GetTenderListWithFilters(obj?.url));
+    navigate(`?${obj?.url}`, { replace: true });
     handleClose();
   };
   const dataFetcher = (type, ids) => {
@@ -744,7 +743,8 @@ export default function TenderPer() {
         ...obj,
       }));
       console.log(userFilters);
-      setDateOption("");
+      setDatePublishedOption("");
+      setDateClosedOption("");
       let q = queryBuilder(obj);
       navigate(`?bidding_status=active&ordering=-published_date&${q}`, {
         replace: true,
@@ -769,8 +769,8 @@ export default function TenderPer() {
         newParams.delete("keywords");
       }
       setSearchParams(newParams);
+      navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
     }
-    // navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
   };
   return (
     <>
@@ -2215,7 +2215,7 @@ export default function TenderPer() {
                     className="w-full"
                     select
                     label="Date Option"
-                    value={dateOption}
+                    value={datePublishedOption}
                     onChange={(e) => {
                       const selectedOption = e.target.value;
                       let published_date_after = "";
@@ -2264,7 +2264,7 @@ export default function TenderPer() {
                         published_date_before,
                       }));
 
-                      setDateOption(selectedOption);
+                      setDatePublishedOption(selectedOption);
                     }}
                   >
                     {dateOptions?.map((option) => (
@@ -2356,7 +2356,7 @@ export default function TenderPer() {
                   <TextField
                     select
                     label="Date Option"
-                    value={dateOption}
+                    value={dateClosedOption}
                     onChange={(e) => {
                       const selectedOption = e.target.value;
                       let bidding_submission_end_date_after = "";
@@ -2376,22 +2376,24 @@ export default function TenderPer() {
                             .split("T")[0];
                           break;
                         case "7days":
-                          bidding_submission_end_date_after = new Date(
-                            today.setDate(today.getDate() - 7)
-                          )
+                          bidding_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
-                          bidding_submission_end_date_before = new Date()
+
+                          bidding_submission_end_date_before = new Date(
+                            today.setDate(today.getDate() + 7)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
                         case "15days":
-                          bidding_submission_end_date_after = new Date(
-                            today.setDate(today.getDate() - 15)
-                          )
+                          bidding_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
-                          bidding_submission_end_date_before = new Date()
+
+                          bidding_submission_end_date_before = new Date(
+                            today.setDate(today.getDate() + 15)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
@@ -2405,7 +2407,7 @@ export default function TenderPer() {
                         bidding_submission_end_date_before,
                       }));
 
-                      setDateOption(selectedOption);
+                      setDateClosedOption(selectedOption);
                     }}
                   >
                     {dateOptionsClosing?.map((option) => (
