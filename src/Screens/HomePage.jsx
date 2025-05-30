@@ -61,6 +61,7 @@ export default function HomePage() {
   const [pincode, setPincode] = useState("");
   const [showMore, setShowMore] = useState(false);
   const { tenderData } = useSelector((s) => s.tender);
+  const { userData } = useSelector((s) => s.auth);
   console.log(tenderData?.count);
 
   useEffect(() => {
@@ -344,11 +345,13 @@ export default function HomePage() {
           </div>
           <div>
             <button
-              onClick={() => navigate("/signup")}
+              onClick={() => {
+                userData ? navigate("/tenders?") : navigate("/signup");
+              }}
               className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-medium text-[#0554F2] 
                                 hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
             >
-              Register Now ! It’s free
+              {userData ? "See tenders" : "Register Now ! It’s free"}
             </button>
           </div>
         </div>

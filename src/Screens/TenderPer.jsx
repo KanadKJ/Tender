@@ -72,7 +72,7 @@ import CustomBadge from "../Components/CustomBadge";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+
 import { toast } from "react-toastify";
 export default function TenderPer() {
   // redux
@@ -94,6 +94,7 @@ export default function TenderPer() {
   const [isPlanExpired, setIsPlanExpired] = useState(false);
   const [allGood, setAllGood] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [changeListner, setChangeListner] = useState(null);
   useEffect(() => {
     if (userFilters?.ExpiryDate) {
       const expiryDate = new Date(userFilters.ExpiryDate);
@@ -159,7 +160,7 @@ export default function TenderPer() {
     dispatch(GetDistrictsList(29));
     dispatch(GetStatesList());
     dispatch(GetOrgList());
-  }, [tenderData]);
+  }, [changeListner]);
   useEffect(() => {
     if (userData) {
       dispatch(GetTemplateDetails(userData?.id));
@@ -648,6 +649,7 @@ export default function TenderPer() {
   const handleSavedSeachFromTemplate = (obj) => {
     dispatch(GetTenderListWithFilters(obj?.url));
     navigate(`?${obj?.url}`, { replace: true });
+    setChangeListner(Math.random(0, 10000)*100);
     handleClose();
   };
   const dataFetcher = (type, ids) => {
@@ -674,6 +676,9 @@ export default function TenderPer() {
         ?.includes(searchTerm?.toLowerCase()) ||
       tender?.description?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
       tender?.id?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      tender?.product_category
+        ?.toLowerCase()
+        ?.includes(searchTerm?.toLowerCase()) ||
       tender?.department?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
 
@@ -755,23 +760,23 @@ export default function TenderPer() {
     // navigate(`?bidding_status=active&ordering=-published_date`, { replace: true });
   };
 
-  const handleSearchWithEverything = (e) => {
-    if (handleFilterSaved() === "ok") {
-      setFilters((prev) => ({
-        ...prev,
-        keywords: [searchTerm],
-      }));
+  // const handleSearchWithEverything = (e) => {
+  //   if (handleFilterSaved() === "ok") {
+  //     setFilters((prev) => ({
+  //       ...prev,
+  //       keywords: [searchTerm],
+  //     }));
 
-      const newParams = new URLSearchParams(searchParams);
-      if (searchTerm) {
-        newParams.set("keywords", searchTerm);
-      } else {
-        newParams.delete("keywords");
-      }
-      setSearchParams(newParams);
-      navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
-    }
-  };
+  //     const newParams = new URLSearchParams(searchParams);
+  //     if (searchTerm) {
+  //       newParams.set("keywords", searchTerm);
+  //     } else {
+  //       newParams.delete("keywords");
+  //     }
+  //     setSearchParams(newParams);
+  //     navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
+  //   }
+  // };
   return (
     <>
       <div id="page-top" className="h-1" />
@@ -812,12 +817,12 @@ export default function TenderPer() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button
+              {/* <button
                 onClick={handleSearchWithEverything}
                 className="p-2 ml-2 bg-[#0554F2] text-white rounded-lg"
               >
                 <SearchIcon />
-              </button>
+              </button> */}
             </div>
 
             <div className="flex md:hidden">

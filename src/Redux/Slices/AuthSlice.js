@@ -387,15 +387,15 @@ const authSlice = createSlice({
       })
       // getOtp
       .addCase(GetOtp.pending, (state) => {
-        state.authIsLoading = true;
+        // state.authIsLoading = true;
         state.error = null;
       })
       .addCase(GetOtp.fulfilled, (state, action) => {
-        state.authIsLoading = false;
+        // state.authIsLoading = false;
         state.error = null;
       })
       .addCase(GetOtp.rejected, (state, action) => {
-        state.authIsLoading = false;
+        // state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });
   },
