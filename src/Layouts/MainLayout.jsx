@@ -51,7 +51,12 @@ const MainLayout = () => {
               })}
               open={tenderIsLoading || isDistrictCallLoading || authIsLoading}
             >
-              <CircularProgress color="#0554f2" />
+              <CircularProgress
+                color="#0554f2"
+                style={{
+                  zIndex: 100000,
+                }}
+              />
             </Backdrop>
             <Outlet />
           </div>

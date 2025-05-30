@@ -7,3 +7,16 @@ export const TMGetApi = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+TMGetApi.interceptors.request.use(
+  (config) => {
+    const token = JSON.parse(localStorage.getItem("user"))?.acceessToken;
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (err) => {
+    return Promise.reject(`Error:: ${err}`);
+  }
+);

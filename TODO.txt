@@ -15,3 +15,6 @@ on tenders page when search with everything on keywords need to click two times 
 
 
 
+states=29&districts=558&districts=559&districts=561&districts=560&organisations=322&departments=1644&ordering=-published_date&bidding_status=active
+
+
