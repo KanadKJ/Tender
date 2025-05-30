@@ -100,7 +100,7 @@ export const formatNumber = (num) => {
   if (num >= 1_000) {
     return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
   }
-  return num.toString();
+  return num?.toString();
 };
 export const carouselResponsive = {
   superLargeDesktop: { breakpoint: { max: 4000, min: 1024 }, items: 1 },

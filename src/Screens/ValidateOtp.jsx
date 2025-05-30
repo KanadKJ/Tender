@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Background from "../Components/Background";
 import logo from "../Assets/logoNew.png";
 import Ribbons from "../Components/Ribbons";
@@ -15,9 +15,10 @@ const ValidateOtp = () => {
   console.log(otp);
 
   const [errors, setErrors] = useState({});
-  const [showOtp, setShowOtp] = useState(false);
+  const [showResendNow, setShowResendNow] = useState(true);
   const [userData, setUserData] = useState({});
-
+  const [timeLeft, setTimeLeft] = useState(10); // 2 mins 30 secs
+  const intervalRef = useRef(null);
   // hooks
   const location = useLocation();
   const { phone } = location?.state || {};
@@ -37,6 +38,34 @@ const ValidateOtp = () => {
   const { authIsLoading, error } = useSelector((s) => s.auth);
   console.log(error);
 
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  // to check if the user has reloaded the page
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem("isRefreshing", "true");
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    if (sessionStorage.getItem("isRefreshing") === "true") {
+      sessionStorage.removeItem("isRefreshing");
+      navigate("/");
+    }
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   // validation
   const validateForm = () => {
     const newErrors = {};
@@ -76,6 +105,15 @@ const ValidateOtp = () => {
     } catch (error) {
       setErrors({ loginError: error });
     }
+  };
+  const handleResend = () => {
+    setShowResendNow(false);
+    dispatch(GetOtp(phone));
+  };
+  const formatTime = (seconds) => {
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
+    return `${m}:${s}`;
   };
   return (
     <div className="p-3 flex-1 w-full flex ">
@@ -167,17 +205,29 @@ const ValidateOtp = () => {
             )}
             {error && (
               <div className="flex">
-                <p className="text-red-500 text-sm mt-1">{`${error[0]&&error[0]}, ${
-                  error[1] && JSON.parse(error[1])?.message||""
-                }`}</p>
+                <p className="text-red-500 text-sm mt-1">{`${
+                  error[0] && error[0]
+                }, ${(error[1] && JSON.parse(error[1])?.message) || ""}`}</p>
               </div>
             )}
-
+            <div>
+              {timeLeft > 0 ? (
+                <p>
+                  Resend OTP in <strong>{formatTime(timeLeft)}</strong>
+                </p>
+              ) : showResendNow ? (
+                <button onClick={handleResend} className="text-[#0554F2]">
+                  Resend OTP
+                </button>
+              ) : (
+                <p>OTP Resent</p>
+              )}
+            </div>
             <button
               onClick={handleOtp}
               className="w-full bg-[#212121] text-white p-2 rounded "
             >
-              {authIsLoading ? "Verifying OTP" : "Submit"}
+              {"Submit"}
             </button>
           </div>
 

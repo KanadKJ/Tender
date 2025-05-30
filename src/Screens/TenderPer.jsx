@@ -3041,7 +3041,7 @@ export default function TenderPer() {
                           }}
                         >
                           <div className="flex gap-2 p-2">
-                            <div className="text-green-600 cursor-pointer p-1 rounded-lg shadow-md">
+                            <div className="text-green-600 cursor-pointer p-1 rounded-lg">
                               <a
                                 href={
                                   window.location.href

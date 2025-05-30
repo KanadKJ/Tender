@@ -41,7 +41,7 @@ import i5 from "../Assets/i5.png";
 import i6 from "../Assets/i6.png";
 import i7 from "../Assets/i7.png";
 import authgrd from "../Assets/AUTHGRD.png";
-import NewBG from "../Assets/NewBG.jpg";
+import NewBG from "../Assets/NewBG.webp";
 import ExplorGrid from "../Components/ExplorGrid";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
@@ -103,7 +103,7 @@ export default function HomePage() {
       bidding_status: "active",
     };
     let q = queryBuilder(obj);
-    navigate(`?${q}`, { replace: true });
+
     dispatch(GetTenderListWithFilters(q));
   }, []);
 
@@ -695,7 +695,8 @@ export default function HomePage() {
                     backgroundPosition: "center",
                     objectFit: "contain",
                   }}
-                  className="backdrop-blur-lg flex flex-col justify-center items-center p-4 border rounded-lg"
+                  className="backdrop-blur-lg flex flex-col justify-center items-center p-4 border rounded-lg cursor-pointer"
+                  onClick={() => navigate("/tenders?")}
                 >
                   <h6 className="text-base text-[#212121] text-center font-normal">
                     {d.name}
