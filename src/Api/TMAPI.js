@@ -1,6 +1,7 @@
 import axios from "axios";
 import { TMAPI_BASE_URL } from "../Utils/CommonUtils";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { toast } from "react-toastify";
 
 export const TMGetApi = axios.create({
   baseURL: TMAPI_BASE_URL,
@@ -29,5 +30,18 @@ TMGetApi.interceptors.request.use(
   },
   (err) => {
     return Promise.reject(`Error:: ${err}`);
+  }
+);
+
+TMGetApi.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      toast.error("Login deteced in other device.");
+      localStorage.removeItem("user");
+      localStorage.removeItem("controller");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
   }
 );

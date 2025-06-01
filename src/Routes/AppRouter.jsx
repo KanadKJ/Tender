@@ -24,6 +24,7 @@ const TermsAndConditionsPage = lazy(() =>
 const FollowedTendersPage = lazy(() => import("../Screens/FollowedTenders"));
 const HelpPage = lazy(() => import("../Screens/Help"));
 const ValidateOtpPage = lazy(() => import("../Screens/ValidateOtp"));
+const CustomerQueriesPage = lazy(() => import("../Screens/CustomerQueries"));
 
 const AppRouter = () => {
   return (
@@ -90,6 +91,14 @@ const AppRouter = () => {
                 element={
                   <ProtectedRoutes>
                     <FollowedTendersPage />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="CustomerQueries"
+                element={
+                  <ProtectedRoutes>
+                    <CustomerQueriesPage />
                   </ProtectedRoutes>
                 }
               />

@@ -141,6 +141,19 @@ const Sidebar = ({ onLinkClick }) => {
             to="dashboard/UserManagement"
           />
         )}
+        {userData?.userType === 1 && (
+          <DriverLink
+            comp={
+              <ManageAccountsIcon
+                sx={{
+                  color: "#b2b2b3",
+                }}
+              />
+            }
+            name="Customer Queries"
+            to="dashboard/UserManagement"
+          />
+        )}
 
         <Link
           onClick={() => {

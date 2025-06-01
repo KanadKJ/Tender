@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ScrpApiTendersMetadata } from "../../Api/SCPAPI";
 import { TMGetApi } from "../../Api/TMAPI";
 import { toast } from "react-toastify";
+import { TMGetApiNoAuth } from "../../Api/NoAuthTMApi";
 
 const initialState = {
   isDistrictCallLoading: false,
@@ -194,6 +195,18 @@ export const ToggleUserStatus = createAsyncThunk(
         `/ToggleUserStatus?userId=${uid}&isActive=${statusOfUser}`
       );
       return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+export const InsertContactQueries = createAsyncThunk(
+  "common/InsertContactQueries",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApiNoAuth.post(`/InsertContactQuery`, params);
+      return res.data?.value;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
@@ -392,6 +405,23 @@ const commonSlice = createSlice({
         }
       })
       .addCase(ToggleUserStatus.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // InsertContactQueries
+      .addCase(InsertContactQueries.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(InsertContactQueries.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = null;
+
+        if (action?.payload[0] === "Query submitted successfully.") {
+          toast.success("Query submitted successfully.");
+        }
+      })
+      .addCase(InsertContactQueries.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });

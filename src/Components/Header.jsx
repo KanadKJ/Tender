@@ -314,7 +314,7 @@ const Header = () => {
                     onClick={() => {
                       dispatch(LogoutUser(userData?.id));
                       dispatch(cleanUpUserFilters());
-                      navigate("/login");
+                      navigate("/login", { replace: true });
                     }}
                   >
                     <LogoutIcon />

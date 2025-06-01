@@ -9,6 +9,8 @@ const initialState = {
   tenderDetails: [],
   userSaverTemplates: [],
   paymentDetails: [],
+  usersWishlist: [],
+  tenderDataOfWishlist: [],
   documentURL: "",
   error: "",
 };
@@ -47,7 +49,7 @@ export const GetTenderList = createAsyncThunk(
     }
   }
 );
-let tenderAbortController; 
+let tenderAbortController;
 
 export const GetTenderListWithFilters = createAsyncThunk(
   "tender/GetTenderListWithFilters",
@@ -115,6 +117,34 @@ export const GetOrInsertTenderWishlist = createAsyncThunk(
       const res = await TMGetApi.get(
         `/GetOrInsertTenderWishlist?id=${id}&userId=${userId}&tenderId=${tenderId}`
       );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+//this is to get the meta data of wishlist from TM api
+export const GetTenderWishlist = createAsyncThunk(
+  "tender/GetTenderWishlist",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApi.get(
+        `/GetTenderWishlistByUser?userId=${userId}`
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+// here we call the tenders with the uid of the tenders from the wishlist
+export const GetTenderWishlistDetails = createAsyncThunk(
+  "tender/GetTenderWishlistDetails",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await ScrpApiTenders.get(`/?uid=${params}`);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -277,6 +307,34 @@ const tenderSlice = createSlice({
         state.documentURL = action.payload;
       })
       .addCase(GetDocumentURL.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetTenderWishlist
+      .addCase(GetTenderWishlist.pending, (state) => {
+        state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetTenderWishlist.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+        state.usersWishlist = action.payload;
+      })
+      .addCase(GetTenderWishlist.rejected, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetTenderWishlistDetails
+      .addCase(GetTenderWishlistDetails.pending, (state) => {
+        state.tenderIsLoading = true;
+        state.error = null;
+      })
+      .addCase(GetTenderWishlistDetails.fulfilled, (state, action) => {
+        state.tenderIsLoading = false;
+        state.error = null;
+        state.tenderDataOfWishlist = action.payload;
+      })
+      .addCase(GetTenderWishlistDetails.rejected, (state, action) => {
         state.tenderIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });

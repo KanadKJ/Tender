@@ -587,7 +587,7 @@ export default function TenderPer() {
   };
   const handleWishList = (id) => {
     let data = {
-      id: 0,
+      id: "",
       userId: userData?.id,
       tenderId: id,
     };
@@ -3024,7 +3024,7 @@ export default function TenderPer() {
                         </button>
 
                         <button
-                          onClick={() => handleWishList(tender?.id)}
+                          onClick={() => handleWishList(tender?.uid)}
                           className="flex items-center gap-1 px-2 py-1 border rounded-md border-[#0554F2] bg-white text-xs font-medium text-[#0554F2] hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                         >
                           <FavoriteBorderOutlinedIcon fontSize="small" />

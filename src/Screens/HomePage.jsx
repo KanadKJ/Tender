@@ -54,15 +54,12 @@ import { GetTenderListWithFilters } from "../Redux/Slices/TenderSlice";
 import { useDispatch, useSelector } from "react-redux";
 export default function HomePage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const carouselRef = useRef(null);
   const [locationText, setLocationText] = useState("");
   const [keyword, setKeyword] = useState("");
   const [pincode, setPincode] = useState("");
   const [showMore, setShowMore] = useState(false);
-  const { tenderData } = useSelector((s) => s.tender);
   const { userData } = useSelector((s) => s.auth);
-  console.log(tenderData?.count);
 
   useEffect(() => {
     // Step 1: Get current coordinates
@@ -96,16 +93,6 @@ export default function HomePage() {
         console.error("Location access denied or failed", error);
       }
     );
-  }, []);
-
-  useEffect(() => {
-    let obj = {
-      ordering: ["-published_date"],
-      bidding_status: "active",
-    };
-    let q = queryBuilder(obj);
-
-    dispatch(GetTenderListWithFilters(q));
   }, []);
 
   const CustomButtonGroup = () => (
@@ -414,7 +401,7 @@ export default function HomePage() {
 
                 {/* Number */}
                 <h1 className="relative text-5xl  font-bold text-white">
-                  {formatNumber(tenderData?.count) || "10k plus"}
+                  {"10k plus"}
                 </h1>
 
                 {/* Description */}
