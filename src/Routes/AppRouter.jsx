@@ -13,10 +13,14 @@ import FollowedTenders from "../Screens/FollowedTenders";
 import LoginPage from "../Screens/LoginPage";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
+
 const TendersPage = lazy(() => import("../Screens/TenderPer"));
 const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
+
 const PricingPage = lazy(() => import("../Screens/Pricing"));
+
 const AboutUsPage = lazy(() => import("../Screens/AboutUs"));
+
 const ProfilePage = lazy(() => import("../Screens/Profile"));
 const TermsAndConditionsPage = lazy(() =>
   import("../Screens/TermsAndConditions")

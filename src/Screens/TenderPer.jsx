@@ -773,7 +773,7 @@ export default function TenderPer() {
 
   const handleSearchWithEverything = () => {
     console.log(queryString);
-
+    setSearchTerm("");
     dispatch(GetTenderListWithFilters(queryString));
     navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
   };
