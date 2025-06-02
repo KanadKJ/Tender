@@ -485,3 +485,12 @@ export const testimonailContent = [
     posotion: ", Electrical Contractor, Birbhum ",
   },
 ];
+export const category = [
+  { cname: "Help for bid submission" },
+  { cname: "Need Demo" },
+  { cname: "Get Digital signature certificate" },
+  { cname: "Report for missing tender" },
+  { cname: "Request for inactive account" },
+  { cname: "plan on demand" },
+  { cname: "Others" },
+];

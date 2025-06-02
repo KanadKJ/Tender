@@ -24,6 +24,7 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
 import { cleanUpUserFilters } from "../Redux/Slices/TenderSlice";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
 const Sidebar = ({ onLinkClick }) => {
   const { userData } = useSelector((s) => s.auth);
   const location = useLocation();
@@ -102,7 +103,11 @@ const Sidebar = ({ onLinkClick }) => {
           to="dashboard/payment-history"
         />
 
-        <DriverLink src={saved} name="Followed Tenders" to="dashboard/FollowTenders" />
+        <DriverLink
+          src={saved}
+          name="Followed Tenders"
+          to="dashboard/FollowTenders"
+        />
 
         <button
           onClick={() => navigate("/T&C")}
@@ -144,14 +149,14 @@ const Sidebar = ({ onLinkClick }) => {
         {userData?.userType === 1 && (
           <DriverLink
             comp={
-              <ManageAccountsIcon
+              <HelpOutlinedIcon
                 sx={{
                   color: "#b2b2b3",
                 }}
               />
             }
             name="Customer Queries"
-            to="dashboard/UserManagement"
+            to="dashboard/CustomerQueries"
           />
         )}
 

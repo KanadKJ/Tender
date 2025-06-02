@@ -144,7 +144,7 @@ export const GetTenderWishlistDetails = createAsyncThunk(
   "tender/GetTenderWishlistDetails",
   async (params, { rejectWithValue }) => {
     try {
-      const res = await ScrpApiTenders.get(`/?uid=${params}`);
+      const res = await ScrpApiTenders.get(`/tenders/?uid=${params}`);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -332,7 +332,7 @@ const tenderSlice = createSlice({
       .addCase(GetTenderWishlistDetails.fulfilled, (state, action) => {
         state.tenderIsLoading = false;
         state.error = null;
-        state.tenderDataOfWishlist = action.payload;
+        state.tenderDataOfWishlist = action.payload?.results;
       })
       .addCase(GetTenderWishlistDetails.rejected, (state, action) => {
         state.tenderIsLoading = false;

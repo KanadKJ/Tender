@@ -19,6 +19,7 @@ const initialState = {
   userList: [],
   filtersBasedOnUsers: [],
   userManagementUserDataWithPlan: [],
+  contactQueriesList: [],
 };
 
 export const GetUserList = createAsyncThunk(
@@ -206,6 +207,17 @@ export const InsertContactQueries = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await TMGetApiNoAuth.post(`/InsertContactQuery`, params);
+      return res.data?.value;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const GetContactQueries = createAsyncThunk(
+  "common/GetContactQueries",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await TMGetApiNoAuth.post(`/GetContactQueries`, params);
       return res.data?.value;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -422,6 +434,20 @@ const commonSlice = createSlice({
         }
       })
       .addCase(InsertContactQueries.rejected, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // GetContactQueries
+      .addCase(GetContactQueries.pending, (state) => {
+        state.isDistrictCallLoading = true;
+        state.error = null;
+      })
+      .addCase(GetContactQueries.fulfilled, (state, action) => {
+        state.isDistrictCallLoading = false;
+        state.error = null;
+        state.contactQueriesList = action.payload;
+      })
+      .addCase(GetContactQueries.rejected, (state, action) => {
         state.isDistrictCallLoading = false;
         state.error = action.payload || "Something went wrong";
       });

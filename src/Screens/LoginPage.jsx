@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
 import logo from "../Assets/logoNew.png";
-import Ribbons from "../Components/Ribbons";
 import { useDispatch, useSelector } from "react-redux";
 import { GetOtp, GetUserDetails } from "../Redux/Slices/AuthSlice";
 import { useNavigate } from "react-router-dom";

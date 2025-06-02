@@ -12,6 +12,7 @@ export default function DriverLink({ src, name, to, comp }) {
         name === "User Management" ||
         name === "Home" ||
         name === "Pricing" ||
+        name === "Customer Queries" ||
         name === "Tenders" ? (
           comp
         ) : (

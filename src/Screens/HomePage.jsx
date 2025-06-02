@@ -40,6 +40,9 @@ import i4 from "../Assets/i4.png";
 import i5 from "../Assets/i5.png";
 import i6 from "../Assets/i6.png";
 import i7 from "../Assets/i7.png";
+import hs from "../Assets/handshake.jpg";
+import verifyImg from "../Assets/verify.jpg";
+import gt from "../Assets/getTender.jpg";
 import authgrd from "../Assets/AUTHGRD.png";
 import NewBG from "../Assets/NewBG.webp";
 import ExplorGrid from "../Components/ExplorGrid";
@@ -52,6 +55,7 @@ import { motion } from "framer-motion";
 import Ribbons from "../Components/Ribbons";
 import { GetTenderListWithFilters } from "../Redux/Slices/TenderSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Lenis from "lenis";
 export default function HomePage() {
   const navigate = useNavigate();
   const carouselRef = useRef(null);
@@ -60,7 +64,14 @@ export default function HomePage() {
   const [pincode, setPincode] = useState("");
   const [showMore, setShowMore] = useState(false);
   const { userData } = useSelector((s) => s.auth);
-
+  // useEffect(() => {
+  //   const lensis = new Lenis();
+  //   function raf(time) {
+  //     lensis.raf(time);
+  //     requestAnimationFrame(raf);
+  //   }
+  //   requestAnimationFrame(raf);
+  // }, []);
   useEffect(() => {
     // Step 1: Get current coordinates
     const apiKey = process.env.GEO_LOCATION_KEY || GEO_LOCATION_KEY;
@@ -750,25 +761,63 @@ export default function HomePage() {
         </div>
         <div className="relative top-10 text-white px-6 md:px-12 lg:px-24 xl:px-32 min-h-72 flex flex-col justify-center items-center gap-8">
           <h1 className="w-full text-center text-4xl font-normal text-black">
-            Get tenders in 2 steps
+            Get tenders in 3 steps
           </h1>
-          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 border p-4 rounded-md shadow-md w-2/3">
-            <div className="text-green-500 flex justify-center items-center gap-2">
-              <h1 className="text-[#212121] text-xl font-normal text-center">
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 p-4 w-2/3">
+            <div className="hover:scale-110 w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+              <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+                <img
+                  src={hs}
+                  alt="handshake"
+                  style={{
+                    height: 20,
+                    width: 20,
+                  }}
+                />
+              </span>
+              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
                 Join
-              </h1>
+              </h6>
+              <span className="absolute top-0 right-0 text-black p-1 bg-[#F0F0F0] rounded-lg">
+                Step 1
+              </span>
             </div>
-            <div className="w-14 h-1 border border-gray-600 rounded-full bg-slate-400" />
-            <div className="text-green-500 flex justify-center items-center gap-2">
-              <h1 className="text-[#212121] text-xl font-normal text-center">
-                Get Verified
-              </h1>
+
+            <div className="hover:scale-110 w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+              <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+                <img
+                  src={verifyImg}
+                  alt="verify"
+                  style={{
+                    height: 20,
+                    width: 20,
+                  }}
+                />
+              </span>
+              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+                Verify
+              </h6>
+              <span className="absolute top-0 right-0 text-black p-1 bg-[#F0F0F0] rounded-lg">
+                Step 2
+              </span>
             </div>
-            <div className="w-14 h-1 border border-gray-600 rounded-full bg-slate-400" />
-            <div className="text-green-500 flex justify-center items-center gap-2">
-              <h1 className="text-[#212121] text-xl font-normal text-center">
-                Get tender
-              </h1>
+            <div className="hover:scale-110 w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+              <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
+                <img
+                  src={gt}
+                  alt="gettender"
+                  style={{
+                    height: 20,
+                    width: 20,
+                  }}
+                />
+              </span>
+              <h6 className="text-base text-[#212121] text-center font-semibold mt-3">
+                Get Your Tender
+              </h6>
+              <span className="absolute top-0 right-0 text-black p-1 bg-[#F0F0F0] rounded-lg">
+                Step 3
+              </span>
             </div>
           </div>
         </div>

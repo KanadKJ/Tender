@@ -4,17 +4,11 @@ import { Autocomplete, TextField, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { InsertContactQueries } from "../Redux/Slices/CommonSlice";
 import { useNavigate } from "react-router-dom";
-
-const category = [
-  { cname: "Help for bid submission" },
-  { cname: "Need Demo" },
-  { cname: "Get Digital signature certificate" },
-  { cname: "Report for missing tender" },
-  { cname: "Request for inactive account" },
-  { cname: "plan on demand" },
-  { cname: "Others" },
-];
-
+import { category } from "../Utils/CommonUtils";
+import authgrd from "../Assets/AUTHGRD.png";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import logo from "../Assets/logoNew.png";
+import otpillus from "../Assets/pana.png";
 export default function Help() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,23 +61,15 @@ export default function Help() {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-[#f8fafc] to-[#e0f2fe]">
-      <Background type={"default"} show="no" />
-
-      <div className="w-full max-w-5xl px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 mt-24 text-center">
-        <h1 className="text-4xl sm:text-5xl font-semibold text-[#1e293b] mb-2">
-          Need Help? We're Here for You!
-        </h1>
-        <p className="text-[#64748b] text-base sm:text-lg">
-          Fill out the form below and our team will get in touch with you soon.
-        </p>
-      </div>
-
-      <div className="flex flex-col justify-center items-center my-12 bg-white p-8 shadow-2xl rounded-xl border border-gray-200">
-        <div className="space-y-6 ">
+    <div className="p-3 flex-1 w-full flex mt-16">
+      <Background type={"default"} />
+      <div className="w-full h-screen lg:w-2/3 flex justify-center items-center gap-4">
+        <div className="w-full max-w-[360px] bg-white mt-2 rounded-lg border p-6 flex flex-col justify-center items-center gap-4">
           {/* Category */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-            <label className="w-28 text-[#334155] font-medium">Category</label>
+          <div className="w-full flex flex-col items-start  gap-2">
+            <label className="text-black text-start font-medium">
+              Select Category
+            </label>
             <div className="w-full max-w-sm">
               <Autocomplete
                 size="small"
@@ -105,8 +91,10 @@ export default function Help() {
           </div>
 
           {/* Full Name */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-            <label className="w-28 text-[#334155] font-medium">Full Name</label>
+          <div className="w-full flex flex-col items-start  gap-2">
+            <label className="text-black text-start font-medium">
+              Full Name
+            </label>
             <input
               onChange={(e) => {
                 setFullName(e.target.value);
@@ -119,8 +107,8 @@ export default function Help() {
           </div>
 
           {/* Contact */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-            <label className="w-28 text-[#334155] font-medium">Contact</label>
+          <div className="w-full flex flex-col items-start  gap-2">
+            <label className="text-black text-start font-medium">Contact</label>
             <input
               onChange={(e) => {
                 setError("");
@@ -133,8 +121,8 @@ export default function Help() {
           </div>
 
           {/* Query */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-            <label className="w-28 text-[#334155] font-medium">Query</label>
+          <div className="w-full flex flex-col items-start  gap-2">
+            <label className="text-black text-start font-medium">Query</label>
             <textarea
               onChange={(e) => {
                 setError("");
@@ -155,7 +143,7 @@ export default function Help() {
               <p>{success[1]}</p>
             </div>
           ) : (
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-center pt-2">
               <Button
                 variant="contained"
                 color="primary"
@@ -167,6 +155,35 @@ export default function Help() {
               </Button>
             </div>
           )}
+        </div>
+      </div>
+      <div
+        className="z-0 bg-white hidden lg:flex flex-col rounded-md justify-start items-start w-full"
+        style={{
+          backgroundImage: `url(${authgrd})`, // Corrected syntax
+          backgroundSize: "cover", // Ensures it covers the area
+          backgroundRepeat: "no-repeat", // Prevents repeating
+          backgroundPosition: "center",
+          objectFit: "contain",
+        }}
+      >
+        <div
+          onClick={() => navigate("/")}
+          className="w-full flex justify-center items-center cursor-pointer"
+        >
+          <img src={logo} alt="pagelogo" className="h-[80px]" />
+        </div>
+        <div className="w-full flex justify-center items-center">
+          <h1 className="text-4xl font-medium pl-4">Need Help?</h1>
+        </div>
+        <div className="w-full flex justify-center items-center">
+          <h6 className="text-xl font-normal pl-4">
+            We’re here to help you in your each & every tender needs.
+          </h6>
+        </div>
+
+        <div className="w-full relative top-5 -z-10 flex justify-center items-center">
+          <img src={otpillus} alt="OTPIllust" style={{ maxHeight: "60vh" }} />
         </div>
       </div>
     </div>

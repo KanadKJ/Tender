@@ -25,7 +25,7 @@ const FollowedTendersPage = lazy(() => import("../Screens/FollowedTenders"));
 const HelpPage = lazy(() => import("../Screens/Help"));
 const ValidateOtpPage = lazy(() => import("../Screens/ValidateOtp"));
 const CustomerQueriesPage = lazy(() => import("../Screens/CustomerQueries"));
-
+const RegisterPage = lazy(() => import("../Screens/RegisterPage"));
 const AppRouter = () => {
   return (
     <Router basename="/">
@@ -34,7 +34,7 @@ const AppRouter = () => {
           <Route path="/" element={<MainLayout />}>
             <Route path="*" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<Register />} />
+            <Route path="/signup" element={<RegisterPage />} />
             {/* <Route path="/tenders" element={<TendersPage />} /> */}
             <Route path="/tenders/" element={<TendersPage />} />
             <Route path="/pricing/" element={<PricingPage />} />

@@ -38,3 +38,24 @@ export const ScrpApiTendersMetadata = axios.create({
     "Content-Type": "application/json",
   },
 });
+ScrpApiTendersMetadata.interceptors.request.use(
+  async (config) => {
+    await TMGetApi.get(`${TMAPI_BASE_URL}/CheckToken`);
+    return config;
+  },
+  (error) => {
+    return Promise.reject(`Error:: ${error}`);
+  }
+);
+ScrpApiTendersMetadata.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      toast.error("Login deteced in other device.");
+      localStorage.removeItem("user");
+      localStorage.removeItem("controller");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);

@@ -17,7 +17,7 @@ const ValidateOtp = () => {
   const [errors, setErrors] = useState({});
   const [showResendNow, setShowResendNow] = useState(true);
   const [userData, setUserData] = useState({});
-  const [timeLeft, setTimeLeft] = useState(10); // 2 mins 30 secs
+  const [timeLeft, setTimeLeft] = useState(60); // 2 mins 30 secs
   const intervalRef = useRef(null);
   // hooks
   const location = useLocation();
