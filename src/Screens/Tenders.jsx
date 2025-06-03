@@ -26,6 +26,7 @@ import {
   IconButton,
   MenuItem,
   Pagination,
+  Popover,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -34,14 +35,18 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import TuneIcon from "@mui/icons-material/Tune";
+import ShareIcon from "@mui/icons-material/Share";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   amountOptions,
   dateDifferenceCalculator,
   dateOptions,
+  dateOptionsClosing,
   formatDateTime,
   formatIndianCurrency,
   handleDownload,
@@ -89,6 +94,7 @@ export default function TenderPer() {
   const [isPlanExpired, setIsPlanExpired] = useState(false);
   const [allGood, setAllGood] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [changeListner, setChangeListner] = useState(null);
   useEffect(() => {
     if (userFilters?.ExpiryDate) {
       const expiryDate = new Date(userFilters.ExpiryDate);
@@ -114,89 +120,34 @@ export default function TenderPer() {
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
-    keywords: searchParams.getAll("keywords") || [],
-    states:
-      searchParams
-        .getAll("states")
-        ?.map((id) => {
-          const state = statesData.find((d) => d.id === parseInt(id));
-          return state ? state : null;
-        })
-        .filter(Boolean) || [],
-    districts:
-      searchParams
-        .getAll("districts")
-        ?.map((id) => {
-          const district = districtsData.find((d) => d.id === parseInt(id));
-          return district ? district : null;
-        })
-        .filter(Boolean) || [],
-    organisations:
-      searchParams
-        .getAll("organisations")
-        ?.map((id) => {
-          const organisation = orgData.find((d) => d.id === parseInt(id));
-          return organisation ? organisation : null;
-        })
-        .filter(Boolean) || [],
-    departments:
-      searchParams
-        .getAll("departments")
-        ?.map((id) => {
-          const department = drpData?.find((d) => d.id === parseInt(id));
-          return department ? department : null;
-        })
-        .filter(Boolean) || [],
-    divisions:
-      searchParams
-        .getAll("divisions")
-        ?.map((id) => {
-          const division = divData?.find((d) => d.id === parseInt(id));
-          return division ? division : null;
-        })
-        .filter(Boolean) || [],
-    sub_divisions:
-      searchParams
-        .getAll("sub_divisions")
-        ?.map((id) => {
-          const subdiv = subDivData?.find((d) => d.id === parseInt(id));
-          return subdiv ? subdiv : null;
-        })
-        .filter(Boolean) || [],
-    units:
-      searchParams
-        .getAll("units")
-        ?.map((id) => {
-          const unit = unitData?.find((d) => d.id === parseInt(id));
-          return unit ? unit : null;
-        })
-        .filter(Boolean) || [],
-    value_in_rs_min: searchParams.get("value_in_rs_min") || "",
-    sections:
-      searchParams
-        .getAll("sections")
-        ?.map((id) => {
-          const section = sectionsData?.find((d) => d.id === parseInt(id));
-          return section ? section : null;
-        })
-        .filter(Boolean) || [],
-    value_in_rs_max: searchParams.get("value_in_rs_max") || "",
-    published_date_after: searchParams.get("published_date_after") || "",
-    published_date_before: searchParams.get("published_date_before") || "",
-    ordering:
-      searchParams.getAll("ordering")?.length > 0
-        ? searchParams.getAll("ordering")
-        : ["-published_date"],
-    limit: searchParams.get("limit") || [],
-    offset: searchParams.get("offset") || [],
-    pincode: searchParams.get("pincode") || "",
-    bidding_status: searchParams.get("bidding_status") || "active",
-    // closing_date_after: searchParams.get("published_date_after") || "",
-    // published_date_before: searchParams.get("published_date_before") || "",
+    keywords: [],
+    states: [],
+    districts: [],
+    organisations: [],
+    departments: [],
+    divisions: [],
+    sub_divisions: [],
+    units: [],
+    sections: [],
+    value_in_rs_max: "",
+    value_in_rs_min: "",
+    published_date_after: "",
+    published_date_before: "",
+    ordering: ["-published_date"],
+    limit: [],
+    offset: [],
+    pincode: "",
+    bidding_status: "active",
+    show_tenders_with_no_value: "",
+    bidding_submission_end_date_after:
+      searchParams.get("bidding_submission_end_date_after") || "",
+    bidding_submission_end_date_before:
+      searchParams.get("bidding_submission_end_date_before") || "",
   });
   // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
-  const [dateOption, setDateOption] = useState("");
+  const [datePublishedOption, setDatePublishedOption] = useState("");
+  const [dateClosedOption, setDateClosedOption] = useState("");
   const queryString = useQueryParams(filters);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);
@@ -209,7 +160,7 @@ export default function TenderPer() {
     dispatch(GetDistrictsList(29));
     dispatch(GetStatesList());
     dispatch(GetOrgList());
-  }, []);
+  }, [changeListner]);
   useEffect(() => {
     if (userData) {
       dispatch(GetTemplateDetails(userData?.id));
@@ -217,130 +168,52 @@ export default function TenderPer() {
     console.log("userdatat UE");
   }, [userData]);
 
-  useEffect(() => {
-    const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
-    const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
-    const published_date_after = searchParams.get("published_date_after") || "";
-    const published_date_before =
-      searchParams.get("published_date_before") || "";
-    const offset = searchParams.get("offset") || "";
-    const limit = searchParams.get("limit") || "";
-    const keywords = searchParams.get("keywords") || "";
-    const pincode = searchParams.get("pincode") || "";
-    const bidding_status = searchParams.get("bidding_status") || "active";
-    const stateIDS = searchParams.getAll("states") || [];
-    const districtIds = searchParams.getAll("districts") || [];
-    const organisationIds = searchParams.getAll("organisations") || [];
+  // useEffect(() => {
+  //   const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
+  //   const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
+  //   const bidding_submission_end_date_after =
+  //     searchParams.get("bidding_submission_end_date_after") || "";
+  //   const bidding_submission_end_date_before =
+  //     searchParams.get("bidding_submission_end_date_before") || "";
+  //   const published_date_after = searchParams.get("published_date_after") || "";
+  //   const published_date_before =
+  //     searchParams.get("published_date_before") || "";
+  //   const offset = searchParams.get("offset") || "";
+  //   const limit = searchParams.get("limit") || "";
+  //   const keywords = searchParams.get("keywords") || "";
+  //   const pincode = searchParams.get("pincode") || "";
+  //   const bidding_status = searchParams.get("bidding_status") || "active";
+  //   const orderingParams = searchParams.getAll("ordering");
+  //   const ordering = orderingParams.length
+  //     ? orderingParams
+  //     : ["-published_date"];
+  //   const show_tenders_with_no_value =
+  //     searchParams.get("show_tenders_with_no_value") || "";
+  //   setFilters({
+  //     keywords,
+  //     ordering,
+  //     value_in_rs_min,
+  //     value_in_rs_max,
+  //     published_date_after,
+  //     published_date_before,
+  //     limit,
+  //     offset,
+  //     pincode,
+  //     bidding_status,
+  //     bidding_submission_end_date_after,
+  //     bidding_submission_end_date_before,
+  //     show_tenders_with_no_value,
+  //   });
 
-    const departmentIds = searchParams.getAll("departments") || [];
-
-    const divisionIds = searchParams.getAll("divisions") || [];
-    const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
-    const sectionsIds = searchParams.getAll("sections") || [];
-    const orderingParams = searchParams.getAll("ordering");
-    const ordering = orderingParams.length
-      ? orderingParams
-      : ["-published_date"];
-    const unitIds = searchParams.getAll("units") || [];
-
-    const units = unitIds
-      .map((id) => {
-        const dt = unitData.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-    const organisations = organisationIds
-      .map((id) => {
-        const dt = orgData.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-    // if (organisationIds.length) {
-    //   dispatch(GetDrpList(organisations));
-    // }
-
-    const departments = departmentIds
-      .map((id) => {
-        const dt = drpData?.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-
-    // if (departments.length) {
-    //   dispatch(GetDivList(departments));
-    // }
-    const divisions = divisionIds
-      .map((id) => {
-        const dt = divData?.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-    // if (divisions.length) {
-    //   dispatch(GetSubDivList(divisions));
-    // }
-    const sub_divisions = sub_divisionsIds
-      .map((id) => {
-        const dt = subDivData?.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-    // if (sub_divisions.length) {
-    //   dispatch(GetSectionList(sub_divisions));
-    // }
-    const sections = sectionsIds
-      .map((id) => {
-        const dt = sectionsData?.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-    // if (sections.length) {
-    //   dispatch(GetUnitList(sections));
-    // }
-
-    const states = stateIDS
-      .map((id) => {
-        const dt = statesData.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-
-    const districts = districtIds
-      .map((id) => {
-        const dt = districtsData.find((d) => d.id === parseInt(id));
-        return dt ? dt : null;
-      })
-      .filter(Boolean);
-
-    setFilters({
-      states,
-      sections,
-      keywords,
-      ordering,
-      districts,
-      divisions,
-      departments,
-      sub_divisions,
-      organisations,
-      value_in_rs_min,
-      value_in_rs_max,
-      published_date_after,
-      published_date_before,
-      limit,
-      offset,
-      pincode,
-      bidding_status,
-      units,
-    });
-
-    console.log("run end");
-  }, []);
-  useEffect(() => {
-    const pc = searchParams.get("pincode") || "";
-    setFilters({
-      ...filters,
-      pincode: pc,
-    });
-  }, []);
+  //   console.log("run end");
+  // }, []);
+  // useEffect(() => {
+  //   const pc = searchParams.get("pincode") || "";
+  //   setFilters({
+  //     ...filters,
+  //     pincode: pc,
+  //   });
+  // }, []);
   useEffect(() => {
     const stateIDS = searchParams.getAll("states") || [];
     const states = stateIDS?.length
@@ -355,8 +228,8 @@ export default function TenderPer() {
     setFilters({
       ...filters,
       states,
-    });  
-  }, [statesData, userFilters]);
+    });
+  }, [statesData]);
   useEffect(() => {
     const districtIds = searchParams.getAll("districts") || [];
     const districts = districtIds?.length
@@ -373,7 +246,7 @@ export default function TenderPer() {
       districts,
     });
     console.log("UE Districts");
-  }, [districtsData, userFilters]);
+  }, [districtsData]);
 
   useEffect(() => {
     const organisationIds = searchParams.getAll("organisations") || [];
@@ -392,7 +265,7 @@ export default function TenderPer() {
       ...filters,
       organisations,
     });
-  }, [orgData, userFilters]);
+  }, [orgData]);
   useEffect(() => {
     const departmentIds = searchParams.getAll("departments") || [];
     const departments = departmentIds?.length
@@ -410,8 +283,8 @@ export default function TenderPer() {
       ...filters,
       departments,
     });
-      console.log("is multiple? departments");
-  }, [drpData, userFilters]);
+    console.log("is multiple? departments");
+  }, [drpData]);
 
   useEffect(() => {
     const divisionIds = searchParams.getAll("divisions") || [];
@@ -431,7 +304,7 @@ export default function TenderPer() {
       divisions,
     });
     console.log("is multiple? div");
-  }, [divData, userFilters]);
+  }, [divData]);
   useEffect(() => {
     const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
     const sub_divisions = sub_divisionsIds?.length
@@ -450,7 +323,7 @@ export default function TenderPer() {
       sub_divisions,
     });
     console.log("is multiple? sub div");
-  }, [subDivData, userFilters]);
+  }, [subDivData]);
 
   useEffect(() => {
     const sectionsIds = searchParams.getAll("sections") || [];
@@ -469,7 +342,7 @@ export default function TenderPer() {
       ...filters,
       sections,
     });
-  }, [sectionsData, userFilters]);
+  }, [sectionsData]);
   useEffect(() => {
     const unitIds = searchParams.getAll("units") || [];
     const units = unitIds?.length
@@ -485,21 +358,13 @@ export default function TenderPer() {
       ...filters,
       units,
     });
-  }, [unitData, userFilters]);
-
-  useEffect(() => {
-    let s = searchParams.toString();
-  
-      dispatch(GetTenderListWithFilters(s));
-      navigate(`?${s}`, { replace: true });
-    
-    console.log(s,searchParams.toString(),"caller");
-    
-  }, [searchParams]);
+  }, [unitData]);
 
   useEffect(() => {
     console.log("initial obj creator");
     if (userData) {
+      const pc = searchParams.get("pincode") || "";
+      const kw = searchParams.getAll("keywords") || [];
       const obj = {
         states: userFilters?.STATE,
         districts: userFilters?.DISTRICT,
@@ -513,13 +378,26 @@ export default function TenderPer() {
         units: userFilters?.UNIT,
         ordering: ["-published_date"],
         bidding_status: "active",
-        pincode: filters?.pincode,
+        pincode: filters?.pincode || pc,
+        keywords: kw,
       };
-
+      setFilters({
+        ...filters,
+        pincode: pc,
+        keywords: kw,
+      });
       let q = queryBuilder(obj);
       navigate(`?${q}`, { replace: true });
       dispatch(GetTenderListWithFilters(q));
       console.log(q);
+    } else {
+      let obj = {
+        ordering: ["-published_date"],
+        bidding_status: "active",
+      };
+      let q = queryBuilder(obj);
+      navigate(`?${q}`, { replace: true });
+      dispatch(GetTenderListWithFilters(q));
     }
 
     // dispatch(GetTenderListWithFilters(userFiltersqueryString));
@@ -548,6 +426,14 @@ export default function TenderPer() {
         published_date_after: "",
         published_date_before: "",
       }));
+      setDatePublishedOption("");
+    } else if (name === "Closingdates") {
+      setFilters((prev) => ({
+        ...prev,
+        bidding_submission_end_date_after: "",
+        bidding_submission_end_date_before: "",
+      }));
+      setDateClosedOption("");
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -638,6 +524,7 @@ export default function TenderPer() {
     setAllGood(false);
     handleClose();
     navigate(`?${queryString}`, { replace: true });
+    dispatch(GetTenderListWithFilters(queryString));
     return "ok";
   };
   const handleOrderingChange = (event, newValue) => {
@@ -675,9 +562,11 @@ export default function TenderPer() {
     const newOffset = (value - 1) * 50;
     if (!newOffset) {
       params.set("offset", "");
+      dispatch(GetTenderListWithFilters(params.toString()));
       navigate(`?${params.toString()}`, { replace: true });
     } else {
       params.set("offset", newOffset);
+      dispatch(GetTenderListWithFilters(params.toString()));
       navigate(`?${params.toString()}`, { replace: true });
 
       setFilters((prev) => ({
@@ -689,7 +578,7 @@ export default function TenderPer() {
   };
   const handleWishList = (id) => {
     let data = {
-      id: 0,
+      id: "",
       userId: userData?.id,
       tenderId: id,
     };
@@ -751,7 +640,9 @@ export default function TenderPer() {
       });
   };
   const handleSavedSeachFromTemplate = (obj) => {
+    dispatch(GetTenderListWithFilters(obj?.url));
     navigate(`?${obj?.url}`, { replace: true });
+    setChangeListner(Math.random(0, 10000) * 100);
     handleClose();
   };
   const dataFetcher = (type, ids) => {
@@ -778,6 +669,9 @@ export default function TenderPer() {
         ?.includes(searchTerm?.toLowerCase()) ||
       tender?.description?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
       tender?.id?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      tender?.product_category
+        ?.toLowerCase()
+        ?.includes(searchTerm?.toLowerCase()) ||
       tender?.department?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
 
@@ -820,9 +714,9 @@ export default function TenderPer() {
 
     if (userData) {
       const obj = {
-        states: userFilters?.STATE,
-        districts: userFilters?.DISTRICT,
-        organisations: userFilters?.ORGANIZATION,
+        states: userFilters?.STATE || [],
+        districts: userFilters?.DISTRICT || [],
+        organisations: userFilters?.ORGANIZATION || [],
         pincode: userFilters?.PinCode,
         sections: userFilters?.SECTION,
         divisions: userFilters?.DIVISION,
@@ -841,10 +735,14 @@ export default function TenderPer() {
         value_in_rs_max: null,
         published_date_after: null,
         published_date_before: null,
+        bidding_submission_end_date_after: null,
+        bidding_submission_end_date_before: null,
         ordering: ["-published_date"],
+        ...obj,
       }));
       console.log(userFilters);
-
+      setDatePublishedOption("");
+      setDateClosedOption("");
       let q = queryBuilder(obj);
       navigate(`?bidding_status=active&ordering=-published_date&${q}`, {
         replace: true,
@@ -855,22 +753,20 @@ export default function TenderPer() {
     // navigate(`?bidding_status=active&ordering=-published_date`, { replace: true });
   };
 
-  const handleSearchWithEverything = (e) => {
-    if (handleFilterSaved() === "ok") {
-      setFilters((prev) => ({
-        ...prev,
-        keywords: [searchTerm],
-      }));
+  const searchWitheverything = (e) => {
+    const { value } = e.target;
+    setSearchTerm(value);
+    setFilters((prev) => ({
+      ...prev,
+      keywords: [value],
+    }));
+  };
 
-      const newParams = new URLSearchParams(searchParams);
-      if (searchTerm) {
-        newParams.set("keywords", searchTerm);
-      } else {
-        newParams.delete("keywords");
-      }
-      setSearchParams(newParams);
-    }
-    // navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
+  const handleSearchWithEverything = () => {
+    console.log(queryString);
+
+    dispatch(GetTenderListWithFilters(queryString));
+    navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
   };
   return (
     <>
@@ -910,7 +806,7 @@ export default function TenderPer() {
                 className="border-2 shadow-md borber-[#565656]  focus:border-[#0554F2] focus:outline-none w-full max-w-[30rem] p-2 pl-11 rounded-md"
                 placeholder="Search with anything"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => searchWitheverything(e)}
               />
               <button
                 onClick={handleSearchWithEverything}
@@ -1088,7 +984,7 @@ export default function TenderPer() {
               onClick={(event) => handleClick(event, "pincode")}
             >
               Pincode
-              <CustomBadge data={filters.pincode ? ["1"] : null} />
+              <CustomBadge data={filters.pincode?.length ? ["1"] : null} />
             </Button>
             {/* Tender Amount */}
 
@@ -1156,8 +1052,8 @@ export default function TenderPer() {
               Closing Date
               <CustomBadge
                 data={
-                  filters?.published_date_after ||
-                  filters?.published_date_before
+                  filters?.bidding_submission_end_date_after ||
+                  filters?.bidding_submission_end_date_before
                     ? ["1"]
                     : null
                 }
@@ -1366,7 +1262,7 @@ export default function TenderPer() {
                   onClick={(event) => handleClick(event, "pincode")}
                 >
                   Pincode
-                  <CustomBadge data={filters.pincode ? ["1"] : null} />
+                  <CustomBadge data={filters.pincode?.length ? ["1"] : null} />
                 </Button>
 
                 {/* Tender Amount */}
@@ -1426,8 +1322,8 @@ export default function TenderPer() {
                   Closing Date
                   <CustomBadge
                     data={
-                      filters?.published_date_after ||
-                      filters?.published_date_before
+                      filters?.bidding_submission_end_date_after ||
+                      filters?.bidding_submission_end_date_before
                         ? ["1"]
                         : null
                     }
@@ -1880,7 +1776,7 @@ export default function TenderPer() {
                   disabled={!filters?.divisions?.length}
                   multiple
                   getOptionDisabled={(option) =>
-                    userFilters?.SUB_DIVISION.length > 0 &&
+                    userFilters?.SUB_DIVISION?.length > 0 &&
                     !userFilters?.SUB_DIVISION.some((d) => d.id === option.id)
                   }
                   id="sub_divisions-autocomplete"
@@ -2033,7 +1929,7 @@ export default function TenderPer() {
                   options={unitData} // Array of objects with `id` and `name`
                   disableCloseOnSelect
                   getOptionLabel={(option) => option?.name} // No optional chaining needed
-                  value={unitData.filter((d) =>
+                  value={unitData?.filter((d) =>
                     filters?.units?.some((dep) => dep.id === d.id)
                   )} // Ensure objects match by reference
                   onChange={(event, newValue) => {
@@ -2315,7 +2211,7 @@ export default function TenderPer() {
                     className="w-full"
                     select
                     label="Date Option"
-                    value={dateOption}
+                    value={datePublishedOption}
                     onChange={(e) => {
                       const selectedOption = e.target.value;
                       let published_date_after = "";
@@ -2328,7 +2224,9 @@ export default function TenderPer() {
                           published_date_after = today
                             .toISOString()
                             .split("T")[0];
-                          published_date_before = today
+                          published_date_before = new Date(
+                            today.setDate(today.getDate() + 1)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
@@ -2362,7 +2260,7 @@ export default function TenderPer() {
                         published_date_before,
                       }));
 
-                      setDateOption(selectedOption);
+                      setDatePublishedOption(selectedOption);
                     }}
                   >
                     {dateOptions?.map((option) => (
@@ -2375,6 +2273,7 @@ export default function TenderPer() {
                   {/* From Date Picker */}
 
                   <DatePicker
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="From Date"
                     value={
@@ -2394,6 +2293,7 @@ export default function TenderPer() {
                   {/* To Date Picker */}
 
                   <DatePicker
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="To Date"
                     value={
@@ -2450,43 +2350,46 @@ export default function TenderPer() {
                 <Divider />
                 <div className="p-5 flex flex-col gap-4">
                   <TextField
-                    disabled
                     select
                     label="Date Option"
-                    value={dateOption}
+                    value={dateClosedOption}
                     onChange={(e) => {
                       const selectedOption = e.target.value;
-                      let published_date_after = "";
-                      let published_date_before = "";
+                      let bidding_submission_end_date_after = "";
+                      let bidding_submission_end_date_before = "";
 
                       // Set published_date_after and published_date_before based on the selected option
                       const today = new Date();
                       switch (selectedOption) {
                         case "today":
-                          published_date_after = today
+                          bidding_submission_end_date_after = today
                             .toISOString()
                             .split("T")[0];
-                          published_date_before = today
+                          bidding_submission_end_date_before = new Date(
+                            today.setDate(today.getDate() + 1)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
                         case "7days":
-                          published_date_after = new Date(
-                            today.setDate(today.getDate() - 7)
-                          )
+                          bidding_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
-                          published_date_before = new Date()
+
+                          bidding_submission_end_date_before = new Date(
+                            today.setDate(today.getDate() + 7)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
                         case "15days":
-                          published_date_after = new Date(
-                            today.setDate(today.getDate() - 15)
-                          )
+                          bidding_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
-                          published_date_before = new Date()
+
+                          bidding_submission_end_date_before = new Date(
+                            today.setDate(today.getDate() + 15)
+                          )
                             .toISOString()
                             .split("T")[0];
                           break;
@@ -2496,14 +2399,14 @@ export default function TenderPer() {
 
                       setFilters((prev) => ({
                         ...prev,
-                        published_date_after,
-                        published_date_before,
+                        bidding_submission_end_date_after,
+                        bidding_submission_end_date_before,
                       }));
 
-                      setDateOption(selectedOption);
+                      setDateClosedOption(selectedOption);
                     }}
                   >
-                    {dateOptions?.map((option) => (
+                    {dateOptionsClosing?.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
                         {option.label}
                       </MenuItem>
@@ -2513,18 +2416,18 @@ export default function TenderPer() {
                   {/* From Date Picker */}
 
                   <DatePicker
-                    disabled
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="From Date"
                     value={
-                      filters.published_date_after
-                        ? dayjs(filters.published_date_after)
+                      filters.bidding_submission_end_date_after
+                        ? dayjs(filters.bidding_submission_end_date_after)
                         : null
                     }
                     onChange={(newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        published_date_after: newValue
+                        bidding_submission_end_date_after: newValue
                           ? dayjs(newValue).format("YYYY-MM-DD")
                           : "",
                       }));
@@ -2533,18 +2436,18 @@ export default function TenderPer() {
                   {/* To Date Picker */}
 
                   <DatePicker
-                    disabled
+                    format="DD/MM/YYYY"
                     className="w-full"
                     label="To Date"
                     value={
-                      filters.published_date_before
-                        ? dayjs(filters?.published_date_before)
+                      filters.bidding_submission_end_date_before
+                        ? dayjs(filters?.bidding_submission_end_date_before)
                         : null
                     }
                     onChange={(newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        published_date_before: newValue
+                        bidding_submission_end_date_before: newValue
                           ? dayjs(newValue).format("YYYY-MM-DD")
                           : "",
                       }));
@@ -2552,18 +2455,16 @@ export default function TenderPer() {
                   />
                   <div className="flex justify-between mt-4 gap-x-4">
                     <button
-                      disabled
-                      className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] transition-all duration-300 ease-in-out "
-                      // onClick={() => handleReset("keywords")}
+                      className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                      onClick={() => handleReset("Closingdates")}
                     >
                       Reset
                     </button>
                     <button
-                      disabled
-                      className="w-full text-center p-2 bg-gray-400 rounded-md text-white text-base font-medium
-                    hover:bg-[#fff] transition-all duration-300 ease-in-out "
-                      // onClick={handleFilterSaved}
+                      className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
+                    hover:bg-[#fff] hover:text-[#0554F2] transition-all duration-300 ease-in-out "
+                      onClick={handleFilterSaved}
                     >
                       Apply
                     </button>
@@ -2732,16 +2633,16 @@ export default function TenderPer() {
                     const newMinAmount = newValue ? newValue.value : "";
 
                     // Ensure maxAmount is greater than or equal to minAmount
-                    const newMaxAmount =
-                      filters?.value_in_rs_max &&
-                      newMinAmount > filters?.value_in_rs_max
-                        ? newMinAmount // Auto-adjust maxAmount
-                        : filters?.value_in_rs_max;
+                    // const newMaxAmount =
+                    //   filters?.value_in_rs_max &&
+                    //   newMinAmount > filters?.value_in_rs_min
+                    //     ? newMinAmount // Auto-adjust maxAmount
+                    //     : filters?.value_in_rs_max;
 
                     setFilters((prev) => ({
                       ...prev,
                       value_in_rs_min: newMinAmount,
-                      value_in_rs_max: newMaxAmount,
+                      // value_in_rs_max: newMaxAmount,
                     }));
                   }}
                   renderInput={(params) => (
@@ -2792,16 +2693,16 @@ export default function TenderPer() {
                     const newMaxAmount = newValue ? newValue.value : "";
 
                     // Ensure minAmount is less than or equal to maxAmount
-                    const newMinAmount =
-                      filters?.value_in_rs_min &&
-                      newMaxAmount < filters?.value_in_rs_min
-                        ? newMaxAmount // Auto-adjust minAmount
-                        : filters?.value_in_rs_min;
+                    // const newMinAmount =
+                    //   filters?.value_in_rs_min &&
+                    //   newMaxAmount < filters?.value_in_rs_max
+                    //     ? newMaxAmount // Auto-adjust minAmount
+                    //     : filters?.value_in_rs_min;
 
                     setFilters((prev) => ({
                       ...prev,
                       value_in_rs_max: newMaxAmount,
-                      value_in_rs_min: newMinAmount,
+                      // value_in_rs_min: newMinAmount,
                     }));
                   }}
                   renderInput={(params) => (
@@ -2812,6 +2713,25 @@ export default function TenderPer() {
                     />
                   )}
                 />
+                <div className="flex justify-start items-center text-sm">
+                  <Checkbox
+                    size="sm"
+                    label="Required"
+                    checked={
+                      filters?.show_tenders_with_no_value === "yes"
+                        ? true
+                        : false
+                    }
+                    onChange={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        show_tenders_with_no_value: "yes",
+                      }))
+                    }
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                  <p>Show tenders with no value</p>
+                </div>
                 <div className="flex justify-between mt-4 gap-x-4">
                   <button
                     className="w-full text-center p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
@@ -2975,41 +2895,43 @@ export default function TenderPer() {
           <div className="w-full flex flex-col justify-center items-center overflow-x-hidden box-border">
             {/* Top Button Section */}
             <div className="w-full flex justify-center items-center pb-1">
-              <div className="w-full flex items-center text-[#333333] text-sm font-normal">
-                <span>Total Tenders : {tenderData?.count}</span>
-              </div>
               <div className="w-full max-w-screen-lg flex justify-end gap-2 mt-4 mb-2 px-3 md:px-0">
                 {/* PDF Button */}
-                <Button
-                  disabled={isPlanExpired}
-                  style={{
-                    backgroundColor: "#B00020",
-                    color: isPlanExpired ? "#fff00" : "#fff",
-                    padding: "6px 12px",
-                    minWidth: "unset",
-                    whiteSpace: "nowrap",
-                  }}
-                  variant="contained"
-                  onClick={handlePdfDownload}
-                >
-                  <PictureAsPdfIcon fontSize="small" />
-                </Button>
+                <div className="w-full flex items-center text-[#333333] text-sm font-normal">
+                  <span>Total Tenders : {tenderData?.count}</span>
+                </div>
+                <div className="flex justify-end  gap-4">
+                  <Button
+                    disabled={isPlanExpired}
+                    style={{
+                      backgroundColor: "#B00020",
+                      color: isPlanExpired ? "#fff00" : "#fff",
+                      padding: "6px 12px",
+                      minWidth: "unset",
+                      whiteSpace: "nowrap",
+                    }}
+                    variant="contained"
+                    onClick={handlePdfDownload}
+                  >
+                    <PictureAsPdfIcon fontSize="small" />
+                  </Button>
 
-                {/* Excel Button */}
-                <Button
-                  disabled={isPlanExpired}
-                  style={{
-                    backgroundColor: "#10793F",
-                    color: isPlanExpired ? "#fff00" : "#fff",
-                    padding: "6px 12px",
-                    minWidth: "unset",
-                    whiteSpace: "nowrap",
-                  }}
-                  variant="contained"
-                  onClick={handleDocumentDownload}
-                >
-                  <SystemUpdateAltIcon fontSize="small" />
-                </Button>
+                  {/* Excel Button */}
+                  <Button
+                    disabled={isPlanExpired}
+                    style={{
+                      backgroundColor: "#10793F",
+                      color: isPlanExpired ? "#fff00" : "#fff",
+                      padding: "6px 12px",
+                      minWidth: "unset",
+                      whiteSpace: "nowrap",
+                    }}
+                    variant="contained"
+                    onClick={handleDocumentDownload}
+                  >
+                    <SystemUpdateAltIcon fontSize="small" />
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -3093,11 +3015,60 @@ export default function TenderPer() {
                         </button>
 
                         <button
-                          onClick={() => handleWishList(tender?.id)}
+                          onClick={() => handleWishList(tender?.uid)}
                           className="flex items-center gap-1 px-2 py-1 border rounded-md border-[#0554F2] bg-white text-xs font-medium text-[#0554F2] hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out"
                         >
                           <FavoriteBorderOutlinedIcon fontSize="small" />
                         </button>
+                        <button
+                          onClick={(event) => handleClick(event, "share")}
+                          className="flex gap-2 p-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#0554F2] transition-all duration-300 ease-in-out"
+                        >
+                          <ShareIcon />
+                        </button>
+                        <Popover
+                          id="share"
+                          open={openPopoverId === "share"}
+                          anchorEl={anchorEl}
+                          onClose={handleClose}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "left",
+                          }}
+                        >
+                          <div className="flex gap-2 p-2">
+                            <div className="text-green-600 cursor-pointer p-1 rounded-lg">
+                              <a
+                                href={
+                                  window.location.href
+                                    .split("/")[2]
+                                    .includes("localhost")
+                                    ? `https://api.whatsapp.com/send?text=http://${
+                                        window.location.href.split("/")[2]
+                                      }/tenders/${tender?.uid}`
+                                    : `https://api.whatsapp.com/send?text=https://${
+                                        window.location.href.split("/")[2]
+                                      }/tenders/${tender?.uid}`
+                                }
+                                target="_blank"
+                              >
+                                <WhatsAppIcon />
+                              </a>
+                            </div>
+                            <div className="text-blue-600 cursor-pointer p-1 rounded-lg shadow-md">
+                              <a
+                                href={`https://mail.google.com/mail/u/0/?fs=1&to&su=Check+this+tender+ID:${
+                                  tender?.uid
+                                }+from+MENOKA+eTenderMitra&body=https://${
+                                  window.location.href.split("/")[2]
+                                }/tenders/${tender?.uid}&ui=2&tf=cm`}
+                                target="_blank"
+                              >
+                                <MailOutlineIcon />
+                              </a>
+                            </div>
+                          </div>
+                        </Popover>
                       </div>
                     </div>
 
