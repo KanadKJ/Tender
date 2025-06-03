@@ -763,8 +763,8 @@ export default function HomePage() {
           <h1 className="w-full text-center text-4xl font-normal text-black">
             Get tenders in 3 steps
           </h1>
-          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 p-4 w-2/3">
-            <div className="hover:scale-110 w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 p-4 w-2/3 ">
+            <div className="hover:scale-110 transition-all duration-300 ease-in-out hover:shadow-md w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
               <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
                 <img
                   src={hs}
@@ -783,7 +783,7 @@ export default function HomePage() {
               </span>
             </div>
 
-            <div className="hover:scale-110 w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+            <div className="hover:scale-110 transition-all duration-300 ease-in-out hover:shadow-md w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
               <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
                 <img
                   src={verifyImg}
@@ -801,7 +801,7 @@ export default function HomePage() {
                 Step 2
               </span>
             </div>
-            <div className="hover:scale-110 w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
+            <div className="hover:scale-110 transition-all duration-300 ease-in-out hover:shadow-md w-full relative flex flex-col justify-center items-center gap-1 p-4 border rounded-lg">
               <span className="p-2.5 rounded-full text-[#0554F2] shadow-[0px_0px_16px_-6px_rgba(0,0,0,1.0)]">
                 <img
                   src={gt}

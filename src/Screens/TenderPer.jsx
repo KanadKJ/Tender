@@ -772,7 +772,11 @@ export default function TenderPer() {
   };
 
   const handleSearchWithEverything = () => {
-    console.log(queryString);
+    if (!userData) {
+      toast.error("Please login to continue...")
+      navigate("/login");
+      return;
+    }
     setSearchTerm("");
     dispatch(GetTenderListWithFilters(queryString));
     navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
