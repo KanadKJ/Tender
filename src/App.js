@@ -4,8 +4,12 @@ import { Provider } from "react-redux";
 import AppRouter from "./Routes/AppRouter";
 import store from "./Redux/Store/Store";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    document.title = "Menoka-" + process.env.REACT_APP_DEV_ENV;
+  }, []);
   return (
     <Provider store={store}>
       <AppRouter />

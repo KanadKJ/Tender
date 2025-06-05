@@ -15,7 +15,10 @@ import LoginPage from "../Screens/LoginPage";
 const HomePage = lazy(() => import("../Screens/HomePage"));
 
 // const TendersPage = lazy(() => import("../Screens/TenderPer"));
-const TendersPage = lazy(() => import("../Screens/Tenders"));
+const TendersPage =
+  process.env.REACT_APP_DEV_ENV === "DEV"
+    ? lazy(() => import("../Screens/Tenders"))
+    : lazy(() => import("../Screens/TenderPer"));
 const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
 
 const PricingPage = lazy(() => import("../Screens/Pricing"));

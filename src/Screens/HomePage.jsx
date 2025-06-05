@@ -74,7 +74,9 @@ export default function HomePage() {
   // }, []);
   useEffect(() => {
     // Step 1: Get current coordinates
-    const apiKey = process.env.GEO_LOCATION_KEY || GEO_LOCATION_KEY;
+    const apiKey =
+      process.env.REACT_APP_GEO_LOCATION_KEY ||
+      toast.error("Error fetching location");
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -669,7 +671,7 @@ export default function HomePage() {
           </h1>
 
           <div className="w-full grid grid-cols-2 md:grid-cols-6 justify-center gap-4 ">
-            {WBDistricts[0]?.map((d) => (
+            {WBDistricts[0]?.map((d, i) => (
               <div
                 style={{
                   backgroundImage: `url(${authgrd})`, // Corrected syntax
@@ -678,6 +680,7 @@ export default function HomePage() {
                   backgroundPosition: "center",
                   objectFit: "contain",
                 }}
+                key={i}
                 className="flex flex-col justify-center items-center p-4 border rounded-lg cursor-pointer"
                 onClick={() => navigate("/tenders?")}
               >
@@ -838,8 +841,11 @@ export default function HomePage() {
             containerClass="w-full rounded-xl max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl mx-auto shadow-md m-5"
             arrows={false}
           >
-            {testimonailContent?.map((d) => (
-              <div className="h-auto rounded-xl flex flex-col gap-4 md:flex-row">
+            {testimonailContent?.map((d, i) => (
+              <div
+                key={i}
+                className="h-auto rounded-xl flex flex-col gap-4 md:flex-row"
+              >
                 <img
                   src={tm}
                   alt="testimonial"

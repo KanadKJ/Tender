@@ -66,7 +66,7 @@ export const queryBuilder = (filters) => {
   });
   return params.toString();
 };
-export const GEO_LOCATION_KEY = "AIzaSyAWT4w__vAES1bLE-k-I3IF1i-Beyf05LA";
+// export const GEO_LOCATION_KEY = "AIzaSyAWT4w__vAES1bLE-k-I3IF1i-Beyf05LA";
 export const formatDateTime = (dateString) => {
   if (dateString === undefined) return [null, null];
   const date = new Date(dateString);
