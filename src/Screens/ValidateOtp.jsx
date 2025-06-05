@@ -12,7 +12,6 @@ const ValidateOtp = () => {
   // state
 
   const [otp, setOtp] = useState(null);
-  console.log(otp);
 
   const [errors, setErrors] = useState({});
   const [showResendNow, setShowResendNow] = useState(true);
@@ -22,7 +21,6 @@ const ValidateOtp = () => {
   // hooks
   const location = useLocation();
   const { phone } = location?.state || {};
-  console.log(phone);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

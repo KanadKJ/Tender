@@ -135,14 +135,12 @@ export default function TenderPer() {
     published_date_before: "",
     ordering: ["-published_date"],
     limit: [],
-    offset: [],
+    offset: "",
     pincode: "",
     bidding_status: "active",
     show_tenders_with_no_value: "",
-    bidding_submission_end_date_after:
-      searchParams.get("bidding_submission_end_date_after") || "",
-    bidding_submission_end_date_before:
-      searchParams.get("bidding_submission_end_date_before") || "",
+    bidding_submission_end_date_after: "bidding_submission_end_date_after",
+    bidding_submission_end_date_before: "bidding_submission_end_date_before",
   });
   // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
@@ -360,6 +358,15 @@ export default function TenderPer() {
     });
   }, [unitData]);
 
+  // useEffect(() => {
+  //   // let s = searchParams.toString();
+
+  //   dispatch(GetTenderListWithFilters(queryString));
+  //   navigate(`?${queryString}`, { replace: true });
+
+  //   // console.log(s,searchParams.toString(),"caller");
+  // }, []);
+
   useEffect(() => {
     console.log("initial obj creator");
     if (userData) {
@@ -380,14 +387,14 @@ export default function TenderPer() {
         bidding_status: "active",
         pincode: filters?.pincode || pc,
         keywords: kw,
+        offset: filters?.offset,
       };
-      setFilters({
-        ...filters,
+      setFilters((prev) => ({
+        ...prev,
         pincode: pc,
         keywords: kw,
-      });
+      }));
       let q = queryBuilder(obj);
-      navigate(`?${q}`, { replace: true });
       dispatch(GetTenderListWithFilters(q));
       console.log(q);
     } else {
@@ -396,12 +403,11 @@ export default function TenderPer() {
         bidding_status: "active",
       };
       let q = queryBuilder(obj);
-      navigate(`?${q}`, { replace: true });
       dispatch(GetTenderListWithFilters(q));
     }
 
     // dispatch(GetTenderListWithFilters(userFiltersqueryString));
-  }, [userData]);
+  }, [userData, filters?.offset]);
   const handleClick = (event, id) => {
     if (!userData) {
       navigate("/login");
@@ -523,7 +529,6 @@ export default function TenderPer() {
     errorStr.error = false;
     setAllGood(false);
     handleClose();
-    navigate(`?${queryString}`, { replace: true });
     dispatch(GetTenderListWithFilters(queryString));
     return "ok";
   };
@@ -558,21 +563,22 @@ export default function TenderPer() {
     );
   };
   const handleChangePages = (event, value) => {
-    const params = new URLSearchParams(searchParams);
+    // const params = new URLSearchParams(searchParams);
     const newOffset = (value - 1) * 50;
     if (!newOffset) {
-      params.set("offset", "");
-      dispatch(GetTenderListWithFilters(params.toString()));
-      navigate(`?${params.toString()}`, { replace: true });
+      setFilters((prev) => ({
+        ...prev,
+        offset: "",
+      }));
+      dispatch(GetTenderListWithFilters(queryString));
     } else {
-      params.set("offset", newOffset);
-      dispatch(GetTenderListWithFilters(params.toString()));
-      navigate(`?${params.toString()}`, { replace: true });
+      // params.set("offset", newOffset);
 
       setFilters((prev) => ({
         ...prev,
         offset: newOffset,
       }));
+      dispatch(GetTenderListWithFilters(queryString));
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -662,7 +668,11 @@ export default function TenderPer() {
       dispatch(GetUnitList(ids));
     }
   };
-  const filteredTenders = tenderData?.results?.filter(
+  const dataForNotLoggedInusers = userData
+    ? tenderData?.results
+    : tenderData?.results?.slice(0, 10);
+
+  const filteredTenders = dataForNotLoggedInusers?.filter(
     (tender) =>
       tender?.organisation_chain
         ?.toLowerCase()
@@ -763,8 +773,12 @@ export default function TenderPer() {
   };
 
   const handleSearchWithEverything = () => {
-    console.log(queryString);
-
+    if (!userData) {
+      toast.error("Please login to continue...");
+      navigate("/login");
+      return;
+    }
+    setSearchTerm("");
     dispatch(GetTenderListWithFilters(queryString));
     navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
   };
@@ -3222,17 +3236,26 @@ export default function TenderPer() {
         </main>
         {/* Pagination */}
         <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
-          <Pagination
-            disabled={userData ? false : true}
-            count={Math.ceil(tenderData?.count / 50) || 1}
-            defaultPage={1}
-            siblingCount={0}
-            boundaryCount={1}
-            color="primary"
-            showFirstButton
-            onChange={handleChangePages}
-            page={filters?.offset / 50 + 1} // Fixed calculation
-          />
+          {userData ? (
+            <Pagination
+              disabled={userData ? false : true}
+              count={Math.ceil(tenderData?.count / 50) || 1}
+              defaultPage={1}
+              siblingCount={0}
+              boundaryCount={1}
+              color="primary"
+              showFirstButton
+              onChange={handleChangePages}
+              page={filters?.offset / 50 + 1} // Fixed calculation
+            />
+          ) : (
+            <p className="flex gap-2 justify-center items-center">
+              <span onClick={() => navigate("/login")} className="text-base font-medium text-[#0554F2] cursor-pointer" >
+                Login
+              </span>
+              <span>to see more tenders</span>
+            </p>
+          )}
         </div>
       </div>
     </>

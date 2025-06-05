@@ -4,8 +4,10 @@ import Background from "../Components/Background";
 import PriceContainer from "../Components/PriceContainer";
 import { pricingPlanData } from "../Utils/CommonUtils";
 import pg from "../Assets/PricingGradient.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Pricing() {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
 
   return (
@@ -21,8 +23,8 @@ export default function Pricing() {
         <div className="w-full grid  md:grid-cols-4 gap-4 my-8 justify-center">
           <PriceContainer data={pricingPlanData.free} />
           <PriceContainer data={pricingPlanData.basic} />
-          <PriceContainer data={pricingPlanData.delux} />
-          <PriceContainer data={pricingPlanData.advance} />
+          <PriceContainer data={pricingPlanData.standard} />
+          <PriceContainer data={pricingPlanData.deluxe} />
         </div>
         <div className="w-full flex justify-center items-center mb-4">
           <button
@@ -33,10 +35,10 @@ export default function Pricing() {
           </button>
         </div>
         {show && (
-          <div className="w-full grid  md:grid-cols-4 gap-4 my-8 justify-center">
-            <PriceContainer data={pricingPlanData.standard} />
+          <div className="w-full grid  md:grid-cols-4 gap-6 my-8 justify-center">
             <PriceContainer data={pricingPlanData.professional} />
             <PriceContainer data={pricingPlanData.premium} />
+            <PriceContainer data={pricingPlanData.advance} />
             <div
               style={{
                 backgroundImage: `url(${pg})`, // Corrected syntax
@@ -45,20 +47,32 @@ export default function Pricing() {
                 backgroundPosition: "center",
                 objectFit: "contain",
               }}
-              className="max-h-[452px] border border-[#212121] rounded-3xl max-w-60 p-4 flex flex-col gap-1 bg-white"
+              className="h-full border border-[#212121] rounded-3xl max-w-60 p-4 flex flex-col gap-1 bg-white"
             >
-              <h6 className="text-3xl font-semibold text-[#fff] text-center mt-10">
+              <h6 className="text-3xl font-semibold text-[#fff] text-start mt-2">
                 Plan on Demand
               </h6>
-              <div className="flex flex-col justify-start items-center">
+              <p className="text-[#c1d8fc] text-sm font-normal">
+                Custom Pricing / Flexible Terms
+              </p>
+              <div className="flex flex-col justify-start text-start">
                 <h6 className="text-base font-normal text-[#ffffffd4] pt-6">
-                  Contact- 00000000
+                  Contact : +91 8759441352
                 </h6>
               </div>
-              <p className="text-[#ffffffd4] text-sm font-normal text-center">
-                ex@gmail.com
+              <p className="text-[#fffffff0] text-base font-normal text-start">
+                View job tenders of your choice
               </p>
+              <div className="mt-2">
+                <h6 className="text-sm font-semibold text-white text-start">
+                  *This plan is for those who work in Customize Department,
+                  Category, District, Panchayat, Trade etc.
+                </h6>
+              </div>
               <button
+                onClick={() =>
+                  navigate("/help", { state: { cname: "Plan on demand" } })
+                }
                 className="gap-2 p-2 border rounded-md border-[#0554F2] bg-white text-sm font-normal text-[#0554F2] 
             hover:bg-[#0554F2] hover:text-white transition-all duration-300 ease-in-out my-12"
               >

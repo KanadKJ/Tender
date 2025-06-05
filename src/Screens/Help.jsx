@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Background from "../Components/Background";
-import { Autocomplete, TextField, Button } from "@mui/material";
+import {
+  Autocomplete,
+  TextField,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
 import { InsertContactQueries } from "../Redux/Slices/CommonSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { category } from "../Utils/CommonUtils";
 import authgrd from "../Assets/AUTHGRD.png";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
@@ -12,6 +17,8 @@ import otpillus from "../Assets/pana.png";
 export default function Help() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { cname } = location?.state || {};
   const [option, setOption] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [fullName, setFullName] = useState("");
@@ -19,6 +26,15 @@ export default function Help() {
   const [userQuery, SetUserQuery] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    console.log(cname);
+    if (cname) {
+      setOption({
+        cname: cname,
+      });
+    }
+  }, [cname]);
   const handleFormSumit = async () => {
     if (!option) {
       setError("Please select category.");
@@ -55,9 +71,20 @@ export default function Help() {
         "Your query is sumitted. We will contact you shortly. Thank you!!",
         "You will be redirect to the Home page.",
       ]);
+      let progress = 1;
+
+      const interval = setInterval(() => {
+        progress += 2; // 2% every 100ms → 2 * 50 = 100% in 5 seconds
+        if (progress >= 100) {
+          progress = 100;
+        }
+        setProgress(progress);
+      }, 100);
+
       setTimeout(() => {
+        clearInterval(interval); // stop updating progress
         navigate("/");
-      }, [5000]);
+      }, 5000);
     }
   };
   return (
@@ -138,9 +165,12 @@ export default function Help() {
           </div>
           {/* Submit Button */}
           {success !== null ? (
-            <div>
-              <p>{success[0]}</p>
-              <p>{success[1]}</p>
+            <div className="flex flex-col justify-center items-center">
+              <p className="text-center">{success[0]}</p>
+              <div className="flex flex-col justify-center items-center">
+                <CircularProgress variant="determinate" value={progress} />
+                <p>{success[1]}</p>
+              </div>
             </div>
           ) : (
             <div className="flex justify-center pt-2">

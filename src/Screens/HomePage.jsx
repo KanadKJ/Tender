@@ -468,7 +468,9 @@ export default function HomePage() {
                 <span>platform expert</span>
               </motion.h1>
               <button
-                onClick={() => navigate("help")}
+                onClick={() =>
+                  navigate("/help", { state: { cname: "Need Demo" } })
+                }
                 className="py-2 px-3 rounded-lg bg-white text-[#0554F2] max-w-36"
               >
                 Request Demo
