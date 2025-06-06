@@ -113,10 +113,6 @@ export default function TenderPer() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   // const [savedFilters, setSavedFilters] = useState([]);
-  const handlePdfDownload = () => {
-    // Implement your PDF download logic here
-    console.log("PDF download triggered");
-  };
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
@@ -671,7 +667,11 @@ export default function TenderPer() {
       dispatch(GetUnitList(ids));
     }
   };
-  const filteredTenders = tenderData?.results?.filter(
+  const dataForNotLoggedInusers = userData
+    ? tenderData?.results
+    : tenderData?.results?.slice(0, 10);
+
+  const filteredTenders = dataForNotLoggedInusers?.filter(
     (tender) =>
       tender?.organisation_chain
         ?.toLowerCase()
@@ -773,13 +773,23 @@ export default function TenderPer() {
 
   const handleSearchWithEverything = () => {
     if (!userData) {
-      toast.error("Please login to continue...")
+      toast.error("Please login to continue...");
       navigate("/login");
       return;
     }
     setSearchTerm("");
     dispatch(GetTenderListWithFilters(queryString));
     navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
+  };
+
+  const handlePdfDownload = () => {
+    console.log(queryString);
+    dispatch(GetDocumentURL({ id: queryString, t: "4", c: "home" }))
+      .unwrap()
+      .then((fileUrl) => {
+        handleDownload(fileUrl);
+      })
+      .catch((e) => console.log(e));
   };
   return (
     <>
@@ -3235,17 +3245,29 @@ export default function TenderPer() {
         </main>
         {/* Pagination */}
         <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
-          <Pagination
-            disabled={userData ? false : true}
-            count={Math.ceil(tenderData?.count / 50) || 1}
-            defaultPage={1}
-            siblingCount={0}
-            boundaryCount={1}
-            color="primary"
-            showFirstButton
-            onChange={handleChangePages}
-            page={filters?.offset / 50 + 1} // Fixed calculation
-          />
+          {userData ? (
+            <Pagination
+              disabled={userData ? false : true}
+              count={Math.ceil(tenderData?.count / 50) || 1}
+              defaultPage={1}
+              siblingCount={0}
+              boundaryCount={1}
+              color="primary"
+              showFirstButton
+              onChange={handleChangePages}
+              page={filters?.offset / 50 + 1} // Fixed calculation
+            />
+          ) : (
+            <p className="flex gap-2 justify-center items-center">
+              <span
+                onClick={() => navigate("/login")}
+                className="text-base font-medium text-[#0554F2] cursor-pointer"
+              >
+                Login
+              </span>
+              <span>to see more tenders</span>
+            </p>
+          )}
         </div>
       </div>
     </>

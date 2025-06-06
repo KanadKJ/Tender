@@ -30,6 +30,7 @@ export const GetDocumentURL = createAsyncThunk(
     if (t?.toLowerCase() === "xls" && c === "converted")
       url = `/tenders/document_pdf_url/${id}/`;
     if (t === "3") url = `/tenders/export/?${id}`;
+    if (t === "4") url = `/tenders/export_pdf/?${id}`;
     try {
       const res = await ScrpApiTenders.get(`${url}`);
       return res.data?.url;

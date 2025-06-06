@@ -23,8 +23,8 @@ export default function Pricing() {
         <div className="w-full grid  md:grid-cols-4 gap-4 my-8 justify-center">
           <PriceContainer data={pricingPlanData.free} />
           <PriceContainer data={pricingPlanData.basic} />
-          <PriceContainer data={pricingPlanData.standard} />
           <PriceContainer data={pricingPlanData.deluxe} />
+          <PriceContainer data={pricingPlanData.advance} />
         </div>
         <div className="w-full flex justify-center items-center mb-4">
           <button
@@ -36,9 +36,10 @@ export default function Pricing() {
         </div>
         {show && (
           <div className="w-full grid  md:grid-cols-4 gap-6 my-8 justify-center">
+            <PriceContainer data={pricingPlanData.standard} />
             <PriceContainer data={pricingPlanData.professional} />
             <PriceContainer data={pricingPlanData.premium} />
-            <PriceContainer data={pricingPlanData.advance} />
+
             <div
               style={{
                 backgroundImage: `url(${pg})`, // Corrected syntax

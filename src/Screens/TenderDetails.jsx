@@ -30,14 +30,26 @@ export default function TenderDetails() {
   const { userData } = useSelector((s) => s.auth);
   const { tenderDetails, documentURL } = useSelector((s) => s.tender);
   useEffect(() => {
-    dispatch(GetTenderDetails(id));
+    if (userData) {
+      dispatch(GetTenderDetails(id));
+    } else {
+      navigate("/login");
+    }
   }, []);
 
   // useEffect(() => {
   //   handleDownload(documentURL);
   // }, [documentURL]);
-
+  /**
+   *
+   * @param {*} id  //id
+   * @param {*} t   // extension type
+   * @param {*} c   // category - default
+   * @returns
+   */
   const handleDocumentDownload = (id, t, c) => {
+    console.log(id, t, c);
+
     if (!userData) {
       navigate("/login");
       return;

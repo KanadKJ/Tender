@@ -192,11 +192,11 @@ export const pricingPlanData = {
     ],
     caption: "This plan is for those who work in specific blocks or panchayat.",
     price: "899",
-    minHeight: "min-h-11",
+    minHeight: "min-h-20",
   },
   deluxe: {
     title: "Deluxe",
-    subTitle: "All West Bengal",
+    subTitle: "Any 3 Districts (All Departments)",
     id: 4,
     featurs: [
       "Tender Search Facility",
@@ -232,7 +232,7 @@ export const pricingPlanData = {
     ],
     caption: "This plan is for those who work across West Bengal.",
     price: "1799",
-    minHeight: "min-h-20",
+    minHeight: "min-h-11",
   },
   professional: {
     title: "Professional",
@@ -286,6 +286,8 @@ export const pricingPlanData = {
 */
 
 export const handleDownload = async (fileUrl, t, e) => {
+  console.log(fileUrl, t, e);
+
   let name = fileUrl.split("/");
   const now = new Date();
   const day = String(now.getDate()).padStart(2, "0");
@@ -304,7 +306,18 @@ export const handleDownload = async (fileUrl, t, e) => {
     const url = window.URL.createObjectURL(blob);
 
     // Open in new tab
-    const newTab = window.open(url, "_blank");
+    if (t === "xls") {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = ext; // ← Set your desired filename here
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      // Optional: Clean up the blob URL
+      window.URL.revokeObjectURL(url);
+    } else {
+      const newTab = window.open(url, "_blank");
+    }
 
     // Optional: Revoke the object URL after a short delay
     // setTimeout(() => {
