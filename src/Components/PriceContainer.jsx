@@ -9,8 +9,6 @@ import { TMAPI_BASE_URL } from "../Utils/CommonUtils";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 export default function PriceContainer({ data }) {
-  console.log(data.title, data.featurs.length);
-
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,8 +49,6 @@ export default function PriceContainer({ data }) {
     const result = await axios.post(`${TMAPI_BASE_URL}/createOrder`, {
       amount: price,
     });
-    console.log(result);
-
     if (!result) {
       alert("Server error. Are you online?");
       return;
@@ -68,8 +64,6 @@ export default function PriceContainer({ data }) {
       image: logo,
       order_id: id,
       handler: async function (response) {
-        console.log("Razorpay handler response", response);
-
         const data = {
           paymentId: response.razorpay_payment_id,
           amount: amount.toString(),

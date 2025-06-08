@@ -41,6 +41,7 @@ import CompanyDetails from "./CompanyDetails";
 import { GetUserDetailsForLoginAsUser } from "../Redux/Slices/AuthSlice";
 import { toast } from "react-toastify";
 import Papa from "papaparse";
+import { planNames } from "../Utils/CommonUtils";
 export default function UserManagement() {
   const dispatch = useDispatch();
   const { userManagementUserDataWithPlan } = useSelector((s) => s.common);
@@ -173,16 +174,7 @@ export default function UserManagement() {
             onChange={(e) => setPackageId(e.target.value)}
           >
             <MenuItem value="">All</MenuItem>
-            {[
-              "Free",
-              "Basic",
-              "Dulex",
-              "Advance",
-              "Standard",
-              "Professional",
-              "Premium",
-              "Plan on Demand",
-            ].map((label, i) => (
+            {planNames?.map((label, i) => (
               <MenuItem key={i + 1} value={i + 1}>
                 {label}
               </MenuItem>

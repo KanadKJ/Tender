@@ -1,20 +1,8 @@
-explore by keyword -- clickable and redirect ot tenders page
-same for districts -- (done)
+todo 
 
-request demo btn on home screen help page -- done
-
-on selecting the saved filter template after selecting the applied filters are not binded -- done
-
-in closing date in from todays date and to date +7 -- done
-
-in Our Achivements, number of active tenders can we show real time tender count. -- done
+1 - testimonial photos
+2 - UM inactive account is not working - no flag from api res
 
 
-on tenders page when search with everything on keywords need to click two times for the results.
-2025_ZPHD_845516_7
-
-
-
-states=29&districts=558&districts=559&districts=561&districts=560&organisations=322&departments=1644&ordering=-published_date&bidding_status=active
 
 

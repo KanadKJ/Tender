@@ -87,7 +87,6 @@ export default function HomePage() {
           const res = await axios.get(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
           );
-          console.log(res.data);
 
           const address = res?.data?.results[0]?.formatted_address;
           const pincodeObj = res?.data?.results[0]?.address_components?.find(
@@ -844,13 +843,8 @@ export default function HomePage() {
             {testimonailContent?.map((d, i) => (
               <div
                 key={i}
-                className="h-auto rounded-xl flex flex-col gap-4 md:flex-row"
+                className="h-auto p-2 rounded-xl flex flex-col gap-4 md:flex-row"
               >
-                <img
-                  src={tm}
-                  alt="testimonial"
-                  className="h-72 object-cover rounded-tl-xl rounded-tr-xl md:rounded-tr-none md:rounded-bl-xl"
-                />
                 <div className="flex flex-col justify-between gap-4 pr-3 pt-2 pl-2 pb-2 md:pb-0">
                   <p className="text-justify text-base text-[#565656] font-normal">
                     {d?.review}

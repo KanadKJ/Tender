@@ -31,12 +31,7 @@ export default function TenderDetails() {
   const { userData } = useSelector((s) => s.auth);
   const { tenderDetails, documentURL } = useSelector((s) => s.tender);
   useEffect(() => {
-    if (userData) {
-      dispatch(GetTenderDetails(id));
-    } else {
-      toast.error("Please login to continue...");
-      navigate("/login");
-    }
+    dispatch(GetTenderDetails(id));
   }, []);
 
   // useEffect(() => {
@@ -50,7 +45,7 @@ export default function TenderDetails() {
    * @returns
    */
   const handleDocumentDownload = (id, t, c) => {
-    console.log(id, t, c);
+
 
     if (!userData) {
       navigate("/login");
@@ -95,6 +90,11 @@ export default function TenderDetails() {
               className="flex gap-2 p-2 bg-[#0554F2] rounded-md text-white text-base font-medium
                 hover:bg-[#0554f228] hover:text-[#0554F2] transition-all duration-300 ease-in-out 
                 group"
+              onClick={() =>
+                navigate("/help", {
+                  state: { cname: "Help for bid submission" },
+                })
+              }
             >
               Bid now
             </button>

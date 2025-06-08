@@ -74,6 +74,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { toast } from "react-toastify";
+import expireIcon from "../Assets/expireIcon.png";
 export default function TenderPer() {
   // redux
   const { tenderData, tenderIsLoading, userSaverTemplates } = useSelector(
@@ -115,7 +116,7 @@ export default function TenderPer() {
   // const [savedFilters, setSavedFilters] = useState([]);
   const handlePdfDownload = () => {
     // Implement your PDF download logic here
-    console.log("PDF download triggered");
+
   };
 
   const [saveFilter, setSaveFilter] = useState("");
@@ -163,7 +164,7 @@ export default function TenderPer() {
     if (userData) {
       dispatch(GetTemplateDetails(userData?.id));
     }
-    console.log("userdatat UE");
+
   }, [userData]);
 
   // useEffect(() => {
@@ -243,7 +244,7 @@ export default function TenderPer() {
       ...filters,
       districts,
     });
-    console.log("UE Districts");
+ 
   }, [districtsData]);
 
   useEffect(() => {
@@ -281,7 +282,7 @@ export default function TenderPer() {
       ...filters,
       departments,
     });
-    console.log("is multiple? departments");
+  
   }, [drpData]);
 
   useEffect(() => {
@@ -301,7 +302,7 @@ export default function TenderPer() {
       ...filters,
       divisions,
     });
-    console.log("is multiple? div");
+
   }, [divData]);
   useEffect(() => {
     const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
@@ -320,7 +321,7 @@ export default function TenderPer() {
       ...filters,
       sub_divisions,
     });
-    console.log("is multiple? sub div");
+
   }, [subDivData]);
 
   useEffect(() => {
@@ -368,7 +369,6 @@ export default function TenderPer() {
   // }, []);
 
   useEffect(() => {
-    console.log("initial obj creator");
     if (userData) {
       const pc = searchParams.get("pincode") || "";
       const kw = searchParams.getAll("keywords") || [];
@@ -396,7 +396,7 @@ export default function TenderPer() {
       }));
       let q = queryBuilder(obj);
       dispatch(GetTenderListWithFilters(q));
-      console.log(q);
+
     } else {
       let obj = {
         ordering: ["-published_date"],
@@ -627,7 +627,6 @@ export default function TenderPer() {
         dispatch(GetTemplateDetails(userData?.id));
       })
       .catch((e) => {
-        console.log(e);
         toast.error("Something went wrong.");
       });
 
@@ -641,7 +640,7 @@ export default function TenderPer() {
         dispatch(GetTemplateDetails(userData?.id));
       })
       .catch((e) => {
-        console.log(e);
+
         toast.error("Something went wrong.");
       });
   };
@@ -693,7 +692,6 @@ export default function TenderPer() {
       navigate("/login");
       return;
     }
-    console.log("called handleDocumentDownload");
 
     const id = new URLSearchParams(searchParams).toString();
     const t = "3";
@@ -750,7 +748,6 @@ export default function TenderPer() {
         ordering: ["-published_date"],
         ...obj,
       }));
-      console.log(userFilters);
       setDatePublishedOption("");
       setDateClosedOption("");
       let q = queryBuilder(obj);
@@ -758,7 +755,6 @@ export default function TenderPer() {
         replace: true,
       });
       dispatch(GetTenderListWithFilters(q));
-      console.log(q);
     }
     // navigate(`?bidding_status=active&ordering=-published_date`, { replace: true });
   };
@@ -823,6 +819,7 @@ export default function TenderPer() {
                 onChange={(e) => searchWitheverything(e)}
               />
               <button
+                disabled={isPlanExpired}
                 onClick={handleSearchWithEverything}
                 className="p-2 ml-2 bg-[#0554F2] text-white rounded-lg"
               >
@@ -2909,44 +2906,46 @@ export default function TenderPer() {
           <div className="w-full flex flex-col justify-center items-center overflow-x-hidden box-border">
             {/* Top Button Section */}
             <div className="w-full flex justify-center items-center pb-1">
-              <div className="w-full max-w-screen-lg flex justify-end gap-2 mt-4 mb-2 px-3 md:px-0">
-                {/* PDF Button */}
-                <div className="w-full flex items-center text-[#333333] text-sm font-normal">
-                  <span>Total Tenders : {tenderData?.count}</span>
-                </div>
-                <div className="flex justify-end  gap-4">
-                  <Button
-                    disabled={isPlanExpired}
-                    style={{
-                      backgroundColor: "#B00020",
-                      color: isPlanExpired ? "#fff00" : "#fff",
-                      padding: "6px 12px",
-                      minWidth: "unset",
-                      whiteSpace: "nowrap",
-                    }}
-                    variant="contained"
-                    onClick={handlePdfDownload}
-                  >
-                    <PictureAsPdfIcon fontSize="small" />
-                  </Button>
+              {!isPlanExpired && (
+                <div className="w-full max-w-screen-lg flex justify-end gap-2 mt-4 mb-2 px-3 md:px-0">
+                  {/* PDF Button */}
+                  <div className="w-full flex items-center text-[#333333] text-sm font-normal">
+                    <span>Total Tenders : {tenderData?.count}</span>
+                  </div>
+                  <div className="flex justify-end  gap-4">
+                    <Button
+                      disabled={isPlanExpired}
+                      style={{
+                        backgroundColor: "#B00020",
+                        color: isPlanExpired ? "#fff00" : "#fff",
+                        padding: "6px 12px",
+                        minWidth: "unset",
+                        whiteSpace: "nowrap",
+                      }}
+                      variant="contained"
+                      onClick={handlePdfDownload}
+                    >
+                      <PictureAsPdfIcon fontSize="small" />
+                    </Button>
 
-                  {/* Excel Button */}
-                  <Button
-                    disabled={isPlanExpired}
-                    style={{
-                      backgroundColor: "#10793F",
-                      color: isPlanExpired ? "#fff00" : "#fff",
-                      padding: "6px 12px",
-                      minWidth: "unset",
-                      whiteSpace: "nowrap",
-                    }}
-                    variant="contained"
-                    onClick={handleDocumentDownload}
-                  >
-                    <SystemUpdateAltIcon fontSize="small" />
-                  </Button>
+                    {/* Excel Button */}
+                    <Button
+                      disabled={isPlanExpired}
+                      style={{
+                        backgroundColor: "#10793F",
+                        color: isPlanExpired ? "#fff00" : "#fff",
+                        padding: "6px 12px",
+                        minWidth: "unset",
+                        whiteSpace: "nowrap",
+                      }}
+                      variant="contained"
+                      onClick={handleDocumentDownload}
+                    >
+                      <SystemUpdateAltIcon fontSize="small" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Tender List */}
@@ -3169,6 +3168,19 @@ export default function TenderPer() {
                   </div>
                 );
               })
+            ) : isPlanExpired ? (
+              <div className="w-full flex flex-col justify-center items-center gap-4">
+                <img className="h-16" src={expireIcon} alt="expireIcon" />
+                <h1>
+                  Your plan has been expired. Please renew your plan to continue
+                </h1>
+                <button
+                  className="p-2 ml-2 bg-[#0554F2] text-white rounded-lg"
+                  onClick={() => navigate("/pricing")}
+                >
+                  Renew Plan
+                </button>
+              </div>
             ) : (
               <div className="w-full text-center py-10 text-gray-500">
                 <ReceiptLongIcon
@@ -3235,28 +3247,33 @@ export default function TenderPer() {
           {/* Place this at the very BOTTOM */}
         </main>
         {/* Pagination */}
-        <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
-          {userData ? (
-            <Pagination
-              disabled={userData ? false : true}
-              count={Math.ceil(tenderData?.count / 50) || 1}
-              defaultPage={1}
-              siblingCount={0}
-              boundaryCount={1}
-              color="primary"
-              showFirstButton
-              onChange={handleChangePages}
-              page={filters?.offset / 50 + 1} // Fixed calculation
-            />
-          ) : (
-            <p className="flex gap-2 justify-center items-center">
-              <span onClick={() => navigate("/login")} className="text-base font-medium text-[#0554F2] cursor-pointer" >
-                Login
-              </span>
-              <span>to see more tenders</span>
-            </p>
-          )}
-        </div>
+        {!isPlanExpired && (
+          <div className="flex justify-center items-center mt-14 border p-4 rounded-full shadow-md">
+            {userData ? (
+              <Pagination
+                disabled={userData ? false : true}
+                count={Math.ceil(tenderData?.count / 50) || 1}
+                defaultPage={1}
+                siblingCount={0}
+                boundaryCount={1}
+                color="primary"
+                showFirstButton
+                onChange={handleChangePages}
+                page={filters?.offset / 50 + 1} // Fixed calculation
+              />
+            ) : (
+              <p className="flex gap-2 justify-center items-center">
+                <span
+                  onClick={() => navigate("/login")}
+                  className="text-base font-medium text-[#0554F2] cursor-pointer"
+                >
+                  Login
+                </span>
+                <span>to see more tenders</span>
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

@@ -1,7 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import CryptoJS from "crypto-js";
-
+import tm1 from "../Assets/TM1.jpg";
+import tm2 from "../Assets/TM2.jpg";
+import tm3 from "../Assets/TM3.jpg";
+import tm4 from "../Assets/TM4.jpg";
+import tm5 from "../Assets/TM5.jpg";
 export const TMAPI_BASE_URL =
   "https://smp1jsf6ce.execute-api.ap-south-1.amazonaws.com/Prod/TMApi";
 
@@ -203,10 +207,10 @@ export const pricingPlanData = {
       "Tender Document Download",
       "1 Year Old Tenders Can Be Viewed",
       "Save Filter Limit: Up to 25",
+      "Advanced Search Tools",
       "Tender Export to PDF",
       "View BOQ in PDF",
       "Business Support",
-      "",
       "",
       "",
     ],
@@ -286,7 +290,6 @@ export const pricingPlanData = {
 */
 
 export const handleDownload = async (fileUrl, t, e) => {
-  console.log(fileUrl, t, e);
 
   let name = fileUrl.split("/");
   const now = new Date();
@@ -514,30 +517,35 @@ export const testimonailContent = [
       "“Thanks to E Tender Mitra, I never miss an important tender. The filters save me so much time!”",
     userName: "— Dayamay Chandra",
     posotion: ", Civil Contractor",
+    src: tm1,
   },
   {
     review:
       "“Excellent service and genuine support team. Perfect for small contractors like us.”",
     userName: "— Kaushik Ghosh",
     posotion: ", Electrical Vendor",
+    src: tm2,
   },
   {
     review:
       "“Highly reliable and cost-effective. I’ve secured multiple projects thanks to their timely alerts.”",
     userName: "— Swapan Kuma Bhakta",
     posotion: " Civil Supplier, Birbhum",
+    src: tm5,
   },
   {
     review:
       "“E Tender Mitra saves me hours every week. I only see tenders that matter to me — no clutter, just opportunity.”",
     userName: "— Sourav Ghosh",
     posotion: ", Contractor, Bankura",
+    src: tm4,
   },
   {
     review:
       "“Customer support is amazing. They actually understand tender-related problems and guide you properly.”",
     userName: "— Anurag Chatterjee",
     posotion: ", Electrical Contractor, Birbhum ",
+    src: tm3,
   },
 ];
 export const category = [
@@ -548,4 +556,14 @@ export const category = [
   { cname: "Request for inactive account" },
   { cname: "Plan on demand" },
   { cname: "Others" },
+];
+export const planNames = [
+  "Free",
+  "Basic",
+  "Dulex",
+  "Advance",
+  "Standard",
+  "Professional",
+  "Premium",
+  "Plan on Demand",
 ];

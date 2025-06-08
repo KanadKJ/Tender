@@ -217,7 +217,7 @@ export const GetContactQueries = createAsyncThunk(
   "common/GetContactQueries",
   async (params, { rejectWithValue }) => {
     try {
-      const res = await TMGetApiNoAuth.post(`/GetContactQueries`, params);
+      const res = await TMGetApi.post(`/GetContactQueries`, params);
       return res.data?.value;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

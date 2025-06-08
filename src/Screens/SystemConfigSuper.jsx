@@ -129,7 +129,7 @@ export default function SystemConfigSuper() {
   useEffect(() => {
     return () => {
       dispatch(cleanUpFilterBasedOnUser());
-      console.log("Component is unmounting...");
+      
     };
   }, []);
   return (

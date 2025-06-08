@@ -10,7 +10,6 @@ const initialState = {
   userFilters: null,
   companyDetailsData: null,
   addressDetailsData: null,
-  
 };
 //GetOtp
 export const GetOtp = createAsyncThunk(
@@ -83,14 +82,34 @@ export const GetUserDetailsForLoginAsUser = createAsyncThunk(
     }
   }
 );
+export const ValidateOTP = createAsyncThunk(
+  "auth/ValidateOTP",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await TMGetApi.get(
+        `/verify-otp?otp=${data?.otp}&mobile=${data?.mobileNumber}`
+      );
 
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(console.log(error));
+    }
+  }
+);
 export const GetUserDetails = createAsyncThunk(
   "auth/GetUserDetails", // Corrected action type
   async (data, { rejectWithValue }) => {
-    console.log(data, "auth slice ");
-
     try {
-      const response = await TMGetApi.post(`/verify-otp-and-get-user`, data);
+      let response;
+      if (data?.type && data?.type === "LoggedInAsUser") {
+        const payload = {
+          email: data?.email,
+          password: "",
+        };
+        response = await TMGetApi.post(`/GetUserDetails`, payload);
+      } else {
+        response = await TMGetApi.post(`/verify-otp-and-get-user`, data);
+      }
 
       // if (!response?.data?.value?.length) {
       //   return rejectWithValue("Failed, OTP did not match");
@@ -102,9 +121,9 @@ export const GetUserDetails = createAsyncThunk(
       if (response?.data?.statusCode === 404) {
         return rejectWithValue(response?.data?.errors);
       }
-      if (response?.data?.value[0]?.isLoggedIn) {
-        return rejectWithValue(["User already logged in"]);
-      }
+      // if (response?.data?.value[0]?.isLoggedIn) {
+      //   return rejectWithValue(["User already logged in"]);
+      // }
       const user = response.data.value[0]; // Store only the user object
 
       const obj = {
@@ -129,7 +148,7 @@ export const SignUpUser = createAsyncThunk(
       }
       if (response?.data?.value[0] === "User already exists") {
         return rejectWithValue(
-          "User already exists with this details,Please try to login"
+          ["User already exist, Please try to login"]
         );
       }
       return response?.data?.value;
@@ -239,7 +258,7 @@ const authSlice = createSlice({
         state.userData = user;
         state.userFilters = JSON.parse(user?.filterjson);
         if (user?.userType === 1) {
-          const encrypted = setEncryptedItem(JSON.stringify(data));
+          const encrypted = setEncryptedItem(JSON.stringify(user));
           localStorage.setItem("controller", encrypted);
         }
         localStorage.setItem("user", JSON.stringify(user));
@@ -287,7 +306,6 @@ const authSlice = createSlice({
       .addCase(InsertFilterJson.fulfilled, (state, action) => {
         state.authIsLoading = false;
         state.error = null;
-        console.log(action.payload[0]);
 
         if (action?.payload[0] === "Updated successfully") {
           toast.success("User updated successfully!");
@@ -305,7 +323,6 @@ const authSlice = createSlice({
       .addCase(LogoutUser.fulfilled, (state, action) => {
         state.authIsLoading = false;
         state.error = null;
-        console.log(action.payload);
 
         if (action?.payload?.message === "User logged out successfully") {
           state.userData = null;
@@ -396,6 +413,19 @@ const authSlice = createSlice({
       })
       .addCase(GetOtp.rejected, (state, action) => {
         // state.authIsLoading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+      // ValidateOTP
+      .addCase(ValidateOTP.pending, (state) => {
+        state.authIsLoading = true;
+        state.error = null;
+      })
+      .addCase(ValidateOTP.fulfilled, (state, action) => {
+        state.authIsLoading = false;
+        state.error = null;
+      })
+      .addCase(ValidateOTP.rejected, (state, action) => {
+        state.authIsLoading = false;
         state.error = action.payload || "Something went wrong";
       });
   },

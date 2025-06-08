@@ -29,7 +29,6 @@ export default function FollowedTenders() {
   const { usersWishlist, tenderIsLoading, tenderDataOfWishlist } = useSelector(
     (s) => s.tender
   );
-  console.log(tenderDataOfWishlist);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPopoverId, setOpenPopoverId] = useState(null);

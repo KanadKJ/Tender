@@ -113,7 +113,7 @@ export default function Footer() {
                 <FaPhoneAlt /> 91-8759441352
               </p>
               <p className="flex items-center gap-2">
-                <MdEmail /> demo@gmail.com
+                <MdEmail /> info@etendermitra.in
               </p>
               <div className="flex gap-4 mt-3">
                 <a

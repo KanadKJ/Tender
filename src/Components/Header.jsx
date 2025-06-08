@@ -18,7 +18,7 @@ import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined
 import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { cleanUpUserFilters } from "../Redux/Slices/TenderSlice";
-import { getDecryptedItem } from "../Utils/CommonUtils";
+import { getDecryptedItem, planNames } from "../Utils/CommonUtils";
 const Header = () => {
   const location = useLocation();
   const pathname = location.pathname;
@@ -36,7 +36,7 @@ const Header = () => {
     }
 
     if (localStorage.getItem("sessionInControl")) {
-      console.log("session is in admins control");
+     
       setSessionInControlStatus(true);
     } else {
       setSessionInControlStatus(false);
@@ -57,9 +57,13 @@ const Header = () => {
   const handleGoBack = () => {
     const encryptedData = localStorage.getItem("controller");
     if (encryptedData) {
-      const decrypted = getDecryptedItem(encryptedData);
-      console.log("Decrypted Data:", decrypted);
-      dispatch(GetUserDetails(JSON.parse(decrypted)));
+      let decrypted = getDecryptedItem(encryptedData);
+      let data = JSON.parse(decrypted);
+   
+
+      data["type"] = "LoggedInAsUser";
+    
+      dispatch(GetUserDetails(data));
       localStorage.removeItem("sessionInControl");
       setSessionInControlStatus(false);
     }
@@ -274,7 +278,7 @@ const Header = () => {
                     navigate("/dashboard");
                     handleClose();
                   }}
-                  className="cursor-pointer p-4 w-full flex flex-col justify-center items-center min-w-56"
+                  className="cursor-pointer p-4 w-full flex flex-col justify-center items-center min-w-60"
                 >
                   <Avatar
                     sx={{
@@ -294,21 +298,25 @@ const Header = () => {
                         ]?.toUpperCase()}
                   </Avatar>
                   <div className="cursor-pointer mt-5">
-                    <h1 className="text-2xl hover:text-[26px] font-medium text-center">
+                    <h1 className="text-2xl font-medium text-center">
                       {userData?.firstName}
                     </h1>
                     <h6 className="text-xs font-normal text-[#747474] text-center">
                       {userData?.email}
                     </h6>
                   </div>
-                  <div className="border rounded-md p-3 mt-5">
+                  <div className="w-full border rounded-md p-3 mt-5">
                     <h6 className="text-xs font-semibold text-[#747474] text-center">
                       PLAN DETAILS
                     </h6>
                     <p className="p-1">
-                      Valid Till :{userFilters?.ExpiryDate || ""}
+                      Plan Name : {planNames[userData?.packageId - 1]}
+                    </p>
+                    <p className="p-1">
+                      Valid Till : {userFilters?.ExpiryDate || ""}
                     </p>
                   </div>
+
                   <button
                     className="p-1 mt-5 text-[#565656] flex gap-2"
                     onClick={() => {

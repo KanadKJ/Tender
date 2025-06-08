@@ -154,7 +154,6 @@ export default function Profile() {
 
     if (Object.keys(newErrors).length === 0) {
       // alert(`Changes saved for ${section} section`);
-      console.log(section);
       if (section === "company") {
         dispatch(
           InsertUpdateCompany({
@@ -175,8 +174,6 @@ export default function Profile() {
           });
       }
       if (section === "address") {
-        console.log(formData);
-
         dispatch(
           InsertUpdateAddressData({
             id: formData?.addressId,

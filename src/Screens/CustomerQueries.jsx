@@ -17,7 +17,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import { category } from "../Utils/CommonUtils";
 export default function CustomerQueries() {
   const { contactQueriesList } = useSelector((s) => s.common);
-  console.log(contactQueriesList);
   const [searchTerms, setSearchTerms] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [filter, setFilters] = useState({

@@ -11,7 +11,7 @@ const LoginPage = () => {
   // state
   const [phone, setPhone] = useState(null);
   const [otp, setOtp] = useState(null);
-  console.log(otp);
+
 
   const [errors, setErrors] = useState({});
   const [showOtp, setShowOtp] = useState(false);
@@ -56,16 +56,15 @@ const LoginPage = () => {
     if (!validateForm()) {
       return;
     }
-
+    navigate("/validateOtp", {
+      state: { phone, pageFrom: "login" },
+    });
     try {
       const response = await dispatch(GetOtp(phone)).unwrap();
       // navigate("/dashboard/profile");
     } catch (error) {
       setErrors({ loginError: error });
     }
-    navigate("/validateOtp", {
-      state: { phone },
-    });
   };
 
   return (

@@ -16,7 +16,7 @@ const Register = () => {
     first_name: "",
     email: "",
     mobile_no: "",
-    password: "MenokaTenders$TapuDada@",
+    password: "",
     termsAccepted: false,
   });
 
@@ -77,22 +77,26 @@ const Register = () => {
     //   console.log("Form Data:", formData);
     //   dispatch(SignUpUser(formData));
     // }
-    try {
-      const response1 = await dispatch(SignUpUser(formData));
-      if (response1) {
-        toast.warning("Sending OTP... Please wait.");
-      }
-      const response2 = await dispatch(GetOtp(formData.mobile_no));
-      if (!response1 && !response2) {
-        toast.error("Something went wrong...");
-        return; 
-      }
-      navigate("/validateOtp", {
-        state: { phone: formData.mobile_no },
-      });
-    } catch (error) {
-      setErrors({ loginError: error });
-    }
+    // try {
+    // const response1 = await dispatch(SignUpUser(formData));
+    // if (response1) {
+    //   toast.warning("Sending OTP... Please wait.");
+    // }
+    // const response2 = await dispatch(GetOtp(formData.mobile_no));
+    // if (!response1 && !response2) {
+    //   toast.error("Something went wrong...");
+    //   return;
+    // }
+    navigate("/validateOtp", {
+      state: {
+        phone: formData.mobile_no,
+        userDetails: formData,
+        pageFrom: "register",
+      },
+    });
+    // } catch (error) {
+    //   setErrors({ loginError: error });
+    // }
   };
 
   return (

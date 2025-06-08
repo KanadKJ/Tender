@@ -3,11 +3,17 @@ import Background from "../Components/Background";
 import logo from "../Assets/logoNew.png";
 import Ribbons from "../Components/Ribbons";
 import { useDispatch, useSelector } from "react-redux";
-import { GetOtp, GetUserDetails } from "../Redux/Slices/AuthSlice";
+import {
+  GetOtp,
+  GetUserDetails,
+  SignUpUser,
+  ValidateOTP,
+} from "../Redux/Slices/AuthSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import authgrd from "../Assets/AUTHGRD.png";
 import otpillus from "../Assets/OTP.png";
+import { toast } from "react-toastify";
 const ValidateOtp = () => {
   // state
 
@@ -16,11 +22,12 @@ const ValidateOtp = () => {
   const [errors, setErrors] = useState({});
   const [showResendNow, setShowResendNow] = useState(true);
   const [userData, setUserData] = useState({});
-  const [timeLeft, setTimeLeft] = useState(60); // 2 mins 30 secs
+  const [timeLeft, setTimeLeft] = useState(90); // 2 mins 30 secs
   const intervalRef = useRef(null);
   // hooks
   const location = useLocation();
-  const { phone } = location?.state || {};
+  const { phone, userDetails, pageFrom } = location?.state || {};
+  console.log(pageFrom, userDetails);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,6 +42,25 @@ const ValidateOtp = () => {
   // redux states
   const { authIsLoading, error } = useSelector((s) => s.auth);
   console.log(error);
+  // to check if the user has reloaded the page
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem("isRefreshing", "true");
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    if (sessionStorage.getItem("isRefreshing") === "true") {
+      sessionStorage.removeItem("isRefreshing");
+      navigate("/");
+    }
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+  useEffect(() => {
+    if (pageFrom === "register") {
+      getOtpAndVerify();
+    }
+  }, []);
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {
@@ -50,21 +76,13 @@ const ValidateOtp = () => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  // to check if the user has reloaded the page
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.setItem("isRefreshing", "true");
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    if (sessionStorage.getItem("isRefreshing") === "true") {
-      sessionStorage.removeItem("isRefreshing");
-      navigate("/");
-    }
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
   // validation
+
+  const getOtpAndVerify = async () => {
+    if (pageFrom === "register") {
+      const response = await dispatch(GetOtp(phone)).unwrap();
+    }
+  };
   const validateForm = () => {
     const newErrors = {};
     console.log("string", otp?.toString());
@@ -81,27 +99,55 @@ const ValidateOtp = () => {
     if (!validateForm()) {
       return;
     }
+    if (pageFrom === "register") {
+      try {
+        let obj = {
+          mobileNumber: `91${phone}`,
+          otp: otp,
+        };
+        const res = await dispatch(ValidateOTP(obj)).unwrap();
+        console.log(res?.response);
 
-    try {
-      let obj = {
-        mobileNumber: `91${phone}`,
-        otp: otp,
-      };
-      const response = await dispatch(GetUserDetails(obj)).unwrap();
-      console.log(response);
-      if (response?.statusCode === 404) {
-        setErrors({ loginError: "User not found" });
-        return; // Stop execution, prevent navigation
+        if (res?.success) {
+          const response = await dispatch(SignUpUser(userDetails)).unwrap();
+          if (response[0] === "Success") {
+            toast.success("Registration Successful. Please login to continue.");
+            navigate("/login");
+          }
+          if (response?.statusCode === 404) {
+            setErrors({ loginError: "User not found" });
+            return; // Stop execution, prevent navigation
+          }
+          // if (response?.valid) {
+          //   navigate("/dashboard/profile");
+          // }
+        }
+      } catch (err) {
+        console.log(err);
       }
-      if (response?.valid) {
+    }
+    if (pageFrom === "login") {
+      try {
+        let obj = {
+          mobileNumber: `91${phone}`,
+          otp: otp,
+        };
+        const response = await dispatch(GetUserDetails(obj)).unwrap();
+        console.log(response);
+        if (response?.statusCode === 404) {
+          setErrors({ loginError: "User not found" });
+          return; // Stop execution, prevent navigation
+        }
+        if (response?.valid) {
+          navigate("/dashboard/profile");
+        }
+        // if (response?.success) {
+        //   setShowOtp(true);
+        // }
         navigate("/dashboard/profile");
+      } catch (error) {
+        setErrors({ loginError: error });
       }
-      //   if (response?.success) {
-      //     setShowOtp(true);
-      //   }
-      //   navigate("/dashboard/profile");
-    } catch (error) {
-      setErrors({ loginError: error });
     }
   };
   const handleResend = () => {

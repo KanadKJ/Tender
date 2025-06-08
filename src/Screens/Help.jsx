@@ -28,7 +28,6 @@ export default function Help() {
   const [success, setSuccess] = useState(null);
   const [progress, setProgress] = useState(0);
   useEffect(() => {
-    console.log(cname);
     if (cname) {
       setOption({
         cname: cname,
@@ -63,7 +62,6 @@ export default function Help() {
       contact,
       query: userQuery,
     };
-    // console.log(obj);
 
     let res = await dispatch(InsertContactQueries(obj));
     if (res?.payload[0] === "Query submitted successfully.") {

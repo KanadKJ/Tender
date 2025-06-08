@@ -2,7 +2,7 @@ import axios from "axios";
 import { SCRP_BASE_URL, TMAPI_BASE_URL } from "../Utils/CommonUtils";
 import { toast } from "react-toastify";
 import { TMGetApi } from "./TMAPI";
-const PlainAxios = axios.create();
+
 export const ScrpApiTenders = axios.create({
   baseURL: SCRP_BASE_URL,
   headers: {
@@ -12,7 +12,15 @@ export const ScrpApiTenders = axios.create({
 
 ScrpApiTenders.interceptors.request.use(
   async (config) => {
-    await TMGetApi.get(`${TMAPI_BASE_URL}/CheckToken`);
+    config.headers[
+      "Authorization"
+    ] = `Token 71691ae947c895dac6aa95736f6285db7c4a340f`;
+    let userData = localStorage.getItem("user");
+
+    if (userData) {
+      await TMGetApi.get(`${TMAPI_BASE_URL}/CheckToken`);
+      return config;
+    }
     return config;
   },
   (error) => {
@@ -40,7 +48,14 @@ export const ScrpApiTendersMetadata = axios.create({
 });
 ScrpApiTendersMetadata.interceptors.request.use(
   async (config) => {
-    await TMGetApi.get(`${TMAPI_BASE_URL}/CheckToken`);
+    let userData = localStorage.getItem("user");
+    config.headers[
+      "Authorization"
+    ] = `Token 71691ae947c895dac6aa95736f6285db7c4a340f`;
+    if (userData) {
+      await TMGetApi.get(`${TMAPI_BASE_URL}/CheckToken`);
+      return config;
+    }
     return config;
   },
   (error) => {

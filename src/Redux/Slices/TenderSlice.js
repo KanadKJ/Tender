@@ -18,8 +18,6 @@ export const GetDocumentURL = createAsyncThunk(
   "tender/GetDocumentURL",
   async ({ id, t, c }, { rejectWithValue }) => {
     let url;
-    console.log(id, t, c);
-
     if (
       (t?.toLowerCase() === "pdf" ||
         t?.toLowerCase() === "xls" ||

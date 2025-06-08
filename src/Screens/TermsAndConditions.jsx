@@ -162,10 +162,10 @@ export default function TermsAndConditions() {
             These terms are governed by the laws of West Bengal, India.
           </p>
         </div>
-        <p>
-          For queries, contact us at
+        <p className="flex justify-start items-center gap-2">
+          <span>For queries, contact us at</span>
           <a href="#" className="text-[#0554F2]">
-            demo@tender.in
+            info@etendermitra.in
           </a>
         </p>
       </div>

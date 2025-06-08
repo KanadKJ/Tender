@@ -18,7 +18,7 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const PaymentInfoDialog = ({ open, onClose, data }) => {
-  console.log(data);
+  
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
