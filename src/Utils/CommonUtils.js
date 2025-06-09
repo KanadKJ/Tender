@@ -6,6 +6,7 @@ import tm2 from "../Assets/TM2.jpg";
 import tm3 from "../Assets/TM3.jpg";
 import tm4 from "../Assets/TM4.jpg";
 import tm5 from "../Assets/TM5.jpg";
+import moment from "moment";
 export const TMAPI_BASE_URL =
   "https://smp1jsf6ce.execute-api.ap-south-1.amazonaws.com/Prod/TMApi";
 
@@ -112,25 +113,22 @@ export const carouselResponsive = {
   tablet: { breakpoint: { max: 768, min: 464 }, items: 1 },
   mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
 };
-export const dateDifferenceCalculator = (d1, d2) => {
-  // Extract just the date parts to ignore timezones entirely
-  const date1 = new Date(d1?.slice(0, 10));
-  const date2 = new Date(d2?.slice(0, 10));
-
-  if (isNaN(date1) || isNaN(date2)) {
-    return { diffDays: null, col: "#000000" };
-  }
-
-  const diffTime = date2 - date1;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
+export const dateDifferenceCalculator = (d1, f) => {
+  const bidEndDate = moment(d1);
+  const today = moment(); // current date and time
+  // Difference in milliseconds
+  const diffMs = bidEndDate.diff(today);
+  // Convert to days, including fractions
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24)); // round up
   let col = "#C91D1D";
   if (diffDays > 10) {
     col = "#14AD30";
   } else if (diffDays > 7) {
     col = "#E58B15";
   }
-
+  if (f === "corrigendum") {
+    return { diffDays: diffDays < 0 ? diffDays * -1 : 0, col };
+  }
   return { diffDays: diffDays > 0 ? diffDays : 0, col };
 };
 
@@ -290,7 +288,6 @@ export const pricingPlanData = {
 */
 
 export const handleDownload = async (fileUrl, t, e) => {
-
   let name = fileUrl.split("/");
   const now = new Date();
   const day = String(now.getDate()).padStart(2, "0");

@@ -116,7 +116,6 @@ export default function TenderPer() {
   // const [savedFilters, setSavedFilters] = useState([]);
   const handlePdfDownload = () => {
     // Implement your PDF download logic here
-
   };
 
   const [saveFilter, setSaveFilter] = useState("");
@@ -164,7 +163,6 @@ export default function TenderPer() {
     if (userData) {
       dispatch(GetTemplateDetails(userData?.id));
     }
-
   }, [userData]);
 
   // useEffect(() => {
@@ -244,7 +242,6 @@ export default function TenderPer() {
       ...filters,
       districts,
     });
- 
   }, [districtsData]);
 
   useEffect(() => {
@@ -282,7 +279,6 @@ export default function TenderPer() {
       ...filters,
       departments,
     });
-  
   }, [drpData]);
 
   useEffect(() => {
@@ -302,7 +298,6 @@ export default function TenderPer() {
       ...filters,
       divisions,
     });
-
   }, [divData]);
   useEffect(() => {
     const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
@@ -321,7 +316,6 @@ export default function TenderPer() {
       ...filters,
       sub_divisions,
     });
-
   }, [subDivData]);
 
   useEffect(() => {
@@ -396,7 +390,6 @@ export default function TenderPer() {
       }));
       let q = queryBuilder(obj);
       dispatch(GetTenderListWithFilters(q));
-
     } else {
       let obj = {
         ordering: ["-published_date"],
@@ -597,7 +590,7 @@ export default function TenderPer() {
       toast.error("Please provide valid data.");
       return;
     }
-    const params = new URLSearchParams(searchParams).toString();
+    const params = queryString;
     if (!userData) {
       toast.error("Please sign in to continue");
       return;
@@ -640,13 +633,12 @@ export default function TenderPer() {
         dispatch(GetTemplateDetails(userData?.id));
       })
       .catch((e) => {
-
         toast.error("Something went wrong.");
       });
   };
   const handleSavedSeachFromTemplate = (obj) => {
     dispatch(GetTenderListWithFilters(obj?.url));
-    navigate(`?${obj?.url}`, { replace: true });
+
     setChangeListner(Math.random(0, 10000) * 100);
     handleClose();
   };
@@ -751,9 +743,9 @@ export default function TenderPer() {
       setDatePublishedOption("");
       setDateClosedOption("");
       let q = queryBuilder(obj);
-      navigate(`?bidding_status=active&ordering=-published_date&${q}`, {
-        replace: true,
-      });
+      // navigate(`?bidding_status=active&ordering=-published_date&${q}`, {
+      //   replace: true,
+      // });
       dispatch(GetTenderListWithFilters(q));
     }
     // navigate(`?bidding_status=active&ordering=-published_date`, { replace: true });
@@ -776,7 +768,6 @@ export default function TenderPer() {
     }
     setSearchTerm("");
     dispatch(GetTenderListWithFilters(queryString));
-    navigate(`?${queryString}&keywords=${searchTerm}`, { replace: true });
   };
   return (
     <>
@@ -2951,7 +2942,7 @@ export default function TenderPer() {
             {/* Tender List */}
             {tenderIsLoading ? (
               <div className="h-[100vh]"></div>
-            ) : sortedTenders?.length ? (
+            ) : sortedTenders?.length&& !isPlanExpired ? (
               sortedTenders?.map((tender, i) => {
                 const now = new Date();
 

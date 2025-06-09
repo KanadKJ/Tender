@@ -6,3 +6,6 @@ todo
 
 
 
+bid_submission_end_date_min=2025-06-09
+
+bid_submission_end_date_max=2025-06-11

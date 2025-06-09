@@ -75,6 +75,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import LightbulbCircleOutlinedIcon from "@mui/icons-material/LightbulbCircleOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { toast } from "react-toastify";
+import moment from "moment/moment";
 export default function TenderPer() {
   // redux
   const { tenderData, tenderIsLoading, userSaverTemplates } = useSelector(
@@ -136,10 +137,10 @@ export default function TenderPer() {
     pincode: "",
     bidding_status: "active",
     show_tenders_with_no_value: "",
-    bidding_submission_end_date_after:
-      searchParams.get("bidding_submission_end_date_after") || "",
-    bidding_submission_end_date_before:
-      searchParams.get("bidding_submission_end_date_before") || "",
+    bid_submission_end_date_after:
+      searchParams.get("bid_submission_end_date_after") || "",
+    bid_submission_end_date_before:
+      searchParams.get("bid_submission_end_date_before") || "",
   });
   // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
@@ -167,10 +168,10 @@ export default function TenderPer() {
   useEffect(() => {
     const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
     const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
-    const bidding_submission_end_date_after =
-      searchParams.get("bidding_submission_end_date_after") || "";
-    const bidding_submission_end_date_before =
-      searchParams.get("bidding_submission_end_date_before") || "";
+    const bid_submission_end_date_after =
+      searchParams.get("bid_submission_end_date_after") || "";
+    const bid_submission_end_date_before =
+      searchParams.get("bid_submission_end_date_before") || "";
     const published_date_after = searchParams.get("published_date_after") || "";
     const published_date_before =
       searchParams.get("published_date_before") || "";
@@ -196,8 +197,8 @@ export default function TenderPer() {
       offset,
       pincode,
       bidding_status,
-      bidding_submission_end_date_after,
-      bidding_submission_end_date_before,
+      bid_submission_end_date_after,
+      bid_submission_end_date_before,
       show_tenders_with_no_value,
     });
   }, []);
@@ -428,8 +429,8 @@ export default function TenderPer() {
     } else if (name === "Closingdates") {
       setFilters((prev) => ({
         ...prev,
-        bidding_submission_end_date_after: "",
-        bidding_submission_end_date_before: "",
+        bid_submission_end_date_after: "",
+        bid_submission_end_date_before: "",
       }));
       setDateClosedOption("");
     } else {
@@ -734,8 +735,8 @@ export default function TenderPer() {
         value_in_rs_max: null,
         published_date_after: null,
         published_date_before: null,
-        bidding_submission_end_date_after: null,
-        bidding_submission_end_date_before: null,
+        bid_submission_end_date_after: null,
+        bid_submission_end_date_before: null,
         ordering: ["-published_date"],
         ...obj,
       }));
@@ -1064,8 +1065,8 @@ export default function TenderPer() {
               Closing Date
               <CustomBadge
                 data={
-                  filters?.bidding_submission_end_date_after ||
-                  filters?.bidding_submission_end_date_before
+                  filters?.bid_submission_end_date_after ||
+                  filters?.bid_submission_end_date_before
                     ? ["1"]
                     : null
                 }
@@ -1334,8 +1335,8 @@ export default function TenderPer() {
                   Closing Date
                   <CustomBadge
                     data={
-                      filters?.bidding_submission_end_date_after ||
-                      filters?.bidding_submission_end_date_before
+                      filters?.bid_submission_end_date_after ||
+                      filters?.bid_submission_end_date_before
                         ? ["1"]
                         : null
                     }
@@ -2367,39 +2368,39 @@ export default function TenderPer() {
                     value={dateClosedOption}
                     onChange={(e) => {
                       const selectedOption = e.target.value;
-                      let bidding_submission_end_date_after = "";
-                      let bidding_submission_end_date_before = "";
+                      let bid_submission_end_date_after = "";
+                      let bid_submission_end_date_before = "";
 
                       // Set published_date_after and published_date_before based on the selected option
                       const today = new Date();
                       switch (selectedOption) {
                         case "today":
-                          bidding_submission_end_date_after = today
+                          bid_submission_end_date_after = today
                             .toISOString()
                             .split("T")[0];
-                          bidding_submission_end_date_before = new Date(
+                          bid_submission_end_date_before = new Date(
                             today.setDate(today.getDate() + 1)
                           )
                             .toISOString()
                             .split("T")[0];
                           break;
                         case "7days":
-                          bidding_submission_end_date_after = new Date()
+                          bid_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
 
-                          bidding_submission_end_date_before = new Date(
+                          bid_submission_end_date_before = new Date(
                             today.setDate(today.getDate() + 7)
                           )
                             .toISOString()
                             .split("T")[0];
                           break;
                         case "15days":
-                          bidding_submission_end_date_after = new Date()
+                          bid_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
 
-                          bidding_submission_end_date_before = new Date(
+                          bid_submission_end_date_before = new Date(
                             today.setDate(today.getDate() + 15)
                           )
                             .toISOString()
@@ -2411,8 +2412,8 @@ export default function TenderPer() {
 
                       setFilters((prev) => ({
                         ...prev,
-                        bidding_submission_end_date_after,
-                        bidding_submission_end_date_before,
+                        bid_submission_end_date_after,
+                        bid_submission_end_date_before,
                       }));
 
                       setDateClosedOption(selectedOption);
@@ -2432,14 +2433,14 @@ export default function TenderPer() {
                     className="w-full"
                     label="From Date"
                     value={
-                      filters.bidding_submission_end_date_after
-                        ? dayjs(filters.bidding_submission_end_date_after)
+                      filters.bid_submission_end_date_after
+                        ? dayjs(filters.bid_submission_end_date_after)
                         : null
                     }
                     onChange={(newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        bidding_submission_end_date_after: newValue
+                        bid_submission_end_date_after: newValue
                           ? dayjs(newValue).format("YYYY-MM-DD")
                           : "",
                       }));
@@ -2452,14 +2453,14 @@ export default function TenderPer() {
                     className="w-full"
                     label="To Date"
                     value={
-                      filters.bidding_submission_end_date_before
-                        ? dayjs(filters?.bidding_submission_end_date_before)
+                      filters.bid_submission_end_date_before
+                        ? dayjs(filters?.bid_submission_end_date_before)
                         : null
                     }
                     onChange={(newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        bidding_submission_end_date_before: newValue
+                        bid_submission_end_date_before: newValue
                           ? dayjs(newValue).format("YYYY-MM-DD")
                           : "",
                       }));
@@ -2954,33 +2955,12 @@ export default function TenderPer() {
               <div className="h-[100vh]"></div>
             ) : sortedTenders?.length && !isPlanExpired ? (
               sortedTenders?.map((tender, i) => {
-                const now = new Date();
-
-                // Get local time in ISO format
-                const isoString = now.toISOString(); // Example: "2025-03-28T09:30:00.000Z"
-
-                // Convert to IST by adding 5.5 hours (19800 seconds)
-                const offsetMillis = 5.5 * 60 * 60 * 1000;
-                const ist = new Date(now.getTime() + offsetMillis);
-
-                // Format IST date string manually
-                const pad = (n) => String(n).padStart(2, "0");
-
-                const datePart = `${ist.getFullYear()}-${pad(
-                  ist.getMonth() + 1
-                )}-${pad(ist.getDate())}`;
-                const timePart = `${pad(ist.getHours())}:${pad(
-                  ist.getMinutes()
-                )}:${pad(ist.getSeconds())}`;
-                const timezone = "+05:30";
                 const { diffDays, col } = dateDifferenceCalculator(
-                  `${datePart}T${timePart}${timezone}`,
                   tender?.bid_submission_end_date
                 );
 
                 const corrigendum = dateDifferenceCalculator(
-                  tender?.corrigendum?.published_date,
-                  new Date().toISOString().slice(0, 19)
+                  tender?.corrigendum?.published_date,"corrigendum"
                 );
 
                 const isAlternate = i % 2 !== 0;
@@ -3090,7 +3070,7 @@ export default function TenderPer() {
                     <div className="w-full flex flex-col gap-4 items-stretch">
                       {/* Corrigendum & Days Left */}
                       <div className="flex flex-col md:flex-row gap-3 w-full justify-end">
-                        {corrigendum?.diffDays && (
+                        {corrigendum?.diffDays  ? (
                           <div className="flex flex-1 justify-start items-center gap-3 px-4 py-2 bg-gradient-to-r from-yellow-100 to-yellow-50 border-l-4 border-yellow-400 rounded shadow-sm">
                             <LightbulbCircleOutlinedIcon
                               fontSize="small"
@@ -3107,7 +3087,7 @@ export default function TenderPer() {
                               </span>
                             </div>
                           </div>
-                        )}
+                        ):""}
 
                         <div className="flex flex-col justify-end items-center w-full md:w-28">
                           <span

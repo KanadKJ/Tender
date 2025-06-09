@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TMAPI_BASE_URL } from "../Utils/CommonUtils";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { TMGetApi } from "../Api/TMAPI";
 export default function PriceContainer({ data }) {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ export default function PriceContainer({ data }) {
       alert("Razorpay SDK failed to load. Are you online?");
       return;
     }
-    const result = await axios.post(`${TMAPI_BASE_URL}/createOrder`, {
+    const result = await TMGetApi.post(`/createOrder`, {
       amount: price,
     });
     if (!result) {
@@ -56,10 +57,10 @@ export default function PriceContainer({ data }) {
     setIsLoading(false);
     const { amount, id } = result.data;
     const options = {
-      key: "rzp_live_hG8SfOdRr9wzIf",
+      key: process.env.REACT_APP_RAZOR_KEY,
       amount: amount.toString(),
-      currency: "INR",
-      name: "eTenderMitra",
+      currency: process.env.REACT_APP_RAZOR_CURRENCY,
+      name: process.env.REACT_APP_RAZOR_NAME,
       description: `Purchasing ${title} plan`,
       image: logo,
       order_id: id,
@@ -72,7 +73,7 @@ export default function PriceContainer({ data }) {
           planId: planID,
           paymentStatus: "success",
         };
-        const result = await axios.post(`${TMAPI_BASE_URL}/capture`, data);
+        const result = await TMGetApi.post(`/capture`, data);
         if (result?.data?.success) {
           toast.success("Payment completed successfully..!");
         }
@@ -109,9 +110,7 @@ export default function PriceContainer({ data }) {
             {data?.price === "0" ? "14 days" : "/ 1 Year"}
           </h6>
         </div>
-        <p
-          className={`text-[#565656] text-sm font-normal ${data?.minHeight}`}
-        >
+        <p className={`text-[#565656] text-sm font-normal ${data?.minHeight}`}>
           {data?.subTitle}
         </p>
         <button
