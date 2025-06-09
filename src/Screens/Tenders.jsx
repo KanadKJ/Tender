@@ -1134,7 +1134,7 @@ export default function TenderPer() {
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
               style={{
-                minWidth:"280px"
+                minWidth: "280px",
               }}
             >
               <div className="w-full flex justify-between items-center p-2 min-w-72">
@@ -2947,37 +2947,16 @@ export default function TenderPer() {
             {/* Tender List */}
             {tenderIsLoading ? (
               <div className="h-[100vh]"></div>
-            ) : sortedTenders?.length&& !isPlanExpired ? (
+            ) : sortedTenders?.length && !isPlanExpired ? (
               sortedTenders?.map((tender, i) => {
-                const now = new Date();
-
-                // Get local time in ISO format
-                const isoString = now.toISOString(); // Example: "2025-03-28T09:30:00.000Z"
-
-                // Convert to IST by adding 5.5 hours (19800 seconds)
-                const offsetMillis = 5.5 * 60 * 60 * 1000;
-                const ist = new Date(now.getTime() + offsetMillis);
-
-                // Format IST date string manually
-                const pad = (n) => String(n).padStart(2, "0");
-
-                const datePart = `${ist.getFullYear()}-${pad(
-                  ist.getMonth() + 1
-                )}-${pad(ist.getDate())}`;
-                const timePart = `${pad(ist.getHours())}:${pad(
-                  ist.getMinutes()
-                )}:${pad(ist.getSeconds())}`;
-                const timezone = "+05:30";
                 const { diffDays, col } = dateDifferenceCalculator(
-                  `${datePart}T${timePart}${timezone}`,
                   tender?.bid_submission_end_date
                 );
 
                 const corrigendum = dateDifferenceCalculator(
                   tender?.corrigendum?.published_date,
-                  new Date().toISOString().slice(0, 19)
+                  "corrigendum"
                 );
-
                 const isAlternate = i % 2 !== 0;
 
                 return (
@@ -3085,7 +3064,7 @@ export default function TenderPer() {
                     <div className="w-full flex flex-col gap-4 items-stretch">
                       {/* Corrigendum & Days Left */}
                       <div className="flex flex-col md:flex-row gap-3 w-full justify-end">
-                        {corrigendum?.diffDays && (
+                        {corrigendum?.diffDays ? (
                           <div className="flex flex-1 justify-start items-center gap-3 px-4 py-2 bg-gradient-to-r from-yellow-100 to-yellow-50 border-l-4 border-yellow-400 rounded shadow-sm">
                             <LightbulbCircleOutlinedIcon
                               fontSize="small"
@@ -3102,7 +3081,7 @@ export default function TenderPer() {
                               </span>
                             </div>
                           </div>
-                        )}
+                        ):""}
 
                         <div className="flex flex-col justify-end items-center w-full md:w-28">
                           <span
