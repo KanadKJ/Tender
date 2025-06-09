@@ -139,8 +139,8 @@ export default function TenderPer() {
     pincode: "",
     bidding_status: "active",
     show_tenders_with_no_value: "",
-    bidding_submission_end_date_after: "bidding_submission_end_date_after",
-    bidding_submission_end_date_before: "bidding_submission_end_date_before",
+    bidding_submission_end_date_after: "",
+    bidding_submission_end_date_before: "",
   });
   // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
@@ -1131,12 +1131,15 @@ export default function TenderPer() {
               anchorEl={anchorEl}
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              style={{
+                minWidth:"280px"
+              }}
             >
-              <div className="w-full flex justify-between items-center p-2">
+              <div className="w-full flex justify-between items-center p-2 min-w-72">
                 <label className="pl-2">Filters</label>
                 <CloseBTN />
               </div>
-              <div className="grid justify-center items-center gap-4 p-4">
+              <div className="grid justify-center items-center gap-4 p-4 w-full">
                 {/* Save filter */}
 
                 <Button
@@ -1144,7 +1147,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="SavedFilters"
                   variant="contained"
@@ -1159,7 +1162,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="bidding_status"
                   variant="contained"
@@ -1175,7 +1178,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="Keywords"
                   variant="contained"
@@ -1196,7 +1199,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="organisations"
                   variant="contained"
@@ -1224,7 +1227,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="states"
                   variant="contained"
@@ -1241,7 +1244,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="districts"
                   variant="contained"
@@ -1257,7 +1260,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="pincode"
                   variant="contained"
@@ -1274,7 +1277,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="tenderAmount"
                   variant="contained"
@@ -1291,7 +1294,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="datePicker"
                   variant="contained"
@@ -1315,7 +1318,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="datePickerclosing"
                   variant="contained"
@@ -1339,7 +1342,7 @@ export default function TenderPer() {
                   style={{
                     backgroundColor: "#0554f2",
                     color: isPlanExpired ? "#fff00" : "#fff",
-                    width: "150px",
+                    width: "200px",
                   }}
                   aria-describedby="sort"
                   variant="contained"

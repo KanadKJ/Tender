@@ -248,31 +248,35 @@ const ValidateOtp = () => {
               <p className="text-red-500 text-sm mt-1">{errors?.otp}</p>
             )}
             {error && (
-              <div className="flex">
+              <div className="flex justify-center items-center text-center">
                 <p className="text-red-500 text-sm mt-1">{`${
                   error[0] && error[0]
-                }, ${(error[1] && JSON.parse(error[1])?.message) || ""}`}</p>
+                } ${(error[1] && JSON.parse(error[1])?.message) || ""}`}</p>
               </div>
             )}
-            <div>
-              {timeLeft > 0 ? (
-                <p>
-                  Resend OTP in <strong>{formatTime(timeLeft)}</strong>
-                </p>
-              ) : showResendNow ? (
-                <button onClick={handleResend} className="text-[#0554F2]">
-                  Resend OTP
+            {!error && (
+              <>
+                <div>
+                  {timeLeft > 0 ? (
+                    <p>
+                      Resend OTP in <strong>{formatTime(timeLeft)}</strong>
+                    </p>
+                  ) : showResendNow ? (
+                    <button onClick={handleResend} className="text-[#0554F2]">
+                      Resend OTP
+                    </button>
+                  ) : (
+                    <p>OTP Resent</p>
+                  )}
+                </div>
+                <button
+                  onClick={handleOtp}
+                  className="w-full bg-[#212121] text-white p-2 rounded "
+                >
+                  {"Submit"}
                 </button>
-              ) : (
-                <p>OTP Resent</p>
-              )}
-            </div>
-            <button
-              onClick={handleOtp}
-              className="w-full bg-[#212121] text-white p-2 rounded "
-            >
-              {"Submit"}
-            </button>
+              </>
+            )}
           </div>
 
           <div className="w-full flex justify-center items-center">

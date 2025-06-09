@@ -114,7 +114,11 @@ export const GetUserDetails = createAsyncThunk(
       // if (!response?.data?.value?.length) {
       //   return rejectWithValue("Failed, OTP did not match");
       // }
-
+      if (!response?.data?.value[0]?.isActive) {
+        return rejectWithValue([
+          `Your account is inactive. For assistance, please contact the administrator via the "Help for Bid Submission" option in the menu.`,
+        ]);
+      }
       if (response?.data?.statusCode === 401) {
         return rejectWithValue(response?.data?.errors);
       }
@@ -146,10 +150,9 @@ export const SignUpUser = createAsyncThunk(
       if (response?.data?.status === 400) {
         return rejectWithValue("Please fill valid data");
       }
+
       if (response?.data?.value[0] === "User already exists") {
-        return rejectWithValue(
-          ["User already exist, Please try to login"]
-        );
+        return rejectWithValue(["User already exist, Please try to login"]);
       }
       return response?.data?.value;
     } catch (error) {

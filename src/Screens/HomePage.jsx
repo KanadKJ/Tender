@@ -166,10 +166,8 @@ export default function HomePage() {
 
           <span className="text-[#276BF2] font-medium">Tender</span>
           <span className="text-[#276BF2] font-medium text-[40px]">•</span>
-          <span className="text-[#276BF2] font-medium flex gap-4">
-            <span>Tender</span> <span>Sourcing</span>
-          </span>
-          <span className="text-[#276BF2] font-medium text-[40px]">•</span>
+          
+         
           <span className="text-[#276BF2] font-medium">Tender</span>
           <span className="text-[#276BF2] font-medium text-[40px]">•</span>
         </motion.div>
@@ -213,10 +211,7 @@ export default function HomePage() {
 
           <span className="text-[#276BF2] font-medium">Tender</span>
           <span className="text-[#276BF2] font-medium text-[40px]">•</span>
-          <span className="text-[#276BF2] font-medium flex gap-4">
-            <span>Tender</span> <span>Sourcing</span>
-          </span>
-          <span className="text-[#276BF2] font-medium text-[40px]">•</span>
+         
           <span className="text-[#276BF2] font-medium">Tender</span>
           <span className="text-[#276BF2] font-medium text-[40px]">•</span>
         </motion.div>

@@ -1142,8 +1142,11 @@ export default function TenderPer() {
               anchorEl={anchorEl}
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              style={{
+                minWidth:"280px"
+              }}
             >
-              <div className="w-full flex justify-between items-center p-2">
+              <div className="w-full flex justify-between items-center p-2 min-w-64">
                 <label className="pl-2">Filters</label>
                 <CloseBTN />
               </div>

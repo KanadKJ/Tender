@@ -14,8 +14,8 @@ import LoginPage from "../Screens/LoginPage";
 
 const HomePage = lazy(() => import("../Screens/HomePage"));
 
+const TendersPage = lazy(() => import("../Screens/Tenders"));
 // const TendersPage = lazy(() => import("../Screens/TenderPer"));
-const TendersPage = lazy(() => import("../Screens/TenderPer"));
 
 const TenderDetails = lazy(() => import("../Screens/TenderDetails"));
 
