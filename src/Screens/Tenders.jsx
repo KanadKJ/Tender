@@ -139,8 +139,10 @@ export default function TenderPer() {
     pincode: "",
     bidding_status: "active",
     show_tenders_with_no_value: "",
-    bidding_submission_end_date_after: "",
-    bidding_submission_end_date_before: "",
+    bid_submission_end_date_after:
+      searchParams.get("bid_submission_end_date_after") || "",
+    bid_submission_end_date_before:
+      searchParams.get("bid_submission_end_date_before") || "",
   });
   // const [userFilters, setUserFilters] = useState({});
   // const [newDist, setNewDist] = useState({});
@@ -168,10 +170,10 @@ export default function TenderPer() {
   // useEffect(() => {
   //   const value_in_rs_min = searchParams.get("value_in_rs_min") || "";
   //   const value_in_rs_max = searchParams.get("value_in_rs_max") || "";
-  //   const bidding_submission_end_date_after =
-  //     searchParams.get("bidding_submission_end_date_after") || "";
-  //   const bidding_submission_end_date_before =
-  //     searchParams.get("bidding_submission_end_date_before") || "";
+  //   const bid_submission_end_date_after =
+  //     searchParams.get("bid_submission_end_date_after") || "";
+  //   const bid_submission_end_date_before =
+  //     searchParams.get("bid_submission_end_date_before") || "";
   //   const published_date_after = searchParams.get("published_date_after") || "";
   //   const published_date_before =
   //     searchParams.get("published_date_before") || "";
@@ -197,8 +199,8 @@ export default function TenderPer() {
   //     offset,
   //     pincode,
   //     bidding_status,
-  //     bidding_submission_end_date_after,
-  //     bidding_submission_end_date_before,
+  //     bid_submission_end_date_after,
+  //     bid_submission_end_date_before,
   //     show_tenders_with_no_value,
   //   });
 
@@ -429,8 +431,8 @@ export default function TenderPer() {
     } else if (name === "Closingdates") {
       setFilters((prev) => ({
         ...prev,
-        bidding_submission_end_date_after: "",
-        bidding_submission_end_date_before: "",
+        bid_submission_end_date_after: "",
+        bid_submission_end_date_before: "",
       }));
       setDateClosedOption("");
     } else {
@@ -735,8 +737,8 @@ export default function TenderPer() {
         value_in_rs_max: null,
         published_date_after: null,
         published_date_before: null,
-        bidding_submission_end_date_after: null,
-        bidding_submission_end_date_before: null,
+        bid_submission_end_date_after: null,
+        bid_submission_end_date_before: null,
         ordering: ["-published_date"],
         ...obj,
       }));
@@ -1054,8 +1056,8 @@ export default function TenderPer() {
               Closing Date
               <CustomBadge
                 data={
-                  filters?.bidding_submission_end_date_after ||
-                  filters?.bidding_submission_end_date_before
+                  filters?.bid_submission_end_date_after ||
+                  filters?.bid_submission_end_date_before
                     ? ["1"]
                     : null
                 }
@@ -1327,8 +1329,8 @@ export default function TenderPer() {
                   Closing Date
                   <CustomBadge
                     data={
-                      filters?.bidding_submission_end_date_after ||
-                      filters?.bidding_submission_end_date_before
+                      filters?.bid_submission_end_date_after ||
+                      filters?.bid_submission_end_date_before
                         ? ["1"]
                         : null
                     }
@@ -2360,39 +2362,39 @@ export default function TenderPer() {
                     value={dateClosedOption}
                     onChange={(e) => {
                       const selectedOption = e.target.value;
-                      let bidding_submission_end_date_after = "";
-                      let bidding_submission_end_date_before = "";
+                      let bid_submission_end_date_after = "";
+                      let bid_submission_end_date_before = "";
 
                       // Set published_date_after and published_date_before based on the selected option
                       const today = new Date();
                       switch (selectedOption) {
                         case "today":
-                          bidding_submission_end_date_after = today
+                          bid_submission_end_date_after = today
                             .toISOString()
                             .split("T")[0];
-                          bidding_submission_end_date_before = new Date(
+                          bid_submission_end_date_before = new Date(
                             today.setDate(today.getDate() + 1)
                           )
                             .toISOString()
                             .split("T")[0];
                           break;
                         case "7days":
-                          bidding_submission_end_date_after = new Date()
+                          bid_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
 
-                          bidding_submission_end_date_before = new Date(
+                          bid_submission_end_date_before = new Date(
                             today.setDate(today.getDate() + 7)
                           )
                             .toISOString()
                             .split("T")[0];
                           break;
                         case "15days":
-                          bidding_submission_end_date_after = new Date()
+                          bid_submission_end_date_after = new Date()
                             .toISOString()
                             .split("T")[0];
 
-                          bidding_submission_end_date_before = new Date(
+                          bid_submission_end_date_before = new Date(
                             today.setDate(today.getDate() + 15)
                           )
                             .toISOString()
@@ -2404,8 +2406,8 @@ export default function TenderPer() {
 
                       setFilters((prev) => ({
                         ...prev,
-                        bidding_submission_end_date_after,
-                        bidding_submission_end_date_before,
+                        bid_submission_end_date_after,
+                        bid_submission_end_date_before,
                       }));
 
                       setDateClosedOption(selectedOption);
@@ -2425,14 +2427,14 @@ export default function TenderPer() {
                     className="w-full"
                     label="From Date"
                     value={
-                      filters.bidding_submission_end_date_after
-                        ? dayjs(filters.bidding_submission_end_date_after)
+                      filters.bid_submission_end_date_after
+                        ? dayjs(filters.bid_submission_end_date_after)
                         : null
                     }
                     onChange={(newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        bidding_submission_end_date_after: newValue
+                        bid_submission_end_date_after: newValue
                           ? dayjs(newValue).format("YYYY-MM-DD")
                           : "",
                       }));
@@ -2445,14 +2447,14 @@ export default function TenderPer() {
                     className="w-full"
                     label="To Date"
                     value={
-                      filters.bidding_submission_end_date_before
-                        ? dayjs(filters?.bidding_submission_end_date_before)
+                      filters.bid_submission_end_date_before
+                        ? dayjs(filters?.bid_submission_end_date_before)
                         : null
                     }
                     onChange={(newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        bidding_submission_end_date_before: newValue
+                        bid_submission_end_date_before: newValue
                           ? dayjs(newValue).format("YYYY-MM-DD")
                           : "",
                       }));

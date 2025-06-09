@@ -12,7 +12,7 @@ import UserManagement from "../Screens/UserManagement";
 import FollowedTenders from "../Screens/FollowedTenders";
 import LoginPage from "../Screens/LoginPage";
 
-const HomePage = lazy(() => import("../Screens/HomePage"));
+const HomePage = lazy(() => import("../Screens/HomePage"))
 
 const TendersPage = lazy(() => import("../Screens/Tenders"));
 // const TendersPage = lazy(() => import("../Screens/TenderPer"));
