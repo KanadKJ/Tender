@@ -18,7 +18,7 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function PaymentDetails({ userId }) {
-    const { userData, userFilters } = useSelector((s) => s.auth);
+  const { userData } = useSelector((s) => s.auth);
   const dispatch = useDispatch();
   const { paymentDetails } = useSelector((s) => s.tender);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,8 +26,8 @@ export default function PaymentDetails({ userId }) {
   useEffect(() => {
     if (userId) {
       dispatch(GetPaymentDetails(userId));
-    }else{
-      dispatch(GetPaymentDetails(userData?.id))
+    } else {
+      dispatch(GetPaymentDetails(userData?.id));
     }
   }, [userId]);
 

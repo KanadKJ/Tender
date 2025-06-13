@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import Background from "../Components/Background";
 
 export default function AboutUs() {

@@ -11,7 +11,6 @@ import { InsertContactQueries } from "../Redux/Slices/CommonSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { category } from "../Utils/CommonUtils";
 import authgrd from "../Assets/AUTHGRD.png";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import logo from "../Assets/logoNew.png";
 import otpillus from "../Assets/pana.png";
 export default function Help() {

@@ -23,7 +23,6 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  FormControl,
   IconButton,
   MenuItem,
   Pagination,
@@ -361,7 +360,6 @@ export default function TenderPer() {
   // }, []);
 
   useEffect(() => {
-    console.log("initial obj creator");
     if (userData) {
       const pc = searchParams.get("pincode") || "";
       const kw = searchParams.getAll("keywords") || [];
@@ -2993,7 +2991,7 @@ export default function TenderPer() {
                           </p>
                         </div>
 
-                        <span className="px-2 py-[2px] bg-blue-100 text-blue-700 text-[10px] font-semibold rounded-full w-fit shadow-sm">
+                        <span className={`px-2 py-[2px] ${isAlternate?'bg-blue-100':'bg-white'} text-blue-700 text-[10px] font-semibold rounded-full w-fit shadow-sm`}>
                           {tender?.product_category}
                         </span>
                       </div>
@@ -3005,7 +3003,7 @@ export default function TenderPer() {
                       <div className="flex gap-2 mt-1">
                         <button
                           onClick={() => navigate(`/tenders/${tender?.uid}`)}
-                          className="flex gap-2 px-3 py-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#0554F2] transition-all duration-300 ease-in-out"
+                          className="flex justify-center items-center text-center gap-2 px-3 py-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#0554F2] transition-all duration-300 ease-in-out"
                         >
                           View
                           <VisibilityOutlinedIcon fontSize="small" />

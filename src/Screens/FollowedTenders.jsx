@@ -72,6 +72,7 @@ export default function FollowedTenders() {
       const res = await dispatch(GetOrInsertTenderWishlist(data)).unwrap();
       if (res) {
         dispatch(GetTenderWishlist(userData?.id));
+        toast.success("Tender removed from wishlist.")
       }
     } catch (e) {
       toast.error(e?.message || "Something went wrong");
@@ -90,33 +91,13 @@ export default function FollowedTenders() {
           <div className="h-[100vh]"></div>
         ) : tenderDataOfWishlist?.length ? (
           tenderDataOfWishlist?.map((tender, i) => {
-            const now = new Date();
-
-            // Get local time in ISO format
-            const isoString = now.toISOString(); // Example: "2025-03-28T09:30:00.000Z"
-
-            // Convert to IST by adding 5.5 hours (19800 seconds)
-            const offsetMillis = 5.5 * 60 * 60 * 1000;
-            const ist = new Date(now.getTime() + offsetMillis);
-
-            // Format IST date string manually
-            const pad = (n) => String(n).padStart(2, "0");
-
-            const datePart = `${ist.getFullYear()}-${pad(
-              ist.getMonth() + 1
-            )}-${pad(ist.getDate())}`;
-            const timePart = `${pad(ist.getHours())}:${pad(
-              ist.getMinutes()
-            )}:${pad(ist.getSeconds())}`;
-            const timezone = "+05:30";
             const { diffDays, col } = dateDifferenceCalculator(
-              `${datePart}T${timePart}${timezone}`,
               tender?.bid_submission_end_date
             );
 
             const corrigendum = dateDifferenceCalculator(
               tender?.corrigendum?.published_date,
-              new Date().toISOString().slice(0, 19)
+              "corrigendum"
             );
 
             const isAlternate = i % 2 !== 0;
@@ -158,7 +139,7 @@ export default function FollowedTenders() {
                   <div className="flex gap-2 mt-1">
                     <button
                       onClick={() => navigate(`/tenders/${tender?.uid}`)}
-                      className="flex gap-2 px-3 py-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#fff] transition-all duration-300 ease-in-out"
+                      className="flex justify-center items-center text-center gap-2 px-3 py-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#fff] transition-all duration-300 ease-in-out"
                     >
                       View
                       <VisibilityOutlinedIcon fontSize="small" />
@@ -226,7 +207,7 @@ export default function FollowedTenders() {
                 <div className="w-full flex flex-col gap-4 items-stretch">
                   {/* Corrigendum & Days Left */}
                   <div className="flex flex-col md:flex-row gap-3 w-full justify-end">
-                    {corrigendum?.diffDays && (
+                    {corrigendum?.diffDays ? (
                       <div className="flex flex-1 justify-start items-center gap-3 px-4 py-2 bg-gradient-to-r from-yellow-100 to-yellow-50 border-l-4 border-yellow-400 rounded shadow-sm">
                         <LightbulbCircleOutlinedIcon
                           fontSize="small"
@@ -243,6 +224,8 @@ export default function FollowedTenders() {
                           </span>
                         </div>
                       </div>
+                    ) : (
+                      ""
                     )}
 
                     <div className="flex flex-col justify-end items-center w-full md:w-28">

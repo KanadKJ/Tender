@@ -3,7 +3,6 @@ import bgvector from "../Assets/BackgroundPattern.png";
 import bgvectorBlank from "../Assets/bg_vector.png";
 import blueBg from "../Assets/onlyBlueBg.png";
 import Ribbons from "./Ribbons";
-import illLeft from "../Assets/illLeft.png";
 import char from "../Assets/Characters.png";
 import { motion } from "framer-motion";
 export default function Background({ type, lifed, show, isHome }) {

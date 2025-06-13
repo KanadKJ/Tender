@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Background from "../Components/Background";
 import logo from "../Assets/logoNew.png";
-import Ribbons from "../Components/Ribbons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   GetOtp,
@@ -21,27 +20,18 @@ const ValidateOtp = () => {
 
   const [errors, setErrors] = useState({});
   const [showResendNow, setShowResendNow] = useState(true);
-  const [userData, setUserData] = useState({});
+  
   const [timeLeft, setTimeLeft] = useState(90); // 2 mins 30 secs
   const intervalRef = useRef(null);
   // hooks
   const location = useLocation();
   const { phone, userDetails, pageFrom } = location?.state || {};
-  console.log(pageFrom, userDetails);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   const user = localStorage.getItem("user");
-  //   if (user) {
-  //     let data = JSON.parse(user);
-  //     navigate("/profile");
-  //     setUserData(...data);
-  //   }
-  // }, []);
+  
   // redux states
   const { authIsLoading, error } = useSelector((s) => s.auth);
-  console.log(error);
   // to check if the user has reloaded the page
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -85,7 +75,6 @@ const ValidateOtp = () => {
   };
   const validateForm = () => {
     const newErrors = {};
-    console.log("string", otp?.toString());
 
     if (otp?.toString()?.length < 4 || otp === null) {
       newErrors.otp = "Please provide valid OTP.";
@@ -106,7 +95,6 @@ const ValidateOtp = () => {
           otp: otp,
         };
         const res = await dispatch(ValidateOTP(obj)).unwrap();
-        console.log(res?.response);
 
         if (res?.success) {
           const response = await dispatch(SignUpUser(userDetails)).unwrap();
@@ -133,7 +121,6 @@ const ValidateOtp = () => {
           otp: otp,
         };
         const response = await dispatch(GetUserDetails(obj)).unwrap();
-        console.log(response);
         if (response?.statusCode === 404) {
           setErrors({ loginError: "User not found" });
           return; // Stop execution, prevent navigation

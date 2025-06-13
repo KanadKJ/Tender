@@ -22,7 +22,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { toast } from "react-toastify";
 
 export default function TenderDetails() {
   const { id } = useParams();

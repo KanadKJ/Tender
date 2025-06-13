@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Background from "../Components/Background";
 import logo from "../Assets/Logo.png";
-import Ribbons from "../Components/Ribbons";
+
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserDetails } from "../Redux/Slices/AuthSlice";
 import { useNavigate } from "react-router-dom";
@@ -15,19 +15,10 @@ const Login = () => {
 
   const [errors, setErrors] = useState({});
 
-  const [userData, setUserData] = useState({});
-
   // hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   const user = localStorage.getItem("user");
-  //   if (user) {
-  //     let data = JSON.parse(user);
-  //     navigate("/profile");
-  //     setUserData(...data);
-  //   }
-  // }, []);
+
   // redux states
   const { authIsLoading } = useSelector((s) => s.auth);
 

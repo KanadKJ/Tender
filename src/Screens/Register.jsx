@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import Background from "../Components/Background";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Ribbons from "../Components/Ribbons";
 import logo from "../Assets/Logo.png";
 import { SignUpUser } from "../Redux/Slices/AuthSlice";
 const Register = () => {
-  const { error } = useSelector((s) => s.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -70,10 +68,6 @@ const Register = () => {
     if (!validateForm()) {
       return; //implement toaster
     }
-    // if (validateForm()) {
-    //   console.log("Form Data:", formData);
-    //   dispatch(SignUpUser(formData));
-    // }
     try {
       const response = await dispatch(SignUpUser(formData)).unwrap();
 

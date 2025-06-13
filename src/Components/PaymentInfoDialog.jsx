@@ -7,7 +7,6 @@ import {
   Grid,
   Divider,
   Button,
-  Box,
   Paper,
 } from "@mui/material";
 import PaymentIcon from "@mui/icons-material/Payment";

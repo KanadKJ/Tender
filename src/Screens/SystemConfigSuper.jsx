@@ -129,7 +129,6 @@ export default function SystemConfigSuper() {
   useEffect(() => {
     return () => {
       dispatch(cleanUpFilterBasedOnUser());
-      
     };
   }, []);
   return (
@@ -143,42 +142,6 @@ export default function SystemConfigSuper() {
           Users
         </label>
         <div className="w-full">
-          {/* <Autocomplete
-            multiple
-            id="Users-autocomplete"
-            limitTags={1}
-            options={userList} // Array of objects with `id` and `name`
-            disableCloseOnSelect
-            getOptionLabel={(option) => option.first_name} // No optional chaining needed
-            value={userDetails?.id} // Ensure objects match by reference
-            onChange={(event, newValue) => {
-              const validData = newValue.filter((dep) =>
-                userList.some((d) => d.id === dep.id)
-              );
-
-              setUserDetails((prev) => ({
-                ...prev,
-                validData,
-              }));
-            }}
-            renderOption={(props, option, { selected }) => {
-              const { key, ...optionProps } = props;
-              return (
-                <li key={key} {...optionProps}>
-                  <Checkbox style={{ marginRight: 8 }} checked={selected} />
-                  {option.first_name}
-                </li>
-              );
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Select Users"
-                placeholder="Choose Users"
-              />
-            )}
-          /> */}
-
           <Autocomplete
             sx={{
               maxWidth: "480px",
@@ -198,7 +161,7 @@ export default function SystemConfigSuper() {
             options={userList}
             getOptionLabel={(option) =>
               option
-                ? `${option?.first_name||""} - ${option?.mobile_no||""}`
+                ? `${option?.first_name || ""} - ${option?.mobile_no || ""}`
                 : ""
             }
             renderInput={(params) => <TextField {...params} label="Users" />}
@@ -211,41 +174,6 @@ export default function SystemConfigSuper() {
           Plans
         </label>
         <div className="w-full">
-          {/* <Autocomplete
-            multiple
-            id="Plans-autocomplete"
-            limitTags={1}
-            options={planData} // Array of objects with `id` and `name`
-            disableCloseOnSelect
-            getOptionLabel={(option) => option.name} // No optional chaining needed
-            value={plan?.planId} // Ensure objects match by reference
-            onChange={(event, newValue) => {
-              const validData = newValue.filter((dep) =>
-                planData.some((d) => d.planId === dep.planId)
-              );
-
-              setPlan((prev) => ({
-                ...prev,
-                validData,
-              }));
-            }}
-            renderOption={(props, option, { selected }) => {
-              const { key, ...optionProps } = props;
-              return (
-                <li key={key} {...optionProps}>
-                  <Checkbox style={{ marginRight: 8 }} checked={selected} />
-                  {option.name}
-                </li>
-              );
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Select Plan"
-                placeholder="Choose Plan"
-              />
-            )}
-          /> */}
           <Autocomplete
             sx={{
               maxWidth: "480px",

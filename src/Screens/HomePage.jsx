@@ -1,30 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import Background from "../Components/Background";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Autocomplete,
-  Divider,
-  TextField,
+ 
 } from "@mui/material";
 import gradiant from "../Assets/GradientSection.png";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import {
   carouselResponsive,
-  formatNumber,
-  GEO_LOCATION_KEY,
-  queryBuilder,
   testimonailContent,
   WBDistricts,
 } from "../Utils/CommonUtils";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import tm from "../Assets/testimonial.png";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
-import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
@@ -52,10 +44,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-import Ribbons from "../Components/Ribbons";
-import { GetTenderListWithFilters } from "../Redux/Slices/TenderSlice";
-import { useDispatch, useSelector } from "react-redux";
-import Lenis from "lenis";
+import {  useSelector } from "react-redux";
+
 export default function HomePage() {
   const navigate = useNavigate();
   const carouselRef = useRef(null);
@@ -64,14 +54,6 @@ export default function HomePage() {
   const [pincode, setPincode] = useState("");
   const [showMore, setShowMore] = useState(false);
   const { userData } = useSelector((s) => s.auth);
-  // useEffect(() => {
-  //   const lensis = new Lenis();
-  //   function raf(time) {
-  //     lensis.raf(time);
-  //     requestAnimationFrame(raf);
-  //   }
-  //   requestAnimationFrame(raf);
-  // }, []);
   useEffect(() => {
     // Step 1: Get current coordinates
     const apiKey =

@@ -92,7 +92,7 @@ export const ValidateOTP = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(console.log(error));
+      return rejectWithValue(error);
     }
   }
 );
@@ -137,7 +137,7 @@ export const GetUserDetails = createAsyncThunk(
       };
       return obj;
     } catch (error) {
-      return rejectWithValue(console.log(error));
+      return rejectWithValue(error);
     }
   }
 );

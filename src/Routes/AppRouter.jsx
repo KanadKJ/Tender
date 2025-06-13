@@ -1,18 +1,18 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "../Layouts/MainLayout";
-import Login from "../Screens/Login";
-import Register from "../Screens/Register";
 
 import ProtectedRoutes from "./ProtectedRoutes";
 import Dashboard from "../Screens/Dashboard";
-import SystemConfigSuper from "../Screens/SystemConfigSuper";
 import PaymentDetails from "../Screens/PaymentDetails";
-import UserManagement from "../Screens/UserManagement";
-import FollowedTenders from "../Screens/FollowedTenders";
+
 import LoginPage from "../Screens/LoginPage";
 
-const HomePage = lazy(() => import("../Screens/HomePage"))
+const HomePage = lazy(() => import("../Screens/HomePage"));
+const SystemConfigSuperPage = lazy(() =>
+  import("../Screens/SystemConfigSuper")
+);
+const UserManagementPage = lazy(() => import("../Screens/UserManagement"));
 
 const TendersPage = lazy(() => import("../Screens/Tenders"));
 // const TendersPage = lazy(() => import("../Screens/TenderPer"));
@@ -80,7 +80,7 @@ const AppRouter = () => {
                 path="TenderManagement"
                 element={
                   <ProtectedRoutes>
-                    <SystemConfigSuper />
+                    <SystemConfigSuperPage />
                   </ProtectedRoutes>
                 }
               />
@@ -88,7 +88,7 @@ const AppRouter = () => {
                 path="UserManagement"
                 element={
                   <ProtectedRoutes>
-                    <UserManagement />
+                    <UserManagementPage />
                   </ProtectedRoutes>
                 }
               />

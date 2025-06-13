@@ -4,10 +4,9 @@ import logo from "../Assets/logoNew.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useEffect, useState } from "react";
-import { Avatar, Dialog, Popover } from "@mui/material";
+import { Avatar, Popover } from "@mui/material";
 import {
   GetUserDetails,
-  logout,
   LogoutUser,
   setData,
 } from "../Redux/Slices/AuthSlice";
@@ -20,9 +19,6 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { cleanUpUserFilters } from "../Redux/Slices/TenderSlice";
 import { getDecryptedItem, planNames } from "../Utils/CommonUtils";
 const Header = () => {
-  const location = useLocation();
-  const pathname = location.pathname;
-  const isActive = (path) => pathname === path || pathname.startsWith(path);
   const [anchorEl, setAnchorEl] = useState(null);
   const [sessionInControlStatus, setSessionInControlStatus] = useState(false);
   const { userData, userFilters } = useSelector((s) => s.auth);
@@ -36,7 +32,6 @@ const Header = () => {
     }
 
     if (localStorage.getItem("sessionInControl")) {
-     
       setSessionInControlStatus(true);
     } else {
       setSessionInControlStatus(false);
@@ -59,10 +54,9 @@ const Header = () => {
     if (encryptedData) {
       let decrypted = getDecryptedItem(encryptedData);
       let data = JSON.parse(decrypted);
-   
 
       data["type"] = "LoggedInAsUser";
-    
+
       dispatch(GetUserDetails(data));
       localStorage.removeItem("sessionInControl");
       setSessionInControlStatus(false);
@@ -76,7 +70,7 @@ const Header = () => {
         <div className="flex justify-end bg-yellow-300 text-black-500 rounded-lg mt-1 ">
           <div className="col-span-1 flex gap-4 px-4 py-1">
             <span className="text-sm">
-              You are logged in as :{" "}
+              You are logged in as :
               <span className="font-semibold">{userData?.firstName}</span>
             </span>
             <button
@@ -322,7 +316,6 @@ const Header = () => {
                     onClick={() => {
                       dispatch(LogoutUser(userData?.id));
                       dispatch(cleanUpUserFilters());
-                      navigate("/login", { replace: true });
                     }}
                   >
                     <LogoutIcon />

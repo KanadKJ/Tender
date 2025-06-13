@@ -2,23 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import profile from "../Assets/profile.svg";
-import download from "../Assets/download.svg";
-import Enquiries from "../Assets/Enquiries.svg";
-import locked from "../Assets/locked.svg";
+
 import logoutPic from "../Assets/logout.svg";
 import rupee from "../Assets/rupee.svg";
 import saved from "../Assets/saved.svg";
 import trems from "../Assets/trems.svg";
-import viewed from "../Assets/viewed.svg";
-import howdoesitworks from "../Assets/howdoesitworks.svg";
+
 import DriverLink from "./DriverLink";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, LogoutUser, setData } from "../Redux/Slices/AuthSlice";
+import {  LogoutUser, setData } from "../Redux/Slices/AuthSlice";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined";
-import { Dialog, DialogTitle, Divider } from "@mui/material";
+import {  Divider } from "@mui/material";
 import logo from "../Assets/logoNew.png";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { sibebarHandler } from "../Redux/Slices/CommonSlice";
@@ -27,7 +24,6 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
 const Sidebar = ({ onLinkClick }) => {
   const { userData } = useSelector((s) => s.auth);
-  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

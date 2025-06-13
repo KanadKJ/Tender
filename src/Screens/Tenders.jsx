@@ -114,9 +114,6 @@ export default function TenderPer() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   // const [savedFilters, setSavedFilters] = useState([]);
-  const handlePdfDownload = () => {
-    // Implement your PDF download logic here
-  };
 
   const [saveFilter, setSaveFilter] = useState("");
   const [filters, setFilters] = useState({
@@ -213,147 +210,147 @@ export default function TenderPer() {
   //     pincode: pc,
   //   });
   // }, []);
-  useEffect(() => {
-    const stateIDS = searchParams.getAll("states") || [];
-    const states = stateIDS?.length
-      ? stateIDS
-          .map((id) => {
-            const dt = statesData.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.STATE;
+  // useEffect(() => {
+  //   const stateIDS = searchParams.getAll("states") || [];
+  //   const states = stateIDS?.length
+  //     ? stateIDS
+  //         .map((id) => {
+  //           const dt = statesData.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.STATE;
 
-    setFilters({
-      ...filters,
-      states,
-    });
-  }, [statesData]);
-  useEffect(() => {
-    const districtIds = searchParams.getAll("districts") || [];
-    const districts = districtIds?.length
-      ? districtIds
-          .map((id) => {
-            const dt = districtsData.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.DISTRICT;
+  //   setFilters({
+  //     ...filters,
+  //     states,
+  //   });
+  // }, [statesData]);
+  // useEffect(() => {
+  //   const districtIds = searchParams.getAll("districts") || [];
+  //   const districts = districtIds?.length
+  //     ? districtIds
+  //         .map((id) => {
+  //           const dt = districtsData.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.DISTRICT;
 
-    setFilters({
-      ...filters,
-      districts,
-    });
-  }, [districtsData]);
+  //   setFilters({
+  //     ...filters,
+  //     districts,
+  //   });
+  // }, [districtsData]);
 
-  useEffect(() => {
-    const organisationIds = searchParams.getAll("organisations") || [];
-    const organisations = organisationIds?.length
-      ? organisationIds
-          .map((id) => {
-            const dt = orgData.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.ORGANIZATION;
-    if (organisations?.length) {
-      dispatch(GetDrpList(organisations));
-    }
-    setFilters({
-      ...filters,
-      organisations,
-    });
-  }, [orgData]);
-  useEffect(() => {
-    const departmentIds = searchParams.getAll("departments") || [];
-    const departments = departmentIds?.length
-      ? departmentIds
-          .map((id) => {
-            const dt = drpData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.DEPARTMENT;
-    if (departments?.length) {
-      dispatch(GetDivList(departments));
-    }
-    setFilters({
-      ...filters,
-      departments,
-    });
-  }, [drpData]);
+  // useEffect(() => {
+  //   const organisationIds = searchParams.getAll("organisations") || [];
+  //   const organisations = organisationIds?.length
+  //     ? organisationIds
+  //         .map((id) => {
+  //           const dt = orgData.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.ORGANIZATION;
+  //   if (organisations?.length) {
+  //     dispatch(GetDrpList(organisations));
+  //   }
+  //   setFilters({
+  //     ...filters,
+  //     organisations,
+  //   });
+  // }, [orgData]);
+  // useEffect(() => {
+  //   const departmentIds = searchParams.getAll("departments") || [];
+  //   const departments = departmentIds?.length
+  //     ? departmentIds
+  //         .map((id) => {
+  //           const dt = drpData?.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.DEPARTMENT;
+  //   if (departments?.length) {
+  //     dispatch(GetDivList(departments));
+  //   }
+  //   setFilters({
+  //     ...filters,
+  //     departments,
+  //   });
+  // }, [drpData]);
 
-  useEffect(() => {
-    const divisionIds = searchParams.getAll("divisions") || [];
-    const divisions = divisionIds?.length
-      ? divisionIds
-          .map((id) => {
-            const dt = divData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.DIVISION;
-    if (divisions?.length) {
-      dispatch(GetSubDivList(divisions));
-    }
-    setFilters({
-      ...filters,
-      divisions,
-    });
-  }, [divData]);
-  useEffect(() => {
-    const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
-    const sub_divisions = sub_divisionsIds?.length
-      ? sub_divisionsIds
-          ?.map((id) => {
-            const dt = subDivData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.SUB_DIVISION;
-    if (sub_divisions?.length) {
-      dispatch(GetSectionList(sub_divisions));
-    }
-    setFilters({
-      ...filters,
-      sub_divisions,
-    });
-  }, [subDivData]);
+  // useEffect(() => {
+  //   const divisionIds = searchParams.getAll("divisions") || [];
+  //   const divisions = divisionIds?.length
+  //     ? divisionIds
+  //         .map((id) => {
+  //           const dt = divData?.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.DIVISION;
+  //   if (divisions?.length) {
+  //     dispatch(GetSubDivList(divisions));
+  //   }
+  //   setFilters({
+  //     ...filters,
+  //     divisions,
+  //   });
+  // }, [divData]);
+  // useEffect(() => {
+  //   const sub_divisionsIds = searchParams.getAll("sub_divisions") || [];
+  //   const sub_divisions = sub_divisionsIds?.length
+  //     ? sub_divisionsIds
+  //         ?.map((id) => {
+  //           const dt = subDivData?.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.SUB_DIVISION;
+  //   if (sub_divisions?.length) {
+  //     dispatch(GetSectionList(sub_divisions));
+  //   }
+  //   setFilters({
+  //     ...filters,
+  //     sub_divisions,
+  //   });
+  // }, [subDivData]);
 
-  useEffect(() => {
-    const sectionsIds = searchParams.getAll("sections") || [];
-    const sections = sectionsIds?.length
-      ? sectionsIds
-          ?.map((id) => {
-            const dt = sectionsData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.SECTION;
-    if (sections?.length) {
-      dispatch(GetUnitList(sections));
-    }
-    setFilters({
-      ...filters,
-      sections,
-    });
-  }, [sectionsData]);
-  useEffect(() => {
-    const unitIds = searchParams.getAll("units") || [];
-    const units = unitIds?.length
-      ? unitIds
-          ?.map((id) => {
-            const dt = unitData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)
-      : userFilters?.UNIT;
+  // useEffect(() => {
+  //   const sectionsIds = searchParams.getAll("sections") || [];
+  //   const sections = sectionsIds?.length
+  //     ? sectionsIds
+  //         ?.map((id) => {
+  //           const dt = sectionsData?.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.SECTION;
+  //   if (sections?.length) {
+  //     dispatch(GetUnitList(sections));
+  //   }
+  //   setFilters({
+  //     ...filters,
+  //     sections,
+  //   });
+  // }, [sectionsData]);
+  // useEffect(() => {
+  //   const unitIds = searchParams.getAll("units") || [];
+  //   const units = unitIds?.length
+  //     ? unitIds
+  //         ?.map((id) => {
+  //           const dt = unitData?.find((d) => d.id === parseInt(id));
+  //           return dt ? dt : null;
+  //         })
+  //         .filter(Boolean)
+  //     : userFilters?.UNIT;
 
-    setFilters({
-      ...filters,
-      units,
-    });
-  }, [unitData]);
+  //   setFilters({
+  //     ...filters,
+  //     units,
+  //   });
+  // }, [unitData]);
 
   // useEffect(() => {
   //   // let s = searchParams.toString();
@@ -368,17 +365,32 @@ export default function TenderPer() {
     if (userData) {
       const pc = searchParams.get("pincode") || "";
       const kw = searchParams.getAll("keywords") || [];
+      console.log(userFilters?.ORGANIZATION?.length);
+      if (userFilters?.ORGANIZATION?.length) {
+        dispatch(GetDrpList(userFilters?.ORGANIZATION));
+      }
+      if (userFilters?.DEPARTMENT?.length) {
+        dispatch(GetDivList(userFilters?.DEPARTMENT));
+      }
+      if (userFilters?.DIVISION?.length) {
+        dispatch(GetSubDivList(userFilters?.DIVISION));
+      }
+      if (userFilters?.SUB_DIVISION?.length) {
+        dispatch(GetSectionList(userFilters?.SUB_DIVISION));
+      }
+      if (userFilters?.SECTION?.length) {
+        dispatch(GetUnitList(userFilters?.SECTION));
+      }
       const obj = {
         states: userFilters?.STATE,
         districts: userFilters?.DISTRICT,
         organisations: userFilters?.ORGANIZATION,
-        pincode: userFilters?.PinCode,
-        sections: userFilters?.SECTION,
+        departments: userFilters?.DEPARTMENT,
         divisions: userFilters?.DIVISION,
         sub_divisions: userFilters?.SUB_DIVISION,
         sections: userFilters?.SECTION,
-        departments: userFilters?.DEPARTMENT,
         units: userFilters?.UNIT,
+        pincode: userFilters?.PinCode,
         ordering: ["-published_date"],
         bidding_status: "active",
         pincode: filters?.pincode || pc,
@@ -389,6 +401,7 @@ export default function TenderPer() {
         ...prev,
         pincode: pc,
         keywords: kw,
+        ...obj,
       }));
       let q = queryBuilder(obj);
       dispatch(GetTenderListWithFilters(q));
@@ -584,6 +597,9 @@ export default function TenderPer() {
       tenderId: id,
     };
     dispatch(GetOrInsertTenderWishlist(data));
+    toast.success(
+      "Tender added to wishlist, Please check Followed Tenders in Profile Page."
+    );
   };
 
   const handleSaveFiltersSearched = () => {
@@ -639,6 +655,126 @@ export default function TenderPer() {
       });
   };
   const handleSavedSeachFromTemplate = (obj) => {
+    const params = new URLSearchParams(obj?.url);
+    const stateIDS = params.getAll("states") || [];
+    const states =
+      stateIDS?.length &&
+      stateIDS
+        .map((id) => {
+          const dt = statesData.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[]
+
+    const districtIds = params.getAll("districts") || [];
+    const districts =
+      districtIds?.length &&
+      districtIds
+        .map((id) => {
+          const dt = districtsData.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[];
+    const organisationIds = params.getAll("organisations") || [];
+    const organisations =
+      organisationIds?.length &&
+      organisationIds
+        .map((id) => {
+          const dt = orgData.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[];
+    const departmentIds = params.getAll("departments") || [];
+    const departments =
+      departmentIds?.length &&
+      departmentIds
+        .map((id) => {
+          const dt = drpData?.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[];
+    const divisionIds = params.getAll("divisions") || [];
+    const divisions =
+      divisionIds?.length &&
+      divisionIds
+        .map((id) => {
+          const dt = divData?.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[];
+console.log(divisionIds,divisions);
+
+    const sub_divisionsIds = params.getAll("sub_divisions") || [];
+    const sub_divisions =
+      sub_divisionsIds?.length &&
+      sub_divisionsIds
+        ?.map((id) => {
+          const dt = subDivData?.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[];
+    const sectionsIds = params.getAll("sections") || [];
+    const sections =
+      sectionsIds?.length &&
+      sectionsIds
+        ?.map((id) => {
+          const dt = sectionsData?.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[];
+
+    const unitIds = params.getAll("units") || [];
+    const units =
+      unitIds?.length &&
+      unitIds
+        ?.map((id) => {
+          const dt = unitData?.find((d) => d.id === parseInt(id));
+          return dt ? dt : null;
+        })
+        .filter(Boolean)||[];
+    const value_in_rs_min = params.get("value_in_rs_min") || "";
+    const value_in_rs_max = params.get("value_in_rs_max") || "";
+    const bid_submission_end_date_after =
+      params.get("bid_submission_end_date_after") || "";
+    const bid_submission_end_date_before =
+      params.get("bid_submission_end_date_before") || "";
+    const published_date_after = params.get("published_date_after") || "";
+    const published_date_before =
+      params.get("published_date_before") || "";
+    const offset = params.get("offset") || "";
+    const limit = params.get("limit") || "";
+    const keywords = params.get("keywords") || "";
+    const pincode = params.get("pincode") || "";
+    const bidding_status = params.get("bidding_status") || "active";
+    const orderingParams = params.getAll("ordering");
+    const ordering = orderingParams.length
+      ? orderingParams
+      : ["-published_date"];
+    const show_tenders_with_no_value =
+      params.get("show_tenders_with_no_value") || "";
+    setFilters({
+      districts,
+      states,
+      organisations,
+      departments,
+      sections,
+      sub_divisions,
+      divisions,
+      units,
+      keywords,
+      ordering,
+      value_in_rs_min,
+      value_in_rs_max,
+      published_date_after,
+      published_date_before,
+      limit,
+      offset,
+      pincode,
+      bidding_status,
+      bid_submission_end_date_after,
+      bid_submission_end_date_before,
+      show_tenders_with_no_value,
+    });
     dispatch(GetTenderListWithFilters(obj?.url));
 
     setChangeListner(Math.random(0, 10000) * 100);
@@ -770,6 +906,14 @@ export default function TenderPer() {
     }
     setSearchTerm("");
     dispatch(GetTenderListWithFilters(queryString));
+  };
+  const handlePdfDownload = () => {
+    dispatch(GetDocumentURL({ id: queryString, t: "4", c: "home" }))
+      .unwrap()
+      .then((fileUrl) => {
+        handleDownload(fileUrl);
+      })
+      .catch((e) => console.log(e));
   };
   return (
     <>
@@ -1710,15 +1854,15 @@ export default function TenderPer() {
                   disabled={!filters?.departments?.length}
                   multiple
                   getOptionDisabled={(option) =>
-                    userFilters?.DIVISION.length > 0 &&
-                    !userFilters?.DIVISION.some((d) => d.id === option.id)
+                    userFilters?.DIVISION?.length > 0 &&
+                    !userFilters?.DIVISION?.some((d) => d.id === option.id)
                   }
                   id="division-autocomplete"
                   options={divData} // Array of objects with `id` and `name`
                   disableCloseOnSelect
                   getOptionLabel={(option) => option?.name} // No optional chaining needed
-                  value={divData.filter((d) =>
-                    filters?.divisions?.some((dep) => dep.id === d.id)
+                  value={divData?.filter((d) =>
+                    filters?.divisions?.some((dep) => dep?.id === d?.id)
                   )} // Ensure objects match by reference
                   onChange={(event, newValue) => {
                     const validData = newValue.filter((dep) =>
@@ -1790,8 +1934,8 @@ export default function TenderPer() {
                   options={subDivData} // Array of objects with `id` and `name`
                   disableCloseOnSelect
                   getOptionLabel={(option) => option?.name} // No optional chaining needed
-                  value={subDivData.filter((d) =>
-                    filters?.sub_divisions?.some((dep) => dep.id === d.id)
+                  value={subDivData?.filter((d) =>
+                    filters?.sub_divisions?.some((dep) => dep?.id === d?.id)
                   )} // Ensure objects match by reference
                   onChange={(event, newValue) => {
                     const validData = newValue.filter((dep) =>
@@ -2984,7 +3128,11 @@ export default function TenderPer() {
                           </p>
                         </div>
 
-                        <span className="px-2 py-[2px] bg-blue-100 text-blue-700 text-[10px] font-semibold rounded-full w-fit shadow-sm">
+                        <span
+                          className={`px-2 py-[2px] ${
+                            isAlternate ? "bg-white" : "bg-blue-100"
+                          } text-blue-700 text-[10px] font-semibold rounded-full w-fit shadow-sm`}
+                        >
                           {tender?.product_category}
                         </span>
                       </div>
@@ -2996,7 +3144,7 @@ export default function TenderPer() {
                       <div className="flex gap-2 mt-1">
                         <button
                           onClick={() => navigate(`/tenders/${tender?.uid}`)}
-                          className="flex gap-2 px-3 py-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#0554F2] transition-all duration-300 ease-in-out"
+                          className="flex justify-center items-center text-center gap-2 px-3 py-1 bg-[#0554F2] rounded-md text-white text-xs font-medium hover:bg-white hover:text-[#0554F2] border border-[#0554F2] transition-all duration-300 ease-in-out"
                         >
                           View
                           <VisibilityOutlinedIcon fontSize="small" />
@@ -3081,7 +3229,9 @@ export default function TenderPer() {
                               </span>
                             </div>
                           </div>
-                        ):""}
+                        ) : (
+                          ""
+                        )}
 
                         <div className="flex flex-col justify-end items-center w-full md:w-28">
                           <span

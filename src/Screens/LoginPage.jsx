@@ -10,26 +10,13 @@ import otpillus from "../Assets/OTP.png";
 const LoginPage = () => {
   // state
   const [phone, setPhone] = useState(null);
-  const [otp, setOtp] = useState(null);
-
 
   const [errors, setErrors] = useState({});
-  const [showOtp, setShowOtp] = useState(false);
-  const [userData, setUserData] = useState({});
 
   // hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   const user = localStorage.getItem("user");
-  //   if (user) {
-  //     let data = JSON.parse(user);
-  //     navigate("/profile");
-  //     setUserData(...data);
-  //   }
-  // }, []);
-  // redux states
-  const { authIsLoading } = useSelector((s) => s.auth);
+ 
 
   // handle input change
   const handleChange = (e) => {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Background from "../Components/Background";
+
 import editSvg from "../Assets/Edit.svg";
 
 import { useDispatch, useSelector } from "react-redux";
-import Sidebar from "../Components/SideBar";
+
 import {
   GetAddressDetails,
   GetCompanyDetails,

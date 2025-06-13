@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import { Backdrop, CircularProgress, Divider } from "@mui/material";
 import logo from "../Assets/logoNew.png";
-import axios from "axios";
+
 import { setData } from "../Redux/Slices/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { TMAPI_BASE_URL } from "../Utils/CommonUtils";
+
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TMGetApi } from "../Api/TMAPI";

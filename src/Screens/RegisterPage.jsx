@@ -6,11 +6,8 @@ import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutli
 import authgrd from "../Assets/AUTHGRD.png";
 import otpillus from "../Assets/OTP.png";
 import logo from "../Assets/logoNew.png";
-import { GetOtp, SignUpUser } from "../Redux/Slices/AuthSlice";
-import { toast } from "react-toastify";
+
 const Register = () => {
-  const { error } = useSelector((s) => s.auth);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     first_name: "",
@@ -71,22 +68,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      return; //implement toaster
+      return;
     }
-    // if (validateForm()) {
-    //   console.log("Form Data:", formData);
-    //   dispatch(SignUpUser(formData));
-    // }
-    // try {
-    // const response1 = await dispatch(SignUpUser(formData));
-    // if (response1) {
-    //   toast.warning("Sending OTP... Please wait.");
-    // }
-    // const response2 = await dispatch(GetOtp(formData.mobile_no));
-    // if (!response1 && !response2) {
-    //   toast.error("Something went wrong...");
-    //   return;
-    // }
     navigate("/validateOtp", {
       state: {
         phone: formData.mobile_no,
@@ -94,9 +77,6 @@ const Register = () => {
         pageFrom: "register",
       },
     });
-    // } catch (error) {
-    //   setErrors({ loginError: error });
-    // }
   };
 
   return (
