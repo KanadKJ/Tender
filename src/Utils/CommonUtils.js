@@ -289,7 +289,7 @@ export const handleDownload = async (fileUrl, t, e) => {
   const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
   const year = now.getFullYear();
   const expName = `${day}-${month}-${year}_MENOKA_eTENDERS`;
-  let ext = e === "export" ? `${expName}.xls` : name[name?.length - 1];
+  let ext = e === "export" ? `${expName}.csv` : name[name?.length - 1];
   try {
     const response = await axios.get(fileUrl, {
       responseType: "blob", // Ensures it's treated as a file

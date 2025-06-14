@@ -658,80 +658,88 @@ export default function TenderPer() {
     const params = new URLSearchParams(obj?.url);
     const stateIDS = params.getAll("states") || [];
     const states =
-      stateIDS?.length &&
-      stateIDS
-        .map((id) => {
-          const dt = statesData.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[]
+      (stateIDS?.length &&
+        stateIDS
+          .map((id) => {
+            const dt = statesData.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
 
     const districtIds = params.getAll("districts") || [];
     const districts =
-      districtIds?.length &&
-      districtIds
-        .map((id) => {
-          const dt = districtsData.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[];
+      (districtIds?.length &&
+        districtIds
+          .map((id) => {
+            const dt = districtsData.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
     const organisationIds = params.getAll("organisations") || [];
     const organisations =
-      organisationIds?.length &&
-      organisationIds
-        .map((id) => {
-          const dt = orgData.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[];
+      (organisationIds?.length &&
+        organisationIds
+          .map((id) => {
+            const dt = orgData.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
     const departmentIds = params.getAll("departments") || [];
     const departments =
-      departmentIds?.length &&
-      departmentIds
-        .map((id) => {
-          const dt = drpData?.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[];
+      (departmentIds?.length &&
+        departmentIds
+          .map((id) => {
+            const dt = drpData?.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
     const divisionIds = params.getAll("divisions") || [];
     const divisions =
-      divisionIds?.length &&
-      divisionIds
-        .map((id) => {
-          const dt = divData?.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[];
-console.log(divisionIds,divisions);
+      (divisionIds?.length &&
+        divisionIds
+          .map((id) => {
+            const dt = divData?.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
+    console.log(divisionIds, divisions);
 
     const sub_divisionsIds = params.getAll("sub_divisions") || [];
     const sub_divisions =
-      sub_divisionsIds?.length &&
-      sub_divisionsIds
-        ?.map((id) => {
-          const dt = subDivData?.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[];
+      (sub_divisionsIds?.length &&
+        sub_divisionsIds
+          ?.map((id) => {
+            const dt = subDivData?.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
     const sectionsIds = params.getAll("sections") || [];
     const sections =
-      sectionsIds?.length &&
-      sectionsIds
-        ?.map((id) => {
-          const dt = sectionsData?.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[];
+      (sectionsIds?.length &&
+        sectionsIds
+          ?.map((id) => {
+            const dt = sectionsData?.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
 
     const unitIds = params.getAll("units") || [];
     const units =
-      unitIds?.length &&
-      unitIds
-        ?.map((id) => {
-          const dt = unitData?.find((d) => d.id === parseInt(id));
-          return dt ? dt : null;
-        })
-        .filter(Boolean)||[];
+      (unitIds?.length &&
+        unitIds
+          ?.map((id) => {
+            const dt = unitData?.find((d) => d.id === parseInt(id));
+            return dt ? dt : null;
+          })
+          .filter(Boolean)) ||
+      [];
     const value_in_rs_min = params.get("value_in_rs_min") || "";
     const value_in_rs_max = params.get("value_in_rs_max") || "";
     const bid_submission_end_date_after =
@@ -739,8 +747,7 @@ console.log(divisionIds,divisions);
     const bid_submission_end_date_before =
       params.get("bid_submission_end_date_before") || "";
     const published_date_after = params.get("published_date_after") || "";
-    const published_date_before =
-      params.get("published_date_before") || "";
+    const published_date_before = params.get("published_date_before") || "";
     const offset = params.get("offset") || "";
     const limit = params.get("limit") || "";
     const keywords = params.get("keywords") || "";
@@ -1497,6 +1504,27 @@ console.log(divisionIds,divisions);
                   <FilterAltIcon />
                   Sort
                   <CustomBadge data={filters?.ordering} />
+                </Button>
+                {/* Reset All Button */}
+                <Button
+                  disabled={isPlanExpired}
+                  style={{
+                    backgroundColor: "#5bc0de", // Lighter blue color
+                    color: isPlanExpired ? "#fff00" : "#fff",
+                    width: "200px",
+
+                    fontSize: "0.65rem", // Smaller text
+                    fontWeight: "400",
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                  aria-describedby="resetAll"
+                  variant="contained"
+                  onClick={handleResetAll}
+                >
+                  <RestoreIcon /> {/* Icon for reset */}
+                  Reset All
                 </Button>
               </div>
               <Divider />
