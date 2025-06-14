@@ -830,7 +830,7 @@ export default function TenderPer() {
       return;
     }
 
-    const id = new URLSearchParams(searchParams).toString();
+    const id = queryString
     const t = "3";
     dispatch(GetDocumentURL({ id, t }))
       .unwrap()
