@@ -53,7 +53,7 @@ const Sidebar = ({ onLinkClick }) => {
             <CancelOutlinedIcon />
           </button>
         </div>
-        <Divider variant="fullWidth" />
+        {userData &&<Divider variant="fullWidth" />}
         {userData && (
           <div
             onClick={() => {
