@@ -54,31 +54,34 @@ const Sidebar = ({ onLinkClick }) => {
           </button>
         </div>
         <Divider variant="fullWidth" />
-        <div
-          onClick={() => {
-            navigate("/dashboard");
-          }}
-          className="cursor-pointer p-2 w-full flex flex-col justify-center items-center min-w-60"
-        >
-          
-          <div className="cursor-pointer">
-            <h1 className="text-xl font-medium text-center">
-              {userData?.firstName}
-            </h1>
-            <h6 className="text-xs font-normal text-[#747474] text-center">
-              {userData?.email}
-            </h6>
+        {userData && (
+          <div
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+            className="cursor-pointer p-2 w-full flex flex-col justify-center items-center min-w-60"
+          >
+            <div className="cursor-pointer">
+              <h1 className="text-xl font-medium text-center">
+                {userData?.firstName}
+              </h1>
+              <h6 className="text-xs font-normal text-[#747474] text-center">
+                {userData?.email}
+              </h6>
+            </div>
+            <div className="w-full border rounded-md p-3 mt-2">
+              <h6 className="text-xs font-semibold text-[#747474] text-center">
+                PLAN DETAILS
+              </h6>
+              <p className="p-1 text-sm">
+                Plan Name : {planNames[userData?.packageId - 1]}
+              </p>
+              <p className="p-1 text-sm">
+                Valid Till : {userFilters?.ExpiryDate || ""}
+              </p>
+            </div>
           </div>
-          <div className="w-full border rounded-md p-3 mt-2">
-            <h6 className="text-xs font-semibold text-[#747474] text-center">
-              PLAN DETAILS
-            </h6>
-            <p className="p-1 text-sm">
-              Plan Name : {planNames[userData?.packageId - 1]}
-            </p>
-            <p className="p-1 text-sm">Valid Till : {userFilters?.ExpiryDate || ""}</p>
-          </div>
-        </div>
+        )}
         <Divider variant="fullWidth" />
         <DriverLink
           comp={
