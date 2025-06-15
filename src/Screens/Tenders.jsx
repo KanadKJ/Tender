@@ -365,7 +365,6 @@ export default function TenderPer() {
     if (userData) {
       const pc = searchParams.get("pincode") || "";
       const kw = searchParams.getAll("keywords") || [];
-      console.log(userFilters?.ORGANIZATION?.length);
       if (userFilters?.ORGANIZATION?.length) {
         dispatch(GetDrpList(userFilters?.ORGANIZATION));
       }
@@ -656,6 +655,7 @@ export default function TenderPer() {
   };
   const handleSavedSeachFromTemplate = (obj) => {
     const params = new URLSearchParams(obj?.url);
+    // states
     const stateIDS = params.getAll("states") || [];
     const states =
       (stateIDS?.length &&
@@ -666,7 +666,7 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
-
+    // districts
     const districtIds = params.getAll("districts") || [];
     const districts =
       (districtIds?.length &&
@@ -677,6 +677,7 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
+    // organisations
     const organisationIds = params.getAll("organisations") || [];
     const organisations =
       (organisationIds?.length &&
@@ -687,6 +688,10 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
+    if (organisations?.length) {
+      dispatch(GetDrpList(organisations));
+    }
+    // departments
     const departmentIds = params.getAll("departments") || [];
     const departments =
       (departmentIds?.length &&
@@ -697,6 +702,10 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
+    if (departments?.length) {
+      dispatch(GetDivList(departments));
+    }
+    // divisions
     const divisionIds = params.getAll("divisions") || [];
     const divisions =
       (divisionIds?.length &&
@@ -707,8 +716,11 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
-    console.log(divisionIds, divisions);
+    if (divisions?.length) {
+      dispatch(GetSubDivList(divisions));
+    }
 
+    // sub_divisions
     const sub_divisionsIds = params.getAll("sub_divisions") || [];
     const sub_divisions =
       (sub_divisionsIds?.length &&
@@ -719,6 +731,10 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
+    if (sub_divisions?.length) {
+      dispatch(GetSectionList(sub_divisions));
+    }
+    // sections
     const sectionsIds = params.getAll("sections") || [];
     const sections =
       (sectionsIds?.length &&
@@ -729,7 +745,10 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
-
+    if (sections?.length) {
+      dispatch(GetUnitList(sections));
+    }
+    // units
     const unitIds = params.getAll("units") || [];
     const units =
       (unitIds?.length &&
@@ -740,6 +759,7 @@ export default function TenderPer() {
           })
           .filter(Boolean)) ||
       [];
+
     const value_in_rs_min = params.get("value_in_rs_min") || "";
     const value_in_rs_max = params.get("value_in_rs_max") || "";
     const bid_submission_end_date_after =
@@ -786,6 +806,7 @@ export default function TenderPer() {
 
     setChangeListner(Math.random(0, 10000) * 100);
     handleClose();
+
   };
   const dataFetcher = (type, ids) => {
     if (type === "organization") {
@@ -830,7 +851,7 @@ export default function TenderPer() {
       return;
     }
 
-    const id = queryString
+    const id = queryString;
     const t = "3";
     dispatch(GetDocumentURL({ id, t }))
       .unwrap()

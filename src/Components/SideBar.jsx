@@ -35,7 +35,7 @@ const Sidebar = ({ onLinkClick }) => {
   }, [userData]);
 
   return (
-    <nav className="flex flex-col justify-start items-start max-w-[250px] w-full mt-2 rounded-md h-screen mb-5 sticky">
+    <nav className="flex flex-col justify-start items-start max-w-[250px] w-full mt-2 rounded-md h-screen mb-5 overflow-y-scroll md:overflow-hidden md:sticky">
       <ul
         className="w-full flex flex-col gap-2 md:hidden"
         onClick={() => dispatch(sibebarHandler(false))}
@@ -131,7 +131,7 @@ const Sidebar = ({ onLinkClick }) => {
       </ul>
       {userData ? (
         <ul
-          className="w-full flex flex-col gap-2"
+          className="w-full flex flex-col gap-2 mb-8"
           onClick={() => dispatch(sibebarHandler(false))}
         >
           <DriverLink src={profile} name="Profile" to="dashboard/profile" />
