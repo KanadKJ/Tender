@@ -291,33 +291,42 @@ export const handleDownload = async (fileUrl, t, e) => {
   const expName = `${day}-${month}-${year}_MENOKA_eTENDERS`;
   let ext = e === "export" ? `${expName}.csv` : name[name?.length - 1];
   try {
-    const response = await axios.get(fileUrl, {
-      responseType: "blob", // Ensures it's treated as a file
-    });
-    const blob = new Blob([response.data], {
-      type: response.headers["content-type"],
-    });
+    // const response = await axios.get(fileUrl);
+    // console.log(fileUrl);
+    
+    // const blob = new Blob([response.data], {
+    //   type: response.headers["content-type"],
+    // });
 
-    const url = window.URL.createObjectURL(blob);
+    // const url = window.URL.createObjectURL(blob);
 
     // Open in new tab
-    if (t === "xls") {
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = ext; // ← Set your desired filename here
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      // Optional: Clean up the blob URL
-      window.URL.revokeObjectURL(url);
-    } else {
-      const newTab = window.open(url, "_blank");
-    }
+    // if (t === "xls") {
+    //   const link = document.createElement("a");
+    //   link.href = url;
+    //   link.download = ext; // ← Set your desired filename here
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    //   // Optional: Clean up the blob URL
+    //   window.URL.revokeObjectURL(url);
+    // } else {
+    //   const newTab = window.open(url, "_blank");
+    // }
 
     // Optional: Revoke the object URL after a short delay
     // setTimeout(() => {
     //   window.URL.revokeObjectURL(url);
     // }, 1000);
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = ext; // ← Set your desired filename here
+      // link.target = "_blank"
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      // Optional: Clean up the blob URL
+      window.URL.revokeObjectURL(fileUrl);
   } catch (error) {
     toast.error("Error downloading the PDF:", error);
   }

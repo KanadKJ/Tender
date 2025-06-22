@@ -150,6 +150,7 @@ export default function TenderPer() {
   const [openPopoverId, setOpenPopoverId] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [savedFilterUrl, setSavedFiltersUrl] = useState("");
   // hooks
   const dispatch = useDispatch();
 
@@ -262,18 +263,19 @@ export default function TenderPer() {
   //   });
   // }, [orgData]);
   // useEffect(() => {
-  //   const departmentIds = searchParams.getAll("departments") || [];
-  //   const departments = departmentIds?.length
+  //   const p = new URLSearchParams(savedFilterUrl);
+
+  //   const departmentIds = p.getAll("departments") || [];
+  //    console.log(departmentIds);
+  //   const departments = departmentIds?.length >0
   //     ? departmentIds
   //         .map((id) => {
-  //           const dt = drpData?.find((d) => d.id === parseInt(id));
+  //           const dt = drpData?.find((d) => d.id === Number(id));
   //           return dt ? dt : null;
   //         })
   //         .filter(Boolean)
   //     : userFilters?.DEPARTMENT;
-  //   if (departments?.length) {
-  //     dispatch(GetDivList(departments));
-  //   }
+
   //   setFilters({
   //     ...filters,
   //     departments,
@@ -414,7 +416,7 @@ export default function TenderPer() {
     }
 
     // dispatch(GetTenderListWithFilters(userFiltersqueryString));
-  }, [userData, filters?.offset]);
+  }, [userData]);
   const handleClick = (event, id) => {
     if (!userData) {
       navigate("/login");
@@ -569,26 +571,12 @@ export default function TenderPer() {
       </IconButton>
     );
   };
-  const handleChangePages = (event, value) => {
-    // const params = new URLSearchParams(searchParams);
-    const newOffset = (value - 1) * 50;
-    if (!newOffset) {
-      setFilters((prev) => ({
-        ...prev,
-        offset: "",
-      }));
-      dispatch(GetTenderListWithFilters(queryString));
-    } else {
-      // params.set("offset", newOffset);
-
-      setFilters((prev) => ({
-        ...prev,
-        offset: newOffset,
-      }));
-      dispatch(GetTenderListWithFilters(queryString));
-    }
+  const handleChangePages = (updatedFilters) => {
+    const p = queryBuilder(updatedFilters);
+    dispatch(GetTenderListWithFilters(p));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
   const handleWishList = (id) => {
     let data = {
       id: "",
@@ -654,159 +642,186 @@ export default function TenderPer() {
       });
   };
   const handleSavedSeachFromTemplate = (obj) => {
+    setSavedFiltersUrl(obj?.url);
+    const createIds = (param) => {
+      return param.map((id) => ({ id }));
+    };
     const params = new URLSearchParams(obj?.url);
     // states
     const stateIDS = params.getAll("states") || [];
-    const states =
-      (stateIDS?.length &&
-        stateIDS
-          .map((id) => {
-            const dt = statesData.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
-    // districts
     const districtIds = params.getAll("districts") || [];
-    const districts =
-      (districtIds?.length &&
-        districtIds
-          .map((id) => {
-            const dt = districtsData.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
-    // organisations
-    const organisationIds = params.getAll("organisations") || [];
-    const organisations =
-      (organisationIds?.length &&
-        organisationIds
-          .map((id) => {
-            const dt = orgData.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
-    if (organisations?.length) {
-      dispatch(GetDrpList(organisations));
-    }
-    // departments
-    const departmentIds = params.getAll("departments") || [];
-    const departments =
-      (departmentIds?.length &&
-        departmentIds
-          .map((id) => {
-            const dt = drpData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
-    if (departments?.length) {
-      dispatch(GetDivList(departments));
-    }
-    // divisions
-    const divisionIds = params.getAll("divisions") || [];
-    const divisions =
-      (divisionIds?.length &&
-        divisionIds
-          .map((id) => {
-            const dt = divData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
-    if (divisions?.length) {
-      dispatch(GetSubDivList(divisions));
-    }
-
-    // sub_divisions
-    const sub_divisionsIds = params.getAll("sub_divisions") || [];
-    const sub_divisions =
-      (sub_divisionsIds?.length &&
-        sub_divisionsIds
-          ?.map((id) => {
-            const dt = subDivData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
-    if (sub_divisions?.length) {
-      dispatch(GetSectionList(sub_divisions));
-    }
-    // sections
-    const sectionsIds = params.getAll("sections") || [];
-    const sections =
-      (sectionsIds?.length &&
-        sectionsIds
-          ?.map((id) => {
-            const dt = sectionsData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
-    if (sections?.length) {
-      dispatch(GetUnitList(sections));
-    }
-    // units
     const unitIds = params.getAll("units") || [];
-    const units =
-      (unitIds?.length &&
-        unitIds
-          ?.map((id) => {
-            const dt = unitData?.find((d) => d.id === parseInt(id));
-            return dt ? dt : null;
-          })
-          .filter(Boolean)) ||
-      [];
+    let promiseArr = [];
+    const organisationIds = params.getAll("organisations") || [];
+    if (organisationIds?.length) {
+      promiseArr.push(dispatch(GetDrpList(createIds(organisationIds))));
+    }
+    const departmentIds = params.getAll("departments") || [];
+    if (departmentIds?.length) {
+      promiseArr.push(dispatch(GetDivList(createIds(departmentIds))));
+    }
+    const divisionIds = params.getAll("divisions") || [];
+    if (divisionIds?.length) {
+      promiseArr.push(dispatch(GetSubDivList(createIds(divisionIds))));
+    }
+    const sub_divisionsIds = params.getAll("sub_divisions") || [];
+    if (sub_divisionsIds?.length) {
+      promiseArr.push(dispatch(GetSectionList(createIds(sub_divisionsIds))));
+    }
+    const sectionsIds = params.getAll("sections") || [];
+    if (sectionsIds?.length) {
+      promiseArr.push(dispatch(GetUnitList(createIds(sectionsIds))));
+    }
 
-    const value_in_rs_min = params.get("value_in_rs_min") || "";
-    const value_in_rs_max = params.get("value_in_rs_max") || "";
-    const bid_submission_end_date_after =
-      params.get("bid_submission_end_date_after") || "";
-    const bid_submission_end_date_before =
-      params.get("bid_submission_end_date_before") || "";
-    const published_date_after = params.get("published_date_after") || "";
-    const published_date_before = params.get("published_date_before") || "";
-    const offset = params.get("offset") || "";
-    const limit = params.get("limit") || "";
-    const keywords = params.get("keywords") || "";
-    const pincode = params.get("pincode") || "";
-    const bidding_status = params.get("bidding_status") || "active";
-    const orderingParams = params.getAll("ordering");
-    const ordering = orderingParams.length
-      ? orderingParams
-      : ["-published_date"];
-    const show_tenders_with_no_value =
-      params.get("show_tenders_with_no_value") || "";
-    setFilters({
-      districts,
-      states,
-      organisations,
-      departments,
-      sections,
-      sub_divisions,
-      divisions,
-      units,
-      keywords,
-      ordering,
-      value_in_rs_min,
-      value_in_rs_max,
-      published_date_after,
-      published_date_before,
-      limit,
-      offset,
-      pincode,
-      bidding_status,
-      bid_submission_end_date_after,
-      bid_submission_end_date_before,
-      show_tenders_with_no_value,
-    });
-    dispatch(GetTenderListWithFilters(obj?.url));
+    Promise.all(promiseArr)
+      .then((res) => {
+        console.log(res);
 
-    setChangeListner(Math.random(0, 10000) * 100);
-    handleClose();
+        const states =
+          (stateIDS?.length &&
+            stateIDS
+              .map((id) => {
+                const dt = statesData.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+        // districts
 
+        const districts =
+          (districtIds?.length &&
+            districtIds
+              .map((id) => {
+                const dt = districtsData.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+        // organisations
+
+        const organisations =
+          (organisationIds?.length &&
+            organisationIds
+              .map((id) => {
+                const dt = orgData.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+
+        // departments
+
+        const departments =
+          (departmentIds?.length &&
+            departmentIds
+              .map((id) => {
+                const dt = res[0]?.payload?.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+        console.log(drpData);
+
+        // divisions
+
+        const divisions =
+          (divisionIds?.length &&
+            divisionIds
+              .map((id) => {
+                const dt = res[1]?.payload?.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+
+        // sub_divisions
+
+        const sub_divisions =
+          (sub_divisionsIds?.length &&
+            sub_divisionsIds
+              ?.map((id) => {
+                const dt = res[2]?.payload?.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+
+        // sections
+
+        const sections =
+          (sectionsIds?.length &&
+            sectionsIds
+              ?.map((id) => {
+                const dt = res[3]?.payload?.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+
+        // units
+
+        const units =
+          (unitIds?.length &&
+            unitIds
+              ?.map((id) => {
+                const dt = res[4]?.payload?.find((d) => d.id === parseInt(id));
+                return dt ? dt : null;
+              })
+              .filter(Boolean)) ||
+          [];
+
+        const value_in_rs_min = params.get("value_in_rs_min") || "";
+        const value_in_rs_max = params.get("value_in_rs_max") || "";
+        const bid_submission_end_date_after =
+          params.get("bid_submission_end_date_after") || "";
+        const bid_submission_end_date_before =
+          params.get("bid_submission_end_date_before") || "";
+        const published_date_after = params.get("published_date_after") || "";
+        const published_date_before = params.get("published_date_before") || "";
+        const offset = params.get("offset") || "";
+        const limit = params.get("limit") || "";
+        const keywords = params.get("keywords") || "";
+        const pincode = params.get("pincode") || "";
+        const bidding_status = params.get("bidding_status") || "active";
+        const orderingParams = params.getAll("ordering");
+        const ordering = orderingParams.length
+          ? orderingParams
+          : ["-published_date"];
+        const show_tenders_with_no_value =
+          params.get("show_tenders_with_no_value") || "";
+        setFilters((prev) => ({
+          ...prev,
+          districts,
+          states,
+          organisations,
+          departments,
+          sections,
+          sub_divisions,
+          divisions,
+          units,
+          keywords,
+          ordering,
+          value_in_rs_min,
+          value_in_rs_max,
+          published_date_after,
+          published_date_before,
+          limit,
+          offset,
+          pincode,
+          bidding_status,
+          bid_submission_end_date_after,
+          bid_submission_end_date_before,
+          show_tenders_with_no_value,
+        }));
+        dispatch(GetTenderListWithFilters(obj?.url));
+
+        setChangeListner(Math.random() * 10000);
+
+        handleClose();
+      })
+      .catch((e) => {
+        toast.error(e.message);
+      });
   };
   const dataFetcher = (type, ids) => {
     if (type === "organization") {
@@ -3427,13 +3442,23 @@ export default function TenderPer() {
               <Pagination
                 disabled={userData ? false : true}
                 count={Math.ceil(tenderData?.count / 50) || 1}
-                defaultPage={1}
+                // defaultPage={1}
                 siblingCount={0}
                 boundaryCount={1}
                 color="primary"
                 showFirstButton
-                onChange={handleChangePages}
-                page={filters?.offset / 50 + 1} // Fixed calculation
+                onChange={(event, value) => {
+                  const newOffset = (value - 1) * 50;
+
+                  const updatedFilters = {
+                    ...filters,
+                    offset: newOffset === 0 ? "" : newOffset,
+                  };
+
+                  setFilters(updatedFilters); // Update the state
+                  handleChangePages(updatedFilters); // Pass updated filter directly
+                }}
+                page={filters?.offset ? filters.offset / 50 + 1 : 1}
               />
             ) : (
               <p className="flex gap-2 justify-center items-center">
